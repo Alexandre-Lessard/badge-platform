@@ -82,6 +82,30 @@ The `products` table is created by Drizzle migration `0006_low_rattler.sql` with
 
 Without a valid `stripePriceId`, the checkout will reject the product with a "no Stripe price configured" error.
 
+### Migrating to a new Stripe account
+
+When swapping to a different Stripe account (e.g., personal to official business account):
+
+1. In the new Stripe Dashboard:
+   - Complete the **Stripe Tax registration** for Canada (required because `automatic_tax: { enabled: true }` is set in `apps/api/src/routes/shop.ts`; checkout will hard-fail without it, even at $0).
+   - Create products and prices, note each `price_xxx`.
+   - Create a webhook endpoint pointing at `https://api.rnbp.ca/api/shop/webhook` with events **`checkout.session.completed`** and **`checkout.session.expired`** only. Copy the new `whsec_xxx`.
+
+2. On the prod server (`/opt/rnbp/.env`):
+   ```bash
+   sudo cp /opt/rnbp/.env /opt/rnbp/.env.preStripe.$(date +%F)
+   # edit STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET
+   sudo systemctl restart rnbp-api
+   ```
+
+3. Update each product's `stripePriceId` via `/admin/products` (or the SQL above).
+
+4. Place a $0 test order end-to-end and confirm the webhook event hits with HTTP 200 in the Stripe Dashboard.
+
+**Rollback**: keep the `.env.preStripe.*` backup for at least 48 h. Disable (do not delete) the old webhook endpoint on the old account for 7 days so you can re-enable it if needed.
+
+**Webhook secret rotation gotcha**: each Dashboard endpoint has its own `whsec_xxx`. There is no overlap window when rolling a secret. To rotate without downtime, create a second endpoint with the same URL + events, deploy the new secret, then delete the old endpoint.
+
 ### Product management
 
 Products created via the admin UI (`/admin/products`) are stored only in the database — they are **not** in the migration seed. The `customMechanic` and `requiresItem` fields are dev-only and cannot be set from the admin interface.
