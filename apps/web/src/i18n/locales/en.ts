@@ -1039,10 +1039,7 @@ const en: SiteContent = {
     ORDER_NOT_FOUND: "Order not found",
     ORDER_LINE_NOT_FOUND: "Order line not found",
     INVALID_RNBP_FORMAT: "Invalid format (RNBP-XXXXXXXX)",
-    RNBP_NUMBER_TAKEN: "This RNBP number is already assigned to another item",
-    ITEM_DELETED: "Cannot assign RNBP number: associated item was deleted",
     ORDER_NOT_PAID: "Only paid orders can be shipped",
-    UNASSIGNED_ITEMS: "Some items do not have an RNBP number assigned",
     // Sticker codes
     INVALID_RANGE: "The range must contain exactly 10 codes.",
     CODES_ALREADY_EXIST: "One or more codes already exist in the database.",

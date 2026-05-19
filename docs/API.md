@@ -391,14 +391,6 @@ Response: { voidedCount: number }
 ```
 Soft-voids all unclaimed codes for the order line (admin correction). Refused if any code has been claimed by the customer.
 
-### PATCH /admin/orders/:id/items/:orderItemId/assign
-Auth: requireAdmin
-```
-Body: { rnbpNumber: "RNBP-XXXXXXXX" }
-Response: { success: true, rnbpNumber } | { success: true, skipped: true }
-```
-Legacy override / support endpoint. Updates `items.rnbpNumber` directly. Returns `skipped: true` for sticker-sheet lines (no associated item to update — customers self-assign codes via the claim flow).
-
 ### PATCH /admin/orders/:id/ship
 Auth: requireAdmin
 ```

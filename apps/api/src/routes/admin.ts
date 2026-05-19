@@ -19,7 +19,6 @@ import { getRequestsPerMinute } from "../utils/request-counter.js";
 import {
   ORDER_NOT_FOUND,
   ORDER_LINE_NOT_FOUND,
-  RNBP_NUMBER_TAKEN,
   ORDER_NOT_PAID,
   PRODUCT_NOT_FOUND,
   INVALID_RANGE,
@@ -27,7 +26,6 @@ import {
   CODES_ALREADY_EXIST,
   CODES_HAVE_CLAIMS,
   CODES_NOT_REGISTERED,
-  rnbpNumberSchema,
   PRODUCT_SLUGS,
   CODES_PER_SHEET,
 } from "@rnbp/shared";
@@ -274,68 +272,6 @@ export async function adminRoutes(app: FastifyInstance) {
       }));
 
       return reply.send({ order: { ...order, customer, items: enriched } });
-    },
-  );
-
-  // ── Assign an RNBP number ──────────────────────────────────────
-
-  app.patch(
-    "/admin/orders/:id/items/:orderItemId/assign",
-    { preHandler: requireAdmin },
-    async (request, reply) => {
-      const { id, orderItemId } = request.params as {
-        id: string;
-        orderItemId: string;
-      };
-      const { rnbpNumber } = z
-        .object({ rnbpNumber: rnbpNumberSchema })
-        .parse(request.body);
-
-      const db = getDb();
-
-      // Verify the orderItem exists and belongs to this order
-      const [oi] = await db
-        .select()
-        .from(orderItems)
-        .where(
-          and(eq(orderItems.id, orderItemId), eq(orderItems.orderId, id)),
-        )
-        .limit(1);
-
-      if (!oi) throw new AppError(404, ORDER_LINE_NOT_FOUND, "Order line not found");
-
-      // Sticker-sheet orders no longer carry an itemId — the customer self-assigns
-      // codes via the sticker_codes flow. This admin override is kept for legacy
-      // orders or support cases; if there's no item to update, succeed silently.
-      if (!oi.itemId) {
-        return reply.send({ success: true, skipped: true });
-      }
-
-      // Verify RNBP number uniqueness across items
-      const [existingItem] = await db
-        .select({ id: items.id })
-        .from(items)
-        .where(eq(items.rnbpNumber, rnbpNumber))
-        .limit(1);
-
-      if (existingItem && existingItem.id !== oi.itemId) {
-        throw new AppError(400, RNBP_NUMBER_TAKEN, "This RNBP number is already assigned to another item");
-      }
-
-      // Atomic transaction: update orderItem AND item
-      await db.transaction(async (tx) => {
-        await tx
-          .update(orderItems)
-          .set({ rnbpNumber })
-          .where(eq(orderItems.id, orderItemId));
-
-        await tx
-          .update(items)
-          .set({ rnbpNumber, updatedAt: new Date() })
-          .where(eq(items.id, oi.itemId!));
-      });
-
-      return reply.send({ success: true, rnbpNumber });
     },
   );
 

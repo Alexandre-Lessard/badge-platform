@@ -36,10 +36,7 @@ export const FILE_TOO_LARGE = "FILE_TOO_LARGE";
 export const ORDER_NOT_FOUND = "ORDER_NOT_FOUND";
 export const ORDER_LINE_NOT_FOUND = "ORDER_LINE_NOT_FOUND";
 export const INVALID_RNBP_FORMAT = "INVALID_RNBP_FORMAT";
-export const RNBP_NUMBER_TAKEN = "RNBP_NUMBER_TAKEN";
-export const ITEM_DELETED = "ITEM_DELETED";
 export const ORDER_NOT_PAID = "ORDER_NOT_PAID";
-export const UNASSIGNED_ITEMS = "UNASSIGNED_ITEMS";
 
 // ── Sticker codes ────────────────────────────────────────────────────
 export const INVALID_RANGE = "INVALID_RANGE";

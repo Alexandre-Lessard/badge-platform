@@ -1045,10 +1045,7 @@ const fr: SiteContent = {
     ORDER_NOT_FOUND: "Commande introuvable",
     ORDER_LINE_NOT_FOUND: "Ligne de commande introuvable",
     INVALID_RNBP_FORMAT: "Format invalide (RNBP-XXXXXXXX)",
-    RNBP_NUMBER_TAKEN: "Ce numéro RNBP est déjà assigné à un autre bien",
-    ITEM_DELETED: "Impossible d'assigner un numéro RNBP : le bien a été supprimé",
     ORDER_NOT_PAID: "Seules les commandes payées peuvent être expédiées",
-    UNASSIGNED_ITEMS: "Certains articles n'ont pas de numéro RNBP assigné",
     // Sticker codes
     INVALID_RANGE: "La plage doit contenir exactement 10 codes.",
     CODES_ALREADY_EXIST: "Un ou plusieurs codes existent déjà en base.",

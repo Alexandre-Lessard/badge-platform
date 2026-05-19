@@ -6,7 +6,6 @@ import { useLanguage } from "@/i18n/context";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/routes/routes";
 import {
-  RNBP_REGEX,
   PRODUCT_SLUGS,
   CODES_PER_SHEET,
   normalizeRnbpCode,
@@ -61,11 +60,6 @@ export function AdminOrderDetailPage() {
   const [prepRunning, setPrepRunning] = useState<Record<string, boolean>>({});
   const [prepErrors, setPrepErrors] = useState<Record<string, string>>({});
   const [resetRunning, setResetRunning] = useState<Record<string, boolean>>({});
-
-  // Legacy override (per orderItem with itemId)
-  const [overrideInputs, setOverrideInputs] = useState<Record<string, string>>({});
-  const [overrideRunning, setOverrideRunning] = useState<Record<string, boolean>>({});
-  const [overrideErrors, setOverrideErrors] = useState<Record<string, string>>({});
 
   const [shipping, setShipping] = useState(false);
   const [shipError, setShipError] = useState("");
@@ -179,36 +173,6 @@ export function AdminOrderDetailPage() {
       setPrepErrors((p) => ({ ...p, [orderItemId]: getErrorMessage(err, t) }));
     } finally {
       setResetRunning((v) => ({ ...v, [orderItemId]: false }));
-    }
-  }
-
-  async function handleOverride(orderItemId: string) {
-    const value = normalizeRnbpCode(overrideInputs[orderItemId] ?? "");
-    if (!RNBP_REGEX.test(value)) {
-      setOverrideErrors((p) => ({ ...p, [orderItemId]: "Format: RNBP-XXXXXXXX" }));
-      return;
-    }
-    setOverrideRunning((p) => ({ ...p, [orderItemId]: true }));
-    setOverrideErrors((p) => ({ ...p, [orderItemId]: "" }));
-    try {
-      await apiRequest(`/admin/orders/${id}/items/${orderItemId}/assign`, {
-        method: "PATCH",
-        body: { rnbpNumber: value },
-      });
-      setOrder((prev) =>
-        prev
-          ? {
-              ...prev,
-              items: prev.items.map((line) =>
-                line.id === orderItemId ? { ...line, rnbpNumber: value } : line,
-              ),
-            }
-          : prev,
-      );
-    } catch (err) {
-      setOverrideErrors((p) => ({ ...p, [orderItemId]: getErrorMessage(err, t) }));
-    } finally {
-      setOverrideRunning((p) => ({ ...p, [orderItemId]: false }));
     }
   }
 
@@ -398,48 +362,6 @@ export function AdminOrderDetailPage() {
                 </div>
               )}
 
-              {/* Legacy override (for old orders with itemId pre-assigned) */}
-              {hasLegacyItem(item) && (
-                <div className="mt-5 border-t border-[var(--rcb-border)] pt-4">
-                  <h3 className="text-sm font-semibold text-[var(--rcb-text-strong)]">
-                    Correction RNBP (support)
-                  </h3>
-                  <p className="mt-1 text-xs text-[var(--rcb-text-muted)]">
-                    For typo fixes or replacing a damaged sheet on legacy orders.
-                  </p>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    {item.rnbpNumber ? (
-                      <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
-                        {item.rnbpNumber}
-                      </span>
-                    ) : (
-                      <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                        unassigned
-                      </span>
-                    )}
-                    <input
-                      type="text"
-                      placeholder="RNBP-XXXXXXXX"
-                      value={overrideInputs[item.id] ?? ""}
-                      onChange={(e) =>
-                        setOverrideInputs((prev) => ({ ...prev, [item.id]: e.target.value }))
-                      }
-                      className="h-9 w-44 rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-3 text-sm uppercase text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
-                    />
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleOverride(item.id)}
-                      disabled={overrideRunning[item.id]}
-                    >
-                      {overrideRunning[item.id] ? "..." : "Override"}
-                    </Button>
-                  </div>
-                  {overrideErrors[item.id] && (
-                    <p className="mt-2 text-sm text-red-600">{overrideErrors[item.id]}</p>
-                  )}
-                </div>
-              )}
             </div>
           ))}
         </div>
