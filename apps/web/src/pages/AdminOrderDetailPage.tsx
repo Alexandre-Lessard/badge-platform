@@ -15,7 +15,6 @@ import {
 type StickerCode = {
   code: string;
   claimedAt: string | null;
-  voidedAt: string | null;
 };
 
 type OrderItem = {
@@ -61,7 +60,7 @@ export function AdminOrderDetailPage() {
   >({});
   const [prepRunning, setPrepRunning] = useState<Record<string, boolean>>({});
   const [prepErrors, setPrepErrors] = useState<Record<string, string>>({});
-  const [voidRunning, setVoidRunning] = useState<Record<string, boolean>>({});
+  const [resetRunning, setResetRunning] = useState<Record<string, boolean>>({});
 
   // Legacy override (per orderItem with itemId)
   const [overrideInputs, setOverrideInputs] = useState<Record<string, string>>({});
@@ -126,7 +125,7 @@ export function AdminOrderDetailPage() {
                   ? {
                       ...line,
                       codes: codes
-                        .map((code) => ({ code, claimedAt: null, voidedAt: null }))
+                        .map((code) => ({ code, claimedAt: null }))
                         .sort((a, b) => a.code.localeCompare(b.code)),
                     }
                   : line,
@@ -146,9 +145,14 @@ export function AdminOrderDetailPage() {
     }
   }
 
-  async function handleVoidCodes(orderItemId: string) {
-    if (!confirm("Void all registered codes for this line? This cannot be undone.")) return;
-    setVoidRunning((v) => ({ ...v, [orderItemId]: true }));
+  async function handleResetCodes(orderItemId: string) {
+    if (
+      !confirm(
+        "Effacer les codes enregistrés pour cette ligne et recommencer ? Cette action est irréversible.",
+      )
+    )
+      return;
+    setResetRunning((v) => ({ ...v, [orderItemId]: true }));
     setPrepErrors((p) => ({ ...p, [orderItemId]: "" }));
     try {
       await apiRequest(`/admin/orders/${id}/items/${orderItemId}/codes`, {
@@ -174,7 +178,7 @@ export function AdminOrderDetailPage() {
     } catch (err) {
       setPrepErrors((p) => ({ ...p, [orderItemId]: getErrorMessage(err, t) }));
     } finally {
-      setVoidRunning((v) => ({ ...v, [orderItemId]: false }));
+      setResetRunning((v) => ({ ...v, [orderItemId]: false }));
     }
   }
 
@@ -325,27 +329,26 @@ export function AdminOrderDetailPage() {
                           <span
                             key={c.code}
                             className={`rounded px-2 py-0.5 ${
-                              c.voidedAt
-                                ? "bg-red-50 text-red-700 line-through"
-                                : c.claimedAt
-                                  ? "bg-green-50 text-green-800"
-                                  : "bg-[var(--rcb-surface)] text-[var(--rcb-text-body)]"
+                              c.claimedAt
+                                ? "bg-green-50 text-green-800"
+                                : "bg-[var(--rcb-surface)] text-[var(--rcb-text-body)]"
                             }`}
                           >
                             {c.code}
                           </span>
                         ))}
                       </div>
-                      {item.codes.every((c) => !c.claimedAt && !c.voidedAt) && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleVoidCodes(item.id)}
-                          disabled={voidRunning[item.id]}
-                          className="mt-3"
+                      {item.codes.every((c) => !c.claimedAt) && (
+                        <button
+                          type="button"
+                          onClick={() => handleResetCodes(item.id)}
+                          disabled={resetRunning[item.id]}
+                          className="mt-3 cursor-pointer text-xs text-[var(--rcb-text-muted)] underline-offset-2 hover:text-[var(--rcb-primary)] hover:underline disabled:cursor-default disabled:opacity-60"
                         >
-                          {voidRunning[item.id] ? "..." : "Void & regenerate"}
-                        </Button>
+                          {resetRunning[item.id]
+                            ? "..."
+                            : "Effacer et recommencer"}
+                        </button>
                       )}
                     </div>
                   ) : (

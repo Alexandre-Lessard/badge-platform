@@ -253,7 +253,6 @@ export async function adminRoutes(app: FastifyInstance) {
               code: stickerCodes.code,
               orderItemId: stickerCodes.orderItemId,
               claimedAt: stickerCodes.claimedAt,
-              voidedAt: stickerCodes.voidedAt,
             })
             .from(stickerCodes)
             .where(inArray(stickerCodes.orderItemId, oiIds))
@@ -261,11 +260,11 @@ export async function adminRoutes(app: FastifyInstance) {
 
       const codesByLine = new Map<
         string,
-        { code: string; claimedAt: Date | null; voidedAt: Date | null }[]
+        { code: string; claimedAt: Date | null }[]
       >();
       for (const row of codeRows) {
         const arr = codesByLine.get(row.orderItemId) ?? [];
-        arr.push({ code: row.code, claimedAt: row.claimedAt, voidedAt: row.voidedAt });
+        arr.push({ code: row.code, claimedAt: row.claimedAt });
         codesByLine.set(row.orderItemId, arr);
       }
 
@@ -451,7 +450,15 @@ export async function adminRoutes(app: FastifyInstance) {
     },
   );
 
-  // ── Void registered codes (admin correction before ship) ─────────
+  // ── Reset registered codes (admin correction before ship) ───────
+  //
+  // Hard-delete the registered codes for an order line. Used when the
+  // admin realises they entered the wrong first/last codes during prep
+  // (typo, off-by-one, scanned the wrong sheet). Refused if the customer
+  // has already claimed at least one code — at that point the codes are
+  // physically in the customer's hands and removing them would break the
+  // public lookup. For the refund/cancel case the webhook still uses the
+  // soft-delete `voided_at` mechanism (codes stay in DB but unusable).
 
   app.delete(
     "/admin/orders/:id/items/:orderItemId/codes",
@@ -477,7 +484,6 @@ export async function adminRoutes(app: FastifyInstance) {
         .where(
           and(
             eq(stickerCodes.orderItemId, orderItemId),
-            isNull(stickerCodes.voidedAt),
             isNotNull(stickerCodes.claimedAt),
           ),
         )
@@ -487,22 +493,16 @@ export async function adminRoutes(app: FastifyInstance) {
         throw new AppError(
           409,
           CODES_HAVE_CLAIMS,
-          "Cannot void codes after the customer has claimed at least one",
+          "Cannot reset codes after the customer has claimed at least one",
         );
       }
 
-      const voided = await db
-        .update(stickerCodes)
-        .set({ voidedAt: new Date() })
-        .where(
-          and(
-            eq(stickerCodes.orderItemId, orderItemId),
-            isNull(stickerCodes.voidedAt),
-          ),
-        )
+      const deleted = await db
+        .delete(stickerCodes)
+        .where(eq(stickerCodes.orderItemId, orderItemId))
         .returning({ code: stickerCodes.code });
 
-      return reply.send({ voidedCount: voided.length });
+      return reply.send({ deletedCount: deleted.length });
     },
   );
 

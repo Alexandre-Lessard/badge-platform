@@ -350,9 +350,10 @@ export async function shopRoutes(app: FastifyInstance) {
 
             if (updated.length === 0) return;
 
-            // Void any unclaimed codes the admin may have registered for this
-            // order line — protects against the (rare) case where prep happened
-            // before the session expired or was cancelled.
+            // Hard-delete any unclaimed codes the admin may have registered for
+            // this order line — protects against the (rare) case where prep
+            // happened before the session expired or was cancelled. Claimed
+            // codes are left alone (customer has the physical autocollant).
             const lines = await tx
               .select({ id: orderItems.id })
               .from(orderItems)
@@ -361,15 +362,13 @@ export async function shopRoutes(app: FastifyInstance) {
             if (lines.length === 0) return;
 
             await tx
-              .update(stickerCodes)
-              .set({ voidedAt: new Date() })
+              .delete(stickerCodes)
               .where(
                 and(
                   inArray(
                     stickerCodes.orderItemId,
                     lines.map((l) => l.id),
                   ),
-                  isNull(stickerCodes.voidedAt),
                   isNull(stickerCodes.claimedAt),
                 ),
               );
