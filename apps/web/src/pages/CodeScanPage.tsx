@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
 import { useLanguage } from "@/i18n/context";
 import { useAuth } from "@/lib/auth-context";
 import { apiRequest, isNetworkError } from "@/lib/api-client";
@@ -38,6 +38,7 @@ const statusColors: Record<string, string> = {
 export function CodeScanPage() {
   const { code: rawCode } = useParams<{ code: string }>();
   const code = normalizeRnbpCode(rawCode ?? "");
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const { user } = useAuth();
   const [data, setData] = useState<ScanResponse | null>(null);
@@ -59,28 +60,11 @@ export function CodeScanPage() {
       .finally(() => setLoading(false));
   }, [code, t]);
 
-  function handleAssignSuccess(claimedCode: string, itemId: string) {
-    setData((prev) =>
-      prev
-        ? {
-            ...prev,
-            ownedByMe: true,
-            assignableByMe: false,
-            item: {
-              found: true,
-              status: "active",
-              category: "—",
-              brand: null,
-              model: null,
-              isYours: true,
-              itemId,
-            },
-          }
-        : prev,
-    );
-    // After a successful claim, the in-place item card is the easiest UX:
-    // we route the user to their item edit page so they can complete details.
-    void claimedCode;
+  function handleAssignSuccess(_claimedCode: string, itemId: string) {
+    // Send the user to their item's detail page — that's where they see the
+    // photos, the claimed RNBP code, and any next-step actions. Patching the
+    // scan-page card with partial data here would show empty placeholders.
+    navigate(ROUTES.itemDetail(itemId));
   }
 
   if (backendDown) {

@@ -1,10 +1,13 @@
 import { useState, useEffect, type FormEvent } from "react";
+import { Link } from "react-router";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { useLanguage } from "@/i18n/context";
 import { apiRequest } from "@/lib/api-client";
 import { getErrorMessage } from "@/lib/error-utils";
+import { getButtonClasses } from "@/lib/button-styles";
 import { normalizeRnbpCode, RNBP_REGEX } from "@rnbp/shared";
+import { ROUTES } from "@/routes/routes";
 
 type AssignableItem = {
   id: string;
@@ -177,11 +180,21 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
           <Button type="button" variant="outline" size="sm" onClick={onClose}>
             {t.archive?.cancelButton ?? "Cancel"}
           </Button>
-          <Button type="submit" size="sm" disabled={submitDisabled}>
-            {submitting
-              ? "..."
-              : (dash?.assignRnbpModalSubmit ?? "Assign")}
-          </Button>
+          {mode === "pick-item" && !loadingItems && items.length === 0 ? (
+            <Link
+              to={ROUTES.registerItem}
+              onClick={onClose}
+              className={getButtonClasses("primary", "sm")}
+            >
+              + {t.dashboard?.addItem ?? "Register an item"}
+            </Link>
+          ) : (
+            <Button type="submit" size="sm" disabled={submitDisabled}>
+              {submitting
+                ? "..."
+                : (dash?.assignRnbpModalSubmit ?? "Assign")}
+            </Button>
+          )}
         </div>
       </form>
     </Modal>
