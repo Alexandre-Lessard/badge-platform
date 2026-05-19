@@ -623,6 +623,7 @@ const fr: SiteContent = {
     freePrice: "Gratuit",
     forWhichItem: "Pour quel bien\u00a0?",
     confirmAdd: "Ajouter",
+    galleryThumbnailLabel: "Voir l'image {n}",
   },
   report: {
     heading: "Déclarer un vol",
@@ -1000,7 +1001,8 @@ const fr: SiteContent = {
       priceCents: "Prix (cents)",
       priceDollars: "Prix affiché",
       stripePriceId: "Stripe Price ID",
-      imageUrl: "URL de l'image",
+      imageUrls: "URLs des images",
+      imageUrlsHint: "Une URL par ligne. La première image est affichée par défaut.",
       isActive: "Actif",
       save: "Enregistrer",
       saving: "Enregistrement...",

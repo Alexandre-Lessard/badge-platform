@@ -318,6 +318,7 @@ export type SiteContent = {
     freePrice: string;
     forWhichItem: string;
     confirmAdd: string;
+    galleryThumbnailLabel: string;
   };
   report?: {
     heading: string;
@@ -565,7 +566,8 @@ export type SiteContent = {
       priceCents: string;
       priceDollars: string;
       stripePriceId: string;
-      imageUrl: string;
+      imageUrls: string;
+      imageUrlsHint: string;
       isActive: string;
       save: string;
       saving: string;

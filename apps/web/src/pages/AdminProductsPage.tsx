@@ -14,7 +14,7 @@ type Product = {
   descriptionFr: string | null;
   descriptionEn: string | null;
   priceCents: number;
-  imageUrl: string | null;
+  imageUrls: string[];
   isActive: boolean;
   customMechanic: string | null;
   requiresItem: boolean;
@@ -132,9 +132,9 @@ export function AdminProductsPage() {
                       }`}
                     >
                       <td className="py-3 pr-4">
-                        {product.imageUrl ? (
+                        {product.imageUrls.length > 0 ? (
                           <img
-                            src={product.imageUrl}
+                            src={product.imageUrls[0]}
                             alt={product.nameFr}
                             className="h-12 w-12 rounded-lg object-cover"
                           />
@@ -234,9 +234,9 @@ export function AdminProductsPage() {
                   }`}
                 >
                   <div className="flex items-start gap-4">
-                    {product.imageUrl ? (
+                    {product.imageUrls.length > 0 ? (
                       <img
-                        src={product.imageUrl}
+                        src={product.imageUrls[0]}
                         alt={product.nameFr}
                         className="h-12 w-12 shrink-0 rounded-lg object-cover"
                       />

@@ -17,7 +17,7 @@ type Product = {
   featuresEn: string[] | null;
   priceCents: number;
   stripePriceId: string | null;
-  imageUrl: string | null;
+  imageUrls: string[];
   isActive: boolean;
   customMechanic: string | null;
   requiresItem: boolean;
@@ -34,7 +34,7 @@ type FormData = {
   featuresEn: string;
   priceCents: number;
   stripePriceId: string;
-  imageUrl: string;
+  imageUrls: string;
   isActive: boolean;
   sortOrder: number;
 };
@@ -49,7 +49,7 @@ const emptyForm: FormData = {
   featuresEn: "",
   priceCents: 0,
   stripePriceId: "",
-  imageUrl: "",
+  imageUrls: "",
   isActive: true,
   sortOrder: 0,
 };
@@ -86,7 +86,7 @@ export function AdminProductEditPage() {
           featuresEn: prod.featuresEn?.join("\n") ?? "",
           priceCents: prod.priceCents,
           stripePriceId: prod.stripePriceId ?? "",
-          imageUrl: prod.imageUrl ?? "",
+          imageUrls: prod.imageUrls.join("\n"),
           isActive: prod.isActive,
           sortOrder: prod.sortOrder,
         });
@@ -139,7 +139,12 @@ export function AdminProductEditPage() {
         : null,
       priceCents: form.priceCents,
       stripePriceId: form.stripePriceId || null,
-      imageUrl: form.imageUrl || null,
+      imageUrls: form.imageUrls
+        ? form.imageUrls
+            .split("\n")
+            .map((l) => l.trim())
+            .filter(Boolean)
+        : [],
       isActive: form.isActive,
       sortOrder: form.sortOrder,
     };
@@ -404,20 +409,23 @@ export function AdminProductEditPage() {
             </div>
           </div>
 
-          {/* Image URL */}
+          {/* Image URLs (multi-line) */}
           <div>
-            <label htmlFor="imageUrl" className={labelClass}>
-              {p?.imageUrl ?? "Image URL"}
+            <label htmlFor="imageUrls" className={labelClass}>
+              {p?.imageUrls ?? "Image URLs"}
             </label>
-            <input
-              id="imageUrl"
-              name="imageUrl"
-              type="text"
-              value={form.imageUrl}
+            <textarea
+              id="imageUrls"
+              name="imageUrls"
+              rows={4}
+              value={form.imageUrls}
               onChange={handleChange}
               className={inputClass}
-              placeholder="https://..."
+              placeholder="/assets/product-stickers.webp"
             />
+            <p className="mt-1 text-xs text-[var(--rcb-text-muted)]">
+              {p?.imageUrlsHint ?? "One URL per line. First image = main display."}
+            </p>
           </div>
 
           {/* Sort order + isActive */}

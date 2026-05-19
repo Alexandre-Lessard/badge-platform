@@ -617,6 +617,7 @@ const en: SiteContent = {
     freePrice: "Free",
     forWhichItem: "For which item?",
     confirmAdd: "Add",
+    galleryThumbnailLabel: "View image {n}",
   },
   report: {
     heading: "Report a theft",
@@ -994,7 +995,8 @@ const en: SiteContent = {
       priceCents: "Price (cents)",
       priceDollars: "Displayed price",
       stripePriceId: "Stripe Price ID",
-      imageUrl: "Image URL",
+      imageUrls: "Image URLs",
+      imageUrlsHint: "One URL per line. First image = main display.",
       isActive: "Active",
       save: "Save",
       saving: "Saving...",

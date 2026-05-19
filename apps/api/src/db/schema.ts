@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   pgTable,
   uuid,
@@ -374,7 +375,10 @@ export const products = pgTable(
     featuresEn: text("features_en").array(),
     priceCents: integer("price_cents").notNull(),
     stripePriceId: varchar("stripe_price_id", { length: 255 }),
-    imageUrl: varchar("image_url", { length: 500 }),
+    imageUrls: text("image_urls")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
     isActive: boolean("is_active").notNull().default(true),
     requiresItem: boolean("requires_item").notNull().default(false),
     customMechanic: varchar("custom_mechanic", { length: 50 }),

@@ -557,7 +557,7 @@ export async function adminRoutes(app: FastifyInstance) {
     featuresEn: z.array(z.string()).optional(),
     priceCents: z.number().int().min(0),
     stripePriceId: z.string().optional(),
-    imageUrl: z.string().max(500).optional(),
+    imageUrls: z.array(z.string().max(500)).max(10).optional(),
     isActive: z.boolean().optional(),
     sortOrder: z.number().int().optional(),
   });
@@ -595,7 +595,7 @@ export async function adminRoutes(app: FastifyInstance) {
     featuresEn: z.array(z.string()).nullable().optional(),
     priceCents: z.number().int().min(0).optional(),
     stripePriceId: z.string().nullable().optional(),
-    imageUrl: z.string().max(500).nullable().optional(),
+    imageUrls: z.array(z.string().max(500)).max(10).optional(),
     isActive: z.boolean().optional(),
     sortOrder: z.number().int().optional(),
   });

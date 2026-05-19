@@ -92,6 +92,13 @@
       "when": 1779202614507,
       "tag": "0012_update_sticker_product",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1779219502387,
+      "tag": "0013_lame_prodigy",
+      "breakpoints": true
     }
   ]
 }

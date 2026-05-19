@@ -7,6 +7,7 @@ import { apiRequest } from "@/lib/api-client";
 import { getErrorMessage } from "@/lib/error-utils";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { ProductGallery } from "@/components/ui/ProductGallery";
 import { ROUTES } from "@/routes/routes";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -22,7 +23,7 @@ type Product = {
   featuresEn: string[];
   priceCents: number;
   stripePriceId: string;
-  imageUrl: string | null;
+  imageUrls: string[];
   isActive: boolean;
   requiresItem: boolean;
   customMechanic: string | null;
@@ -265,15 +266,18 @@ export function BoutiquePage() {
                     key={product.id}
                     className="flex flex-col overflow-hidden rounded-2xl border border-[var(--rcb-border)] bg-[var(--rcb-bg)]"
                   >
-                    {/* Product image */}
-                    {product.imageUrl && (
-                      <div className="aspect-[4/3] w-full overflow-hidden bg-[var(--rcb-surface)]">
-                        <img
-                          src={product.imageUrl}
-                          alt={pName(product)}
-                          className="h-full w-full object-contain"
-                        />
-                      </div>
+                    {/* Product image(s) */}
+                    {product.imageUrls.length > 0 && (
+                      <ProductGallery
+                        images={product.imageUrls}
+                        alt={pName(product)}
+                        thumbnailLabel={(n) =>
+                          (shop.galleryThumbnailLabel ?? "Image {n}").replace(
+                            "{n}",
+                            String(n),
+                          )
+                        }
+                      />
                     )}
 
                     {/* Product info */}
