@@ -104,6 +104,11 @@ const META: Record<"fr" | "en", { defaults: PageMeta; pages: LocaleMeta }> = {
         description: "Gestion des commandes.",
         robots: "noindex, nofollow",
       },
+      "/c": {
+        title: "Bien enregistré | RNBP",
+        description: "Vérifiez l'état d'un bien enregistré au RNBP via son code RNBP.",
+        robots: "noindex, nofollow",
+      },
     },
   },
   en: {
@@ -203,6 +208,11 @@ const META: Record<"fr" | "en", { defaults: PageMeta; pages: LocaleMeta }> = {
         description: "Order management.",
         robots: "noindex, nofollow",
       },
+      "/c": {
+        title: "Registered item | NRPP",
+        description: "Check the status of an item registered with the NRPP via its RNBP code.",
+        robots: "noindex, nofollow",
+      },
     },
   },
 };
@@ -271,7 +281,7 @@ const NOINDEX_PATHS = Object.entries(META.fr.pages)
   .map(([path]) => path);
 
 const ALL_KNOWN_PATHS = Object.keys(META.fr.pages);
-const PREFIX_PATHS = ["/admin/orders"];
+const PREFIX_PATHS = ["/admin/orders", "/c"];
 
 function detectLocale(hostname: string): "fr" | "en" {
   if (hostname.includes("nrpp")) return "en";
