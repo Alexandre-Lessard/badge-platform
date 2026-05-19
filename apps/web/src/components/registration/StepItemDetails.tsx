@@ -173,7 +173,7 @@ export function StepItemDetails({
         <input
           id="reg-value"
           type="number"
-          min="1000"
+          min="250"
           step="1"
           inputMode="numeric"
           value={data.estimatedValue}

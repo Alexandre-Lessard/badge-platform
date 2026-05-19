@@ -130,7 +130,7 @@ const fr: SiteContent = {
   allCategories: {
     heading: "Types de biens admissibles",
     description:
-      "Le RNBP vous permet d\u2019enregistrer tout bien personnel d\u2019une valeur de plus de 1\u00a0000\u00a0$.",
+      "Le RNBP vous permet d\u2019enregistrer tout bien personnel d\u2019une valeur de plus de 250\u00a0$.",
     toggleButton: "Afficher les cat\u00e9gories",
     items: [
       "V\u00e9lo \u00e9lectrique",
@@ -239,7 +239,7 @@ const fr: SiteContent = {
       {
         question: "Quel est le seuil minimum\u00a0?",
         answer:
-          "Les biens doivent avoir une valeur d\u2019au moins 1\u00a0000\u00a0$. Cette limite garantit que le registre se concentre sur les articles de r\u00e9elle importance.",
+          "Les biens doivent avoir une valeur d\u2019au moins 250\u00a0$. Cette limite garantit que le registre se concentre sur les articles de r\u00e9elle importance.",
       },
       {
         question: "Mes donn\u00e9es sont-elles prot\u00e9g\u00e9es\u00a0?",
@@ -548,7 +548,7 @@ const fr: SiteContent = {
     valueLabel: "Valeur estimée ($)",
     yearInvalidError: "Entrez une année valide, sans décimales.",
     valueIntegerError: "Entrez un montant entier, sans décimales.",
-    valueMinError: "La valeur minimale est de 1 000 $",
+    valueMinError: "La valeur minimale est de 250 $",
     descriptionLabel: "Description et signes distinctifs",
     descriptionHelper: "Décrivez tout signe particulier pouvant identifier votre bien : couleur, accessoires, modifications, marques d'usure, etc.",
     termsCheckbox: "J'accepte les conditions d'utilisation",

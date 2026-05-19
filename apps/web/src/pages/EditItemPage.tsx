@@ -417,7 +417,7 @@ export function EditItemPage() {
             <input
               id="edit-value"
               type="number"
-              min="1000"
+              min="250"
               value={form.estimatedValue}
               onChange={(e) => update("estimatedValue", e.target.value)}
               className="h-12 w-full rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-4 text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"

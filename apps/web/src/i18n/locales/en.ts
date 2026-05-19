@@ -129,7 +129,7 @@ const en: SiteContent = {
   allCategories: {
     heading: "Eligible item types",
     description:
-      "The NRPP lets you register any personal property valued over $1,000.",
+      "The NRPP lets you register any personal property valued over $250.",
     toggleButton: "Show categories",
     items: [
       "Electric Bicycle",
@@ -237,7 +237,7 @@ const en: SiteContent = {
       {
         question: "What is the minimum threshold?",
         answer:
-          "Items must have a value of at least $1,000. This limit ensures the registry focuses on articles of real importance.",
+          "Items must have a value of at least $250. This limit ensures the registry focuses on articles of real importance.",
       },
       {
         question: "Is my data protected?",
@@ -542,7 +542,7 @@ const en: SiteContent = {
     valueLabel: "Estimated value ($)",
     yearInvalidError: "Enter a valid year with no decimals.",
     valueIntegerError: "Enter a whole-dollar amount with no decimals.",
-    valueMinError: "Minimum value is $1,000",
+    valueMinError: "Minimum value is $250",
     descriptionLabel: "Description and distinguishing features",
     descriptionHelper: "Describe any distinguishing features that can identify your item: colour, accessories, modifications, signs of wear, etc.",
     termsCheckbox: "I accept the terms of service",

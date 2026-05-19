@@ -26,7 +26,7 @@ export const createItemSchema = z.object({
   year: z.number().int().min(1900).max(2100).optional(),
   serialNumber: optionalTrimmedString(255),
   trackerId: optionalTrimmedString(255),
-  estimatedValue: z.number().int().min(1000, "Minimum value $1,000").optional(),
+  estimatedValue: z.number().int().min(250, "Minimum value $250").optional(),
   purchaseDate: z.string().datetime().optional(),
   description: z.string().max(2000).optional(),
 });

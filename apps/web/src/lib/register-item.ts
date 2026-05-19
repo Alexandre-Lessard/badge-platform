@@ -65,7 +65,7 @@ export function isValidEstimatedValue(value: string): boolean {
     return false;
   }
 
-  return Number(trimmed) >= 1000;
+  return Number(trimmed) >= 250;
 }
 
 export function sanitizeItemDraft(draft: unknown, fallback: ItemFormData): ItemFormData {

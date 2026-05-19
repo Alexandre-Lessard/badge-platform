@@ -214,7 +214,7 @@ const FAQ_FR = [
   },
   {
     q: "Quel est le seuil minimum\u00a0?",
-    a: "Les biens doivent avoir une valeur d'au moins 1\u00a0000\u00a0$.",
+    a: "Les biens doivent avoir une valeur d'au moins 250\u00a0$.",
   },
   {
     q: "Mes données sont-elles protégées\u00a0?",
@@ -241,7 +241,7 @@ const FAQ_EN = [
   },
   {
     q: "What is the minimum threshold?",
-    a: "Items must have a value of at least $1,000.",
+    a: "Items must have a value of at least $250.",
   },
   {
     q: "Is my data protected?",
