@@ -3,7 +3,7 @@ import { z } from "zod";
 import { eq, and, isNull } from "drizzle-orm";
 import { getDb } from "../db/client.js";
 import { stickerCodes, items } from "../db/schema.js";
-import { requireVerifiedEmail } from "../middleware/auth.js";
+import { requireVerifiedEmail, tryAuth } from "../middleware/auth.js";
 import {
   rnbpNumberSchema,
   normalizeRnbpCode,
@@ -120,6 +120,105 @@ export async function stickerCodesRoutes(app: FastifyInstance) {
       });
 
       return reply.send({ success: true, code, itemId });
+    },
+  );
+
+  // ── Scan a code (public, auth-optional) ─────────────────────────────
+  //
+  // Backs the QR scanner landing page at /c/:code. Returns a single
+  // context-aware payload so the SPA can render the right view without
+  // a second round-trip: anonymous scanner gets the public item view,
+  // the code's owner gets a claim affordance, the item's owner gets
+  // a private view with a direct link.
+
+  app.get(
+    "/sticker-codes/:code/scan",
+    {
+      preHandler: tryAuth,
+      config: { rateLimit: { max: 30, timeWindow: "1 minute" } },
+    },
+    async (request, reply) => {
+      const rawCode = (request.params as { code: string }).code;
+      const code = normalizeRnbpCode(rawCode);
+
+      if (!rnbpNumberSchema.safeParse(code).success) {
+        return reply.send({ format: "invalid" as const });
+      }
+
+      const db = getDb();
+      const currentUserId = request.userId ?? null;
+
+      const [row] = await db
+        .select({
+          code: stickerCodes.code,
+          userId: stickerCodes.userId,
+          assignedItemId: stickerCodes.assignedItemId,
+          voidedAt: stickerCodes.voidedAt,
+        })
+        .from(stickerCodes)
+        .where(eq(stickerCodes.code, code))
+        .limit(1);
+
+      if (!row) {
+        return reply.send({ format: "valid" as const, exists: false });
+      }
+
+      if (row.voidedAt) {
+        return reply.send({ format: "valid" as const, exists: true, voided: true });
+      }
+
+      const ownedByMe = currentUserId !== null && row.userId === currentUserId;
+
+      // Code not yet assigned to any item
+      if (!row.assignedItemId) {
+        return reply.send({
+          format: "valid" as const,
+          exists: true,
+          ownedByMe,
+          assignableByMe: ownedByMe,
+        });
+      }
+
+      const [item] = await db
+        .select({
+          id: items.id,
+          ownerId: items.ownerId,
+          status: items.status,
+          category: items.category,
+          brand: items.brand,
+          model: items.model,
+        })
+        .from(items)
+        .where(eq(items.id, row.assignedItemId))
+        .limit(1);
+
+      // Defensive: assigned_item_id should always resolve, but the FK is
+      // `ON DELETE SET NULL` so a race could in theory leave a dangling row.
+      if (!item) {
+        return reply.send({
+          format: "valid" as const,
+          exists: true,
+          ownedByMe,
+          assignableByMe: ownedByMe,
+        });
+      }
+
+      const isYours = currentUserId !== null && item.ownerId === currentUserId;
+
+      return reply.send({
+        format: "valid" as const,
+        exists: true,
+        ownedByMe,
+        item: {
+          found: true as const,
+          status: item.status,
+          category: item.category,
+          brand: item.brand,
+          model: item.model,
+          isYours,
+          ...(isYours ? { itemId: item.id } : {}),
+        },
+      });
     },
   );
 }

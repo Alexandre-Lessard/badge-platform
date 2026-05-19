@@ -9,6 +9,7 @@ export default [
   route("register-item", "pages/RegisterItemPage.tsx"),
   route("lookup", "pages/LookupPage.tsx"),
   route("lookup/photo", "pages/LookupPhotoPage.tsx"),
+  route("c/:code", "pages/CodeScanPage.tsx"),
   route("registry", "pages/PartnerPage.tsx"),
   route("privacy", "pages/PrivacyPolicyPage.tsx"),
   route("terms", "pages/TermsOfServicePage.tsx"),

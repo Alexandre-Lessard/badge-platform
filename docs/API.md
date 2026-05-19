@@ -324,6 +324,27 @@ Response: { success: true, code, itemId, alreadyClaimed?: true }
 ```
 Assigns one of the caller's purchased RNBP codes to one of their items. The `:code` param is normalized (whitespace stripped, uppercased) before validation. Errors: `INVALID_RNBP_FORMAT` (400), `RNBP_CODE_UNKNOWN` (404), `RNBP_CODE_VOIDED` (410), `RNBP_CODE_NOT_YOURS` (403), `RNBP_CODE_ALREADY_USED` (409), `ITEM_NOT_FOUND` (404), `ITEM_ALREADY_STOLEN` (400). If the target item already holds another code, that previous code is released atomically.
 
+### GET /sticker-codes/:code/scan
+Auth: optional (`tryAuth`) | Rate limit: 30/min
+```
+Response (always 200):
+{
+  format: "valid" | "invalid",
+  exists?: boolean,                     // true if code sold (in sticker_codes)
+  voided?: boolean,                     // true if soft-voided
+  ownedByMe?: boolean,                  // requester purchased this code
+  assignableByMe?: boolean,             // ownedByMe && code not yet assigned
+  item?: {                              // present if code is assigned to an item
+    found: true,
+    status: "active" | "stolen" | "recovered" | "transferred",
+    category, brand, model,
+    isYours: boolean,                   // requester owns the linked item
+    itemId?: uuid                       // present only if isYours
+  }
+}
+```
+Backs the public QR-scan landing page at `/c/:code`. Always returns 200 so the SPA can render a single context-aware view (anonymous public lookup, claim affordance for the code's owner, private shortcut for the item's owner). The `:code` param is normalized before validation; an unrecognized format returns `{ format: "invalid" }` rather than 4xx.
+
 ---
 
 ## Admin

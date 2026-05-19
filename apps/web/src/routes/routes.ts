@@ -5,6 +5,7 @@ export const ROUTES = {
   registerItem: "/register-item",
   lookup: "/lookup",
   lookupPhoto: "/lookup/photo",
+  codeScan: (code: string) => `/c/${code}`,
   registry: "/registry",
   about: "/about",
   settings: "/settings",

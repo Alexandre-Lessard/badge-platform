@@ -347,6 +347,27 @@ export type SiteContent = {
     notFoundMessage: string;
     photoSearchLink?: string;
   };
+  scan?: {
+    invalidCode: string;
+    notDistributed: string;
+    voided: string;
+    yourItem: string;
+    viewItem: string;
+    markRecovered: string;
+    publicViewTitle: string;
+    stolenBanner: string;
+    contactLink: string;
+    codeIsYours: string;
+    assignPrompt: string;
+    assignButton: string;
+    notYours: string;
+    loginToReclaim: string;
+    notAssignedYet: string;
+    pickItemLabel: string;
+    pickItemPlaceholder: string;
+    noItemsToLink: string;
+    tryAnother: string;
+  };
   partners?: {
     heading: string;
     description: string;
