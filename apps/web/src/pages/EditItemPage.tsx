@@ -10,7 +10,7 @@ import { Modal } from "@/components/ui/Modal";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { PromoCallout } from "@/components/ui/PromoCallout";
 import { ItemImage } from "@/components/ui/ItemImage";
-import { ITEM_CATEGORIES } from "@rnbp/shared";
+import { ITEM_CATEGORIES, normalizeRnbpCode, RNBP_REGEX } from "@rnbp/shared";
 import type { ItemWithFiles } from "@rnbp/shared";
 import { ROUTES } from "@/routes/routes";
 
@@ -24,6 +24,7 @@ type FormData = {
   trackerId: string;
   estimatedValue: string;
   description: string;
+  rnbpNumber: string;
 };
 
 export function EditItemPage() {
@@ -41,6 +42,7 @@ export function EditItemPage() {
     trackerId: "",
     estimatedValue: "",
     description: "",
+    rnbpNumber: "",
   });
   const [photos, setPhotos] = useState<{ id: string; url: string }[]>([]);
   const [documents, setDocuments] = useState<{ id: string; url: string; fileName: string }[]>([]);
@@ -86,6 +88,7 @@ export function EditItemPage() {
           trackerId: item.trackerId ?? "",
           estimatedValue: item.estimatedValue?.toString() ?? "",
           description: item.description ?? "",
+          rnbpNumber: item.rnbpNumber ?? "",
         });
       })
       .catch((err) => {
@@ -109,6 +112,16 @@ export function EditItemPage() {
     setSaving(true);
     setError("");
 
+    const desiredCode = normalizeRnbpCode(form.rnbpNumber);
+    const currentCode = itemRnbpNumber ?? "";
+    const codeChanged = desiredCode !== currentCode;
+
+    if (codeChanged && desiredCode !== "" && !RNBP_REGEX.test(desiredCode)) {
+      setError(t.apiErrors?.INVALID_RNBP_FORMAT ?? "Invalid RNBP code format.");
+      setSaving(false);
+      return;
+    }
+
     const body: Record<string, unknown> = {
       name: form.name,
       category: form.category,
@@ -122,6 +135,15 @@ export function EditItemPage() {
     };
 
     try {
+      // Claim the new RNBP code (separate endpoint) before saving the rest.
+      // If the claim fails, abort — don't leave the item partially updated.
+      if (codeChanged && desiredCode !== "") {
+        await apiRequest(`/sticker-codes/${encodeURIComponent(desiredCode)}/claim`, {
+          method: "POST",
+          body: { itemId: id },
+        });
+        setItemRnbpNumber(desiredCode);
+      }
       await apiRequest(`/items/${id}`, { method: "PATCH", body });
       navigate(ROUTES.dashboard);
     } catch (err) {
@@ -408,6 +430,31 @@ export function EditItemPage() {
             <p className="mt-1 text-xs text-[var(--rcb-text-muted)]">
               {reg?.trackerIdExplanation ?? "e.g. serial number of an AirTag, Tile, or Samsung SmartTag"}
             </p>
+          </div>
+
+          <div>
+            <label htmlFor="edit-rnbp" className="mb-1 block text-sm font-medium text-[var(--rcb-text-strong)]">
+              {edit?.rnbpNumberLabel ?? "RNBP number"}
+            </label>
+            <input
+              id="edit-rnbp"
+              type="text"
+              maxLength={13}
+              value={form.rnbpNumber}
+              onChange={(e) => update("rnbpNumber", e.target.value.toUpperCase())}
+              placeholder="RNBP-XXXXXXXX"
+              className="h-12 w-full rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-4 font-mono uppercase tracking-wider text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
+            />
+            <p className="mt-1 text-xs text-[var(--rcb-text-muted)]">
+              {edit?.rnbpNumberHelper ??
+                "Enter the code printed on your sticker to physically link this item to the registry."}
+            </p>
+            {itemRnbpNumber && (
+              <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                {edit?.rnbpOverwriteWarning ??
+                  "Changing this code will replace the published identifier in the registry. Use this only to fix a typo or replace a damaged sheet."}
+              </p>
+            )}
           </div>
 
           <div>

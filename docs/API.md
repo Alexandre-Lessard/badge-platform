@@ -310,7 +310,19 @@ Auth: Stripe signature | Rate limit: 200/min
 Body: Raw Stripe event
 Response: { received: true }
 ```
-Handles `checkout.session.completed` and `checkout.session.expired`.
+Handles `checkout.session.completed` and `checkout.session.expired`. On expired, soft-voids any unclaimed `sticker_codes` linked to the order's lines.
+
+---
+
+## Sticker Codes
+
+### POST /sticker-codes/:code/claim
+Auth: requireVerifiedEmail | Rate limit: 5/min
+```
+Body: { itemId: uuid }
+Response: { success: true, code, itemId, alreadyClaimed?: true }
+```
+Assigns one of the caller's purchased RNBP codes to one of their items. The `:code` param is normalized (whitespace stripped, uppercased) before validation. Errors: `INVALID_RNBP_FORMAT` (400), `RNBP_CODE_UNKNOWN` (404), `RNBP_CODE_VOIDED` (410), `RNBP_CODE_NOT_YOURS` (403), `RNBP_CODE_ALREADY_USED` (409), `ITEM_NOT_FOUND` (404), `ITEM_ALREADY_STOLEN` (400). If the target item already holds another code, that previous code is released atomically.
 
 ---
 
@@ -339,22 +351,39 @@ Response: { orders: [{ ...order, items: [...] }] }
 ### GET /admin/orders/:id
 Auth: requireAdmin
 ```
-Response: { order: { ...order, customer, items: [...] } }
+Response: { order: { ...order, customer, items: [{ ..., codes: [{ code, claimedAt, voidedAt }] }] } }
 ```
+Each sticker-sheet order line carries the codes registered during shipment preparation.
+
+### POST /admin/orders/:id/items/:orderItemId/codes
+Auth: requireAdmin
+```
+Body: { ranges: [{ firstCode: "RNBP-XXXXXXXX", lastCode: "RNBP-XXXXXXXX" }, ...] }
+Response: { codes: string[] } (201)
+```
+Registers sticker codes during shipment preparation. One range = one sheet of 10 sequential codes. Total `ranges.length × 10` must equal `orderItem.quantity × 10`. Returns the expanded list of codes.
+
+### DELETE /admin/orders/:id/items/:orderItemId/codes
+Auth: requireAdmin
+```
+Response: { voidedCount: number }
+```
+Soft-voids all unclaimed codes for the order line (admin correction). Refused if any code has been claimed by the customer.
 
 ### PATCH /admin/orders/:id/items/:orderItemId/assign
 Auth: requireAdmin
 ```
 Body: { rnbpNumber: "RNBP-XXXXXXXX" }
-Response: { success: true, rnbpNumber }
+Response: { success: true, rnbpNumber } | { success: true, skipped: true }
 ```
+Legacy override / support endpoint. Updates `items.rnbpNumber` directly. Returns `skipped: true` for sticker-sheet lines (no associated item to update — customers self-assign codes via the claim flow).
 
 ### PATCH /admin/orders/:id/ship
 Auth: requireAdmin
 ```
 Response: { order }
 ```
-Validates all item-linked-stickers have RNBP numbers assigned.
+Validates that every sticker-sheet line has exactly `quantity × 10` codes registered via POST /codes. Rejects with `CODES_NOT_REGISTERED` otherwise.
 
 ### GET /admin/products
 Auth: requireAdmin

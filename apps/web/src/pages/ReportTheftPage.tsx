@@ -140,7 +140,8 @@ export function ReportTheftPage() {
               <option value="">{t.report?.itemPlaceholder ?? "Select an item"}</option>
               {items.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.name}{item.rnbpNumber ? ` (${item.rnbpNumber})` : ""}
+                  {item.name}
+                  {item.rnbpNumber ? ` (${item.rnbpNumber})` : ""}
                 </option>
               ))}
             </select>

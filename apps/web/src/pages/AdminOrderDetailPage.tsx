@@ -5,6 +5,18 @@ import { getErrorMessage } from "@/lib/error-utils";
 import { useLanguage } from "@/i18n/context";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/routes/routes";
+import {
+  RNBP_REGEX,
+  PRODUCT_SLUGS,
+  CODES_PER_SHEET,
+  normalizeRnbpCode,
+} from "@rnbp/shared";
+
+type StickerCode = {
+  code: string;
+  claimedAt: string | null;
+  voidedAt: string | null;
+};
 
 type OrderItem = {
   id: string;
@@ -20,6 +32,7 @@ type OrderItem = {
   productNameFr: string | null;
   productNameEn: string | null;
   customMechanic: string | null;
+  codes: StickerCode[];
 };
 
 type OrderDetail = {
@@ -31,7 +44,9 @@ type OrderDetail = {
   items: OrderItem[];
 };
 
-const RNBP_PATTERN = /^RNBP-[A-Z0-9]{8}$/;
+const isStickerSheet = (item: OrderItem) =>
+  item.productSlug === PRODUCT_SLUGS.STICKER_SHEET;
+const hasLegacyItem = (item: OrderItem) => item.itemId !== null;
 
 export function AdminOrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -40,54 +55,156 @@ export function AdminOrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Per-item assignment state
-  const [inputs, setInputs] = useState<Record<string, string>>({});
-  const [assigning, setAssigning] = useState<Record<string, boolean>>({});
-  const [assignErrors, setAssignErrors] = useState<Record<string, string>>({});
+  // Sheet-prep state per order line: arrays of {first, last} (one entry per sheet)
+  const [sheetInputs, setSheetInputs] = useState<
+    Record<string, { firstCode: string; lastCode: string }[]>
+  >({});
+  const [prepRunning, setPrepRunning] = useState<Record<string, boolean>>({});
+  const [prepErrors, setPrepErrors] = useState<Record<string, string>>({});
+  const [voidRunning, setVoidRunning] = useState<Record<string, boolean>>({});
+
+  // Legacy override (per orderItem with itemId)
+  const [overrideInputs, setOverrideInputs] = useState<Record<string, string>>({});
+  const [overrideRunning, setOverrideRunning] = useState<Record<string, boolean>>({});
+  const [overrideErrors, setOverrideErrors] = useState<Record<string, string>>({});
 
   const [shipping, setShipping] = useState(false);
   const [shipError, setShipError] = useState("");
 
   useEffect(() => {
     apiRequest<{ order: OrderDetail }>(`/admin/orders/${id}`)
-      .then((data) => setOrder(data.order))
+      .then((data) => {
+        setOrder(data.order);
+        // Initialize sheet inputs (N empty rows per sticker-sheet line with no codes yet)
+        const init: Record<string, { firstCode: string; lastCode: string }[]> = {};
+        for (const line of data.order.items) {
+          if (isStickerSheet(line) && line.codes.length === 0) {
+            init[line.id] = Array.from({ length: line.quantity }, () => ({
+              firstCode: "",
+              lastCode: "",
+            }));
+          }
+        }
+        setSheetInputs(init);
+      })
       .catch((err) => setError(getErrorMessage(err, t)))
       .finally(() => setLoading(false));
   }, [id, t]);
 
-  async function handleAssign(orderItemId: string) {
-    const value = (inputs[orderItemId] ?? "").trim().toUpperCase();
-    if (!RNBP_PATTERN.test(value)) {
-      setAssignErrors((prev) => ({ ...prev, [orderItemId]: "Format: RNBP-XXXXXXXX" }));
+  function updateSheetInput(
+    orderItemId: string,
+    sheetIndex: number,
+    field: "firstCode" | "lastCode",
+    value: string,
+  ) {
+    setSheetInputs((prev) => {
+      const sheets = prev[orderItemId]?.slice() ?? [];
+      sheets[sheetIndex] = { ...sheets[sheetIndex], [field]: value };
+      return { ...prev, [orderItemId]: sheets };
+    });
+  }
+
+  async function handleRegisterCodes(orderItemId: string) {
+    const sheets = sheetInputs[orderItemId] ?? [];
+    const ranges = sheets.map((s) => ({
+      firstCode: normalizeRnbpCode(s.firstCode),
+      lastCode: normalizeRnbpCode(s.lastCode),
+    }));
+    setPrepRunning((p) => ({ ...p, [orderItemId]: true }));
+    setPrepErrors((p) => ({ ...p, [orderItemId]: "" }));
+    try {
+      const { codes } = await apiRequest<{ codes: string[] }>(
+        `/admin/orders/${id}/items/${orderItemId}/codes`,
+        { method: "POST", body: { ranges } },
+      );
+      setOrder((prev) =>
+        prev
+          ? {
+              ...prev,
+              items: prev.items.map((line) =>
+                line.id === orderItemId
+                  ? {
+                      ...line,
+                      codes: codes
+                        .map((code) => ({ code, claimedAt: null, voidedAt: null }))
+                        .sort((a, b) => a.code.localeCompare(b.code)),
+                    }
+                  : line,
+              ),
+            }
+          : prev,
+      );
+      setSheetInputs((prev) => {
+        const next = { ...prev };
+        delete next[orderItemId];
+        return next;
+      });
+    } catch (err) {
+      setPrepErrors((p) => ({ ...p, [orderItemId]: getErrorMessage(err, t) }));
+    } finally {
+      setPrepRunning((p) => ({ ...p, [orderItemId]: false }));
+    }
+  }
+
+  async function handleVoidCodes(orderItemId: string) {
+    if (!confirm("Void all registered codes for this line? This cannot be undone.")) return;
+    setVoidRunning((v) => ({ ...v, [orderItemId]: true }));
+    setPrepErrors((p) => ({ ...p, [orderItemId]: "" }));
+    try {
+      await apiRequest(`/admin/orders/${id}/items/${orderItemId}/codes`, {
+        method: "DELETE",
+      });
+      setOrder((prev) =>
+        prev
+          ? {
+              ...prev,
+              items: prev.items.map((line) =>
+                line.id === orderItemId ? { ...line, codes: [] } : line,
+              ),
+            }
+          : prev,
+      );
+      setSheetInputs((prev) => ({
+        ...prev,
+        [orderItemId]: Array.from(
+          { length: order?.items.find((l) => l.id === orderItemId)?.quantity ?? 1 },
+          () => ({ firstCode: "", lastCode: "" }),
+        ),
+      }));
+    } catch (err) {
+      setPrepErrors((p) => ({ ...p, [orderItemId]: getErrorMessage(err, t) }));
+    } finally {
+      setVoidRunning((v) => ({ ...v, [orderItemId]: false }));
+    }
+  }
+
+  async function handleOverride(orderItemId: string) {
+    const value = normalizeRnbpCode(overrideInputs[orderItemId] ?? "");
+    if (!RNBP_REGEX.test(value)) {
+      setOverrideErrors((p) => ({ ...p, [orderItemId]: "Format: RNBP-XXXXXXXX" }));
       return;
     }
-
-    setAssigning((prev) => ({ ...prev, [orderItemId]: true }));
-    setAssignErrors((prev) => ({ ...prev, [orderItemId]: "" }));
-
+    setOverrideRunning((p) => ({ ...p, [orderItemId]: true }));
+    setOverrideErrors((p) => ({ ...p, [orderItemId]: "" }));
     try {
       await apiRequest(`/admin/orders/${id}/items/${orderItemId}/assign`, {
         method: "PATCH",
         body: { rnbpNumber: value },
       });
-      // Update local state
       setOrder((prev) =>
         prev
           ? {
               ...prev,
-              items: prev.items.map((item) =>
-                item.id === orderItemId ? { ...item, rnbpNumber: value } : item,
+              items: prev.items.map((line) =>
+                line.id === orderItemId ? { ...line, rnbpNumber: value } : line,
               ),
             }
           : prev,
       );
     } catch (err) {
-      setAssignErrors((prev) => ({
-        ...prev,
-        [orderItemId]: getErrorMessage(err, t),
-      }));
+      setOverrideErrors((p) => ({ ...p, [orderItemId]: getErrorMessage(err, t) }));
     } finally {
-      setAssigning((prev) => ({ ...prev, [orderItemId]: false }));
+      setOverrideRunning((p) => ({ ...p, [orderItemId]: false }));
     }
   }
 
@@ -119,7 +236,10 @@ export function AdminOrderDetailPage() {
       <section className="min-h-[80vh] bg-[var(--rcb-white)]">
         <div className="section-shell py-16">
           <p className="text-red-600">{error || "Order not found"}</p>
-          <Link to={ROUTES.adminOrders} className="mt-4 inline-block text-sm font-medium text-[var(--rcb-primary)] hover:underline">
+          <Link
+            to={ROUTES.adminOrders}
+            className="mt-4 inline-block text-sm font-medium text-[var(--rcb-primary)] hover:underline"
+          >
             &larr; Back to orders
           </Link>
         </div>
@@ -127,28 +247,26 @@ export function AdminOrderDetailPage() {
     );
   }
 
-  const needsRnbp = (item: OrderItem) => item.customMechanic === "item-linked-stickers";
-  const allAssigned = order.items
-    .filter(needsRnbp)
-    .every((item) => item.rnbpNumber);
-
   return (
     <section className="min-h-[80vh] bg-[var(--rcb-white)]">
       <title>{`Admin — ${t.admin?.nav.orders ?? "Orders"} | RNBP`}</title>
       <div className="section-shell py-16">
-        <Link to={ROUTES.adminOrders} className="text-sm font-medium text-[var(--rcb-primary)] hover:underline">
+        <Link
+          to={ROUTES.adminOrders}
+          className="text-sm font-medium text-[var(--rcb-primary)] hover:underline"
+        >
           &larr; Back to orders
         </Link>
 
         <div className="mt-6">
-          <h1 className="text-2xl font-bold text-[var(--rcb-text-strong)]">
-            Order
-          </h1>
+          <h1 className="text-2xl font-bold text-[var(--rcb-text-strong)]">Order</h1>
           <div className="mt-2 space-y-1 text-sm text-[var(--rcb-text-muted)]">
             <p>Customer: {order.email}</p>
             <p>Date: {new Date(order.createdAt).toLocaleDateString("en-CA")}</p>
             <p>Total: {(order.totalAmountCents / 100).toFixed(2)} $</p>
-            <p>Status: <span className="font-medium">{order.status}</span></p>
+            <p>
+              Status: <span className="font-medium">{order.status}</span>
+            </p>
           </div>
         </div>
 
@@ -162,13 +280,15 @@ export function AdminOrderDetailPage() {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="font-medium text-[var(--rcb-text-strong)]">
-                    {needsRnbp(item)
-                      ? (item.itemName ?? "Unknown item")
-                      : (item.productNameEn ?? item.productSlug ?? "Product")}
+                    {hasLegacyItem(item)
+                      ? item.itemName ?? "Unknown item"
+                      : item.productNameEn ?? item.productSlug ?? "Product"}
                   </p>
-                  {needsRnbp(item) && (
+                  {hasLegacyItem(item) && (
                     <p className="mt-1 text-sm text-[var(--rcb-text-muted)]">
-                      {[item.itemCategory, item.itemBrand, item.itemModel].filter(Boolean).join(" — ")}
+                      {[item.itemCategory, item.itemBrand, item.itemModel]
+                        .filter(Boolean)
+                        .join(" — ")}
                     </p>
                   )}
                   <p className="mt-1 text-sm text-[var(--rcb-text-muted)]">
@@ -179,39 +299,143 @@ export function AdminOrderDetailPage() {
                   </p>
                 </div>
 
-                {needsRnbp(item) ? (
-                  item.rnbpNumber ? (
-                    <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
-                      {item.rnbpNumber}
-                    </span>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        placeholder="RNBP-XXXXXXXX"
-                        value={inputs[item.id] ?? ""}
-                        onChange={(e) =>
-                          setInputs((prev) => ({ ...prev, [item.id]: e.target.value }))
-                        }
-                        className="h-9 w-40 rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-3 text-sm uppercase text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
-                      />
-                      <Button
-                        size="sm"
-                        onClick={() => handleAssign(item.id)}
-                        disabled={assigning[item.id]}
-                      >
-                        {assigning[item.id] ? "..." : "Assign"}
-                      </Button>
-                    </div>
-                  )
-                ) : (
+                {!isStickerSheet(item) && !hasLegacyItem(item) && (
                   <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
                     Standard product
                   </span>
                 )}
               </div>
-              {assignErrors[item.id] && (
-                <p className="mt-2 text-sm text-red-600">{assignErrors[item.id]}</p>
+
+              {/* Shipment preparation (sticker-sheet) */}
+              {isStickerSheet(item) && (
+                <div className="mt-5 border-t border-[var(--rcb-border)] pt-4">
+                  <h3 className="text-sm font-semibold text-[var(--rcb-text-strong)]">
+                    Shipment preparation
+                  </h3>
+
+                  {item.codes.length > 0 ? (
+                    <div className="mt-3">
+                      <p className="text-xs text-[var(--rcb-text-muted)]">
+                        {item.codes.length} code(s) registered
+                        {" — "}
+                        {item.codes.filter((c) => c.claimedAt).length} claimed by customer
+                      </p>
+                      <div className="mt-2 grid grid-cols-2 gap-1 font-mono text-xs sm:grid-cols-3 md:grid-cols-5">
+                        {item.codes.map((c) => (
+                          <span
+                            key={c.code}
+                            className={`rounded px-2 py-0.5 ${
+                              c.voidedAt
+                                ? "bg-red-50 text-red-700 line-through"
+                                : c.claimedAt
+                                  ? "bg-green-50 text-green-800"
+                                  : "bg-[var(--rcb-surface)] text-[var(--rcb-text-body)]"
+                            }`}
+                          >
+                            {c.code}
+                          </span>
+                        ))}
+                      </div>
+                      {item.codes.every((c) => !c.claimedAt && !c.voidedAt) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleVoidCodes(item.id)}
+                          disabled={voidRunning[item.id]}
+                          className="mt-3"
+                        >
+                          {voidRunning[item.id] ? "..." : "Void & regenerate"}
+                        </Button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="mt-3 space-y-3">
+                      <p className="text-xs text-[var(--rcb-text-muted)]">
+                        Enter the first and last RNBP code printed on each sheet (each
+                        sheet has {CODES_PER_SHEET} sequential codes).
+                      </p>
+                      {(sheetInputs[item.id] ?? []).map((sheet, sheetIdx) => (
+                        <div key={sheetIdx} className="flex flex-wrap items-center gap-2">
+                          <span className="w-16 text-xs font-medium text-[var(--rcb-text-muted)]">
+                            Sheet {sheetIdx + 1}
+                          </span>
+                          <input
+                            type="text"
+                            placeholder="First (RNBP-…)"
+                            value={sheet.firstCode}
+                            onChange={(e) =>
+                              updateSheetInput(item.id, sheetIdx, "firstCode", e.target.value)
+                            }
+                            className="h-9 w-44 rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-3 text-sm uppercase text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Last (RNBP-…)"
+                            value={sheet.lastCode}
+                            onChange={(e) =>
+                              updateSheetInput(item.id, sheetIdx, "lastCode", e.target.value)
+                            }
+                            className="h-9 w-44 rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-3 text-sm uppercase text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
+                          />
+                        </div>
+                      ))}
+                      <Button
+                        size="sm"
+                        onClick={() => handleRegisterCodes(item.id)}
+                        disabled={prepRunning[item.id]}
+                      >
+                        {prepRunning[item.id] ? "..." : `Register ${item.quantity * CODES_PER_SHEET} codes`}
+                      </Button>
+                    </div>
+                  )}
+
+                  {prepErrors[item.id] && (
+                    <p className="mt-2 text-sm text-red-600">{prepErrors[item.id]}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Legacy override (for old orders with itemId pre-assigned) */}
+              {hasLegacyItem(item) && (
+                <div className="mt-5 border-t border-[var(--rcb-border)] pt-4">
+                  <h3 className="text-sm font-semibold text-[var(--rcb-text-strong)]">
+                    Correction RNBP (support)
+                  </h3>
+                  <p className="mt-1 text-xs text-[var(--rcb-text-muted)]">
+                    For typo fixes or replacing a damaged sheet on legacy orders.
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {item.rnbpNumber ? (
+                      <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                        {item.rnbpNumber}
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                        unassigned
+                      </span>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="RNBP-XXXXXXXX"
+                      value={overrideInputs[item.id] ?? ""}
+                      onChange={(e) =>
+                        setOverrideInputs((prev) => ({ ...prev, [item.id]: e.target.value }))
+                      }
+                      className="h-9 w-44 rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-3 text-sm uppercase text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleOverride(item.id)}
+                      disabled={overrideRunning[item.id]}
+                    >
+                      {overrideRunning[item.id] ? "..." : "Override"}
+                    </Button>
+                  </div>
+                  {overrideErrors[item.id] && (
+                    <p className="mt-2 text-sm text-red-600">{overrideErrors[item.id]}</p>
+                  )}
+                </div>
               )}
             </div>
           ))}
@@ -219,20 +443,10 @@ export function AdminOrderDetailPage() {
 
         {order.status === "paid" && (
           <div className="mt-8">
-            {shipError && (
-              <p className="mb-3 text-sm text-red-600">{shipError}</p>
-            )}
-            <Button
-              onClick={handleShip}
-              disabled={!allAssigned || shipping}
-            >
+            {shipError && <p className="mb-3 text-sm text-red-600">{shipError}</p>}
+            <Button onClick={handleShip} disabled={shipping}>
               {shipping ? "Shipping..." : "Mark as shipped"}
             </Button>
-            {!allAssigned && (
-              <p className="mt-2 text-sm text-[var(--rcb-text-muted)]">
-                Assign an RNBP number to items that require one before shipping.
-              </p>
-            )}
           </div>
         )}
       </div>

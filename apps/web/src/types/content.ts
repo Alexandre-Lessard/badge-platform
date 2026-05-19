@@ -169,6 +169,12 @@ export type SiteContent = {
     noNumberHint: string;
     clientNumber: string;
     editItem: string;
+    assignRnbpButton?: string;
+    assignRnbpModalTitle?: string;
+    assignRnbpModalHelp?: string;
+    assignRnbpModalSubmit?: string;
+    assignRnbpSuccess?: string;
+    orderStickersGlobal?: string;
   };
   editItem?: {
     heading: string;
@@ -183,6 +189,9 @@ export type SiteContent = {
     recoverConfirmButton: string;
     recoverCancel: string;
     recovering: string;
+    rnbpNumberLabel?: string;
+    rnbpNumberHelper?: string;
+    rnbpOverwriteWarning?: string;
   };
   settings?: {
     heading: string;

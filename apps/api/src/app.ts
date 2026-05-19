@@ -13,6 +13,7 @@ import { newsletterRoutes } from "./routes/newsletter.js";
 import { insuranceRoutes } from "./routes/insurance.js";
 import { contactRoutes } from "./routes/contact.js";
 import { shopRoutes } from "./routes/shop.js";
+import { stickerCodesRoutes } from "./routes/sticker-codes.js";
 import { adminRoutes } from "./routes/admin.js";
 import { oauthRoutes } from "./routes/oauth.js";
 import { uploadRoutes } from "./routes/uploads.js";
@@ -75,6 +76,7 @@ export async function buildApp() {
   await app.register(insuranceRoutes, { prefix: "/api" });
   await app.register(contactRoutes, { prefix: "/api" });
   await app.register(shopRoutes, { prefix: "/api" });
+  await app.register(stickerCodesRoutes, { prefix: "/api" });
   await app.register(uploadRoutes, { prefix: "/api" });
   await app.register(adminRoutes, { prefix: "/api" });
   await app.register(oauthRoutes, { prefix: "/api" });

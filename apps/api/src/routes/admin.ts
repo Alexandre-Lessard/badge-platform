@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { eq, and, desc, asc, sql, count, sum, inArray, or, ilike } from "drizzle-orm";
+import { eq, and, desc, asc, sql, count, sum, inArray, isNull, isNotNull, or, ilike } from "drizzle-orm";
 import os from "node:os";
 import { getDb } from "../db/client.js";
 import {
@@ -11,25 +11,28 @@ import {
   products,
   theftReports,
   newsletterSubscribers,
+  stickerCodes,
 } from "../db/schema.js";
 import { requireAdmin } from "../middleware/auth.js";
 import { verifyToken } from "../utils/tokens.js";
 import { getRequestsPerMinute } from "../utils/request-counter.js";
 import {
-  INVALID_RNBP_FORMAT,
   ORDER_NOT_FOUND,
   ORDER_LINE_NOT_FOUND,
-  ITEM_DELETED,
   RNBP_NUMBER_TAKEN,
   ORDER_NOT_PAID,
-  UNASSIGNED_ITEMS,
   PRODUCT_NOT_FOUND,
+  INVALID_RANGE,
+  INVALID_RNBP_FORMAT,
+  CODES_ALREADY_EXIST,
+  CODES_HAVE_CLAIMS,
+  CODES_NOT_REGISTERED,
+  rnbpNumberSchema,
+  PRODUCT_SLUGS,
+  CODES_PER_SHEET,
 } from "@rnbp/shared";
 import { AppError } from "../utils/errors.js";
-
-const rnbpNumberSchema = z
-  .string()
-  .regex(/^RNBP-[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{8}$/, "Invalid format (RNBP-XXXXXXXX)");
+import { expandRange } from "../utils/rnbp-sequence.js";
 
 export async function adminRoutes(app: FastifyInstance) {
   // ── List items (with search & status filter) ───────────────────
@@ -242,7 +245,36 @@ export async function adminRoutes(app: FastifyInstance) {
         .leftJoin(products, eq(orderItems.productId, products.id))
         .where(eq(orderItems.orderId, id));
 
-      return reply.send({ order: { ...order, customer, items: oi } });
+      // Fetch sticker codes per order line in a single query.
+      const oiIds = oi.map((o) => o.id);
+      const codeRows = oiIds.length
+        ? await db
+            .select({
+              code: stickerCodes.code,
+              orderItemId: stickerCodes.orderItemId,
+              claimedAt: stickerCodes.claimedAt,
+              voidedAt: stickerCodes.voidedAt,
+            })
+            .from(stickerCodes)
+            .where(inArray(stickerCodes.orderItemId, oiIds))
+        : [];
+
+      const codesByLine = new Map<
+        string,
+        { code: string; claimedAt: Date | null; voidedAt: Date | null }[]
+      >();
+      for (const row of codeRows) {
+        const arr = codesByLine.get(row.orderItemId) ?? [];
+        arr.push({ code: row.code, claimedAt: row.claimedAt, voidedAt: row.voidedAt });
+        codesByLine.set(row.orderItemId, arr);
+      }
+
+      const enriched = oi.map((line) => ({
+        ...line,
+        codes: (codesByLine.get(line.id) ?? []).sort((a, b) => a.code.localeCompare(b.code)),
+      }));
+
+      return reply.send({ order: { ...order, customer, items: enriched } });
     },
   );
 
@@ -273,18 +305,21 @@ export async function adminRoutes(app: FastifyInstance) {
 
       if (!oi) throw new AppError(404, ORDER_LINE_NOT_FOUND, "Order line not found");
 
+      // Sticker-sheet orders no longer carry an itemId — the customer self-assigns
+      // codes via the sticker_codes flow. This admin override is kept for legacy
+      // orders or support cases; if there's no item to update, succeed silently.
       if (!oi.itemId) {
-        throw new AppError(400, ITEM_DELETED, "Cannot assign RNBP number: associated item was deleted");
+        return reply.send({ success: true, skipped: true });
       }
 
-      // Verify RNBP number uniqueness
+      // Verify RNBP number uniqueness across items
       const [existingItem] = await db
         .select({ id: items.id })
         .from(items)
         .where(eq(items.rnbpNumber, rnbpNumber))
         .limit(1);
 
-      if (existingItem) {
+      if (existingItem && existingItem.id !== oi.itemId) {
         throw new AppError(400, RNBP_NUMBER_TAKEN, "This RNBP number is already assigned to another item");
       }
 
@@ -302,6 +337,172 @@ export async function adminRoutes(app: FastifyInstance) {
       });
 
       return reply.send({ success: true, rnbpNumber });
+    },
+  );
+
+  // ── Register sticker codes for an order line (shipment prep) ─────
+
+  const codeRangeSchema = z.object({
+    firstCode: z.string().min(1),
+    lastCode: z.string().min(1),
+  });
+  const prepCodesSchema = z.object({
+    ranges: z.array(codeRangeSchema).min(1).max(50),
+  });
+
+  app.post(
+    "/admin/orders/:id/items/:orderItemId/codes",
+    { preHandler: requireAdmin },
+    async (request, reply) => {
+      const { id, orderItemId } = request.params as {
+        id: string;
+        orderItemId: string;
+      };
+      const { ranges } = prepCodesSchema.parse(request.body);
+      const db = getDb();
+
+      const [oi] = await db
+        .select({
+          orderItemId: orderItems.id,
+          quantity: orderItems.quantity,
+          orderUserId: orders.userId,
+          productSlug: products.slug,
+        })
+        .from(orderItems)
+        .leftJoin(orders, eq(orderItems.orderId, orders.id))
+        .leftJoin(products, eq(orderItems.productId, products.id))
+        .where(and(eq(orderItems.id, orderItemId), eq(orderItems.orderId, id)))
+        .limit(1);
+
+      if (!oi) throw new AppError(404, ORDER_LINE_NOT_FOUND, "Order line not found");
+      if (oi.productSlug !== PRODUCT_SLUGS.STICKER_SHEET) {
+        throw new AppError(
+          400,
+          INVALID_RANGE,
+          "Codes can only be registered for sticker-sheet products",
+        );
+      }
+      if (!oi.orderUserId) {
+        throw new AppError(400, ORDER_NOT_FOUND, "Order has no associated user");
+      }
+
+      const allCodes: string[] = [];
+      for (let i = 0; i < ranges.length; i++) {
+        const range = ranges[i];
+        let codes: string[];
+        try {
+          codes = expandRange(range.firstCode, range.lastCode);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : "INVALID_RANGE";
+          if (msg === "INVALID_RNBP_FORMAT") {
+            throw new AppError(
+              400,
+              INVALID_RNBP_FORMAT,
+              `Range ${i + 1} has invalid code format`,
+            );
+          }
+          throw new AppError(
+            400,
+            INVALID_RANGE,
+            `Range ${i + 1} is invalid (must contain exactly ${CODES_PER_SHEET} codes)`,
+          );
+        }
+        if (codes.length !== CODES_PER_SHEET) {
+          throw new AppError(
+            400,
+            INVALID_RANGE,
+            `Range ${i + 1} must contain exactly ${CODES_PER_SHEET} codes (got ${codes.length})`,
+          );
+        }
+        allCodes.push(...codes);
+      }
+
+      const expectedTotal = oi.quantity * CODES_PER_SHEET;
+      if (allCodes.length !== expectedTotal) {
+        throw new AppError(
+          400,
+          INVALID_RANGE,
+          `Expected ${expectedTotal} codes total (${oi.quantity} sheets × ${CODES_PER_SHEET}), got ${allCodes.length}`,
+        );
+      }
+
+      const existing = await db
+        .select({ code: stickerCodes.code })
+        .from(stickerCodes)
+        .where(inArray(stickerCodes.code, allCodes));
+
+      if (existing.length > 0) {
+        throw new AppError(
+          409,
+          CODES_ALREADY_EXIST,
+          `Some codes already exist: ${existing.map((e) => e.code).join(", ")}`,
+        );
+      }
+
+      await db.insert(stickerCodes).values(
+        allCodes.map((code) => ({
+          code,
+          orderItemId: oi.orderItemId,
+          userId: oi.orderUserId!,
+        })),
+      );
+
+      return reply.status(201).send({ codes: allCodes });
+    },
+  );
+
+  // ── Void registered codes (admin correction before ship) ─────────
+
+  app.delete(
+    "/admin/orders/:id/items/:orderItemId/codes",
+    { preHandler: requireAdmin },
+    async (request, reply) => {
+      const { id, orderItemId } = request.params as {
+        id: string;
+        orderItemId: string;
+      };
+      const db = getDb();
+
+      const [oi] = await db
+        .select({ id: orderItems.id })
+        .from(orderItems)
+        .where(and(eq(orderItems.id, orderItemId), eq(orderItems.orderId, id)))
+        .limit(1);
+
+      if (!oi) throw new AppError(404, ORDER_LINE_NOT_FOUND, "Order line not found");
+
+      const [claimed] = await db
+        .select({ code: stickerCodes.code })
+        .from(stickerCodes)
+        .where(
+          and(
+            eq(stickerCodes.orderItemId, orderItemId),
+            isNull(stickerCodes.voidedAt),
+            isNotNull(stickerCodes.claimedAt),
+          ),
+        )
+        .limit(1);
+
+      if (claimed) {
+        throw new AppError(
+          409,
+          CODES_HAVE_CLAIMS,
+          "Cannot void codes after the customer has claimed at least one",
+        );
+      }
+
+      const voided = await db
+        .update(stickerCodes)
+        .set({ voidedAt: new Date() })
+        .where(
+          and(
+            eq(stickerCodes.orderItemId, orderItemId),
+            isNull(stickerCodes.voidedAt),
+          ),
+        )
+        .returning({ code: stickerCodes.code });
+
+      return reply.send({ voidedCount: voided.length });
     },
   );
 
@@ -325,26 +526,38 @@ export async function adminRoutes(app: FastifyInstance) {
         throw new AppError(400, ORDER_NOT_PAID, "Only paid orders can be shipped");
       }
 
-      // Only items linked to a product with customMechanic = 'item-linked-stickers' need RNBP numbers.
-      // Products without customMechanic (e.g., door stickers) ship without RNBP assignment.
-      const oi = await db
+      // Sticker-sheet products require their codes to be registered (POST /codes)
+      // before shipping, so the admin has physically grouped the printed codes with
+      // the parcel. Other products (e.g. door stickers) ship without precondition.
+      const stickerLines = await db
         .select({
-          rnbpNumber: orderItems.rnbpNumber,
-          customMechanic: products.customMechanic,
+          orderItemId: orderItems.id,
+          quantity: orderItems.quantity,
         })
         .from(orderItems)
         .leftJoin(products, eq(orderItems.productId, products.id))
-        .where(eq(orderItems.orderId, id));
-
-      const unassigned = oi.filter(
-        (i) => i.customMechanic === "item-linked-stickers" && !i.rnbpNumber,
-      );
-      if (unassigned.length > 0) {
-        throw new AppError(
-          400,
-          UNASSIGNED_ITEMS,
-          `${unassigned.length} item(s) do not have an RNBP number assigned`,
+        .where(
+          and(eq(orderItems.orderId, id), eq(products.slug, PRODUCT_SLUGS.STICKER_SHEET)),
         );
+
+      for (const line of stickerLines) {
+        const [{ value: codeCount }] = await db
+          .select({ value: count() })
+          .from(stickerCodes)
+          .where(
+            and(
+              eq(stickerCodes.orderItemId, line.orderItemId),
+              isNull(stickerCodes.voidedAt),
+            ),
+          );
+        const expected = line.quantity * CODES_PER_SHEET;
+        if (Number(codeCount) !== expected) {
+          throw new AppError(
+            400,
+            CODES_NOT_REGISTERED,
+            `Order line needs ${expected} codes registered (has ${codeCount}). Prepare the shipment first.`,
+          );
+        }
       }
 
       const [updated] = await db

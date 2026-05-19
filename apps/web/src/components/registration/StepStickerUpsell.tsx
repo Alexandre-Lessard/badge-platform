@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useLanguage } from "@/i18n/context";
 import { useCart } from "@/lib/cart-context";
 import { Button } from "@/components/ui/Button";
+import { PRODUCT_SLUGS } from "@rnbp/shared";
 
 type StepStickerUpsellProps = {
   onNext: () => void;
   onBack: () => void;
-  itemName: string;
   loading: boolean;
   error: string;
 };
@@ -14,7 +14,6 @@ type StepStickerUpsellProps = {
 export function StepStickerUpsell({
   onNext,
   onBack,
-  itemName,
   loading,
   error,
 }: StepStickerUpsellProps) {
@@ -28,14 +27,12 @@ export function StepStickerUpsell({
       return;
     }
 
-    // Add to cart with a temporary "pending:<itemName>" itemId
-    // which will be replaced by the real UUID after item creation
+    // Sticker sheets are generic 10-code packs since the post-launch redesign;
+    // the customer assigns each code to one of their items themselves later.
     addItem({
       productId: "",
-      productSlug: "sticker-sheet",
+      productSlug: PRODUCT_SLUGS.STICKER_SHEET,
       productName: t.shop?.productName ?? "",
-      itemId: `pending:${itemName}`,
-      itemName,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2500);

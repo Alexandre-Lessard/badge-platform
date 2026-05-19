@@ -324,6 +324,41 @@ export const orderItems = pgTable(
   ],
 );
 
+// ── Sticker codes ──────────────────────────────────────────────────────
+//
+// Source of truth for RNBP codes sold to a customer. Each row represents
+// one printed code from a sticker sheet. The code is "claimed" when the
+// customer assigns it to one of their items via the self-service UI.
+//
+// items.rnbpNumber is kept in sync on claim/unclaim — it remains the
+// fast denormalized field used by the public /lookup endpoint.
+
+export const stickerCodes = pgTable(
+  "sticker_codes",
+  {
+    code: varchar("code", { length: 13 }).primaryKey(), // RNBP-XXXXXXXX
+    orderItemId: uuid("order_item_id")
+      .notNull()
+      .references(() => orderItems.id, { onDelete: "restrict" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    assignedItemId: uuid("assigned_item_id").references(() => items.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    claimedAt: timestamp("claimed_at", { withTimezone: true }),
+    voidedAt: timestamp("voided_at", { withTimezone: true }),
+  },
+  (table) => [
+    index("sticker_codes_user_id_idx").on(table.userId),
+    index("sticker_codes_order_item_id_idx").on(table.orderItemId),
+    index("sticker_codes_assigned_item_id_idx").on(table.assignedItemId),
+  ],
+);
+
 // ── Products ──────────────────────────────────────────────────────────
 
 export const products = pgTable(

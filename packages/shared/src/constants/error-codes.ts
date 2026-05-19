@@ -41,6 +41,16 @@ export const ITEM_DELETED = "ITEM_DELETED";
 export const ORDER_NOT_PAID = "ORDER_NOT_PAID";
 export const UNASSIGNED_ITEMS = "UNASSIGNED_ITEMS";
 
+// ── Sticker codes ────────────────────────────────────────────────────
+export const INVALID_RANGE = "INVALID_RANGE";
+export const CODES_ALREADY_EXIST = "CODES_ALREADY_EXIST";
+export const CODES_NOT_REGISTERED = "CODES_NOT_REGISTERED";
+export const RNBP_CODE_UNKNOWN = "RNBP_CODE_UNKNOWN";
+export const RNBP_CODE_NOT_YOURS = "RNBP_CODE_NOT_YOURS";
+export const RNBP_CODE_ALREADY_USED = "RNBP_CODE_ALREADY_USED";
+export const RNBP_CODE_VOIDED = "RNBP_CODE_VOIDED";
+export const CODES_HAVE_CLAIMS = "CODES_HAVE_CLAIMS";
+
 // ── Products ─────────────────────────────────────────────────────────
 export const PRODUCT_NOT_FOUND = "PRODUCT_NOT_FOUND";
 export const PRODUCT_INACTIVE = "PRODUCT_INACTIVE";

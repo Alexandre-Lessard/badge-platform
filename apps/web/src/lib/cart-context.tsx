@@ -6,6 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
+import { PRODUCT_SLUGS } from "@rnbp/shared";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -55,7 +56,7 @@ function migrateOldCart(): CartItem[] {
       .filter((i) => i.itemId)
       .map((i) => ({
         productId: "",
-        productSlug: "sticker-sheet",
+        productSlug: PRODUCT_SLUGS.STICKER_SHEET,
         productName: i.productName || "",
         quantity: i.quantity || 1,
         itemId: i.itemId,

@@ -1,10 +1,10 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { eq, and, asc } from "drizzle-orm";
+import { eq, and, asc, isNull } from "drizzle-orm";
 import Stripe from "stripe";
 import { inArray } from "drizzle-orm";
 import { getDb } from "../db/client.js";
-import { orders, orderItems, items, users, products } from "../db/schema.js";
+import { orders, orderItems, items, users, products, stickerCodes } from "../db/schema.js";
 import { getConfig } from "../config.js";
 import { requireVerifiedEmail } from "../middleware/auth.js";
 import { sendEmail, buildOrderNotificationEmail, buildOrderConfirmationEmail } from "../utils/email.js";
@@ -341,10 +341,39 @@ export async function shopRoutes(app: FastifyInstance) {
         const orderId = session.metadata?.orderId;
 
         if (orderId) {
-          await db
-            .update(orders)
-            .set({ status: "cancelled", updatedAt: new Date() })
-            .where(and(eq(orders.id, orderId), eq(orders.status, "pending")));
+          await db.transaction(async (tx) => {
+            const updated = await tx
+              .update(orders)
+              .set({ status: "cancelled", updatedAt: new Date() })
+              .where(and(eq(orders.id, orderId), eq(orders.status, "pending")))
+              .returning({ id: orders.id });
+
+            if (updated.length === 0) return;
+
+            // Void any unclaimed codes the admin may have registered for this
+            // order line — protects against the (rare) case where prep happened
+            // before the session expired or was cancelled.
+            const lines = await tx
+              .select({ id: orderItems.id })
+              .from(orderItems)
+              .where(eq(orderItems.orderId, orderId));
+
+            if (lines.length === 0) return;
+
+            await tx
+              .update(stickerCodes)
+              .set({ voidedAt: new Date() })
+              .where(
+                and(
+                  inArray(
+                    stickerCodes.orderItemId,
+                    lines.map((l) => l.id),
+                  ),
+                  isNull(stickerCodes.voidedAt),
+                  isNull(stickerCodes.claimedAt),
+                ),
+              );
+          });
         }
       }
 

@@ -275,7 +275,6 @@ export function RegisterItemPage() {
 
           {step === 3 && (
             <StepStickerUpsell
-              itemName={itemData.name}
               loading={loading}
               error={error}
               onNext={() => {

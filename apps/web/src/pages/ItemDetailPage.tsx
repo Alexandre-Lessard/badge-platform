@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router";
 import { useLanguage } from "@/i18n/context";
-import { useCart } from "@/lib/cart-context";
 import { apiRequest, isNetworkError } from "@/lib/api-client";
 import { getErrorMessage } from "@/lib/error-utils";
 import { Button } from "@/components/ui/Button";
@@ -9,6 +8,7 @@ import { getButtonClasses } from "@/lib/button-styles";
 import { Modal } from "@/components/ui/Modal";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { ItemImage } from "@/components/ui/ItemImage";
+import { AssignRnbpModal } from "@/components/AssignRnbpModal";
 import type { ItemWithFiles } from "@rnbp/shared";
 import { ROUTES } from "@/routes/routes";
 
@@ -16,7 +16,6 @@ export function ItemDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { addItem } = useCart();
 
   const [item, setItem] = useState<ItemWithFiles | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,7 +28,7 @@ export function ItemDetailPage() {
   const [archiveReason, setArchiveReason] = useState("");
   const [archiveCustom, setArchiveCustom] = useState("");
   const [archiving, setArchiving] = useState(false);
-  const [addedToCart, setAddedToCart] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
 
   const edit = t.editItem;
   const reg = t.registration;
@@ -89,17 +88,8 @@ export function ItemDetailPage() {
     }
   }
 
-  function handleOrderStickers() {
-    if (!item || addedToCart) return;
-    addItem({
-      productId: "",
-      productSlug: "sticker-sheet",
-      productName: t.shop?.productName ?? "",
-      itemId: item.id,
-      itemName: item.name,
-    });
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2500);
+  function handleAssignSuccess(code: string) {
+    setItem((prev) => (prev ? { ...prev, rnbpNumber: code } : prev));
   }
 
   const canArchive = archiveReason !== "" && (archiveReason !== "other" || archiveCustom.trim() !== "");
@@ -179,11 +169,19 @@ export function ItemDetailPage() {
           </div>
 
           {/* RNBP number */}
-          {item.rnbpNumber && (
+          {item.rnbpNumber ? (
             <div className="mt-4 inline-block rounded-lg bg-[var(--rcb-surface)] px-4 py-2">
               <span className="text-xs text-[var(--rcb-text-muted)]">RNBP</span>
               <p className="font-mono text-lg font-bold tracking-wider text-[var(--rcb-primary)]">{item.rnbpNumber}</p>
             </div>
+          ) : (
+            item.status === "active" && (
+              <div className="mt-4">
+                <Button size="sm" variant="outline" onClick={() => setAssignOpen(true)}>
+                  {dash?.assignRnbpButton ?? "Assign an RNBP code"}
+                </Button>
+              </div>
+            )
           )}
 
           {/* Photo gallery */}
@@ -279,17 +277,6 @@ export function ItemDetailPage() {
                 <Button variant="outline" size="sm" onClick={() => setArchiveOpen(true)}>
                   {arc?.button ?? "Archive this item"}
                 </Button>
-                {/* min-w fits FR "Commander des étiquettes d'identification" — prevents FR/EN width jump */}
-                <button
-                  type="button"
-                  disabled={addedToCart}
-                  onClick={handleOrderStickers}
-                  className="min-w-[320px] cursor-pointer rounded-xl border border-[var(--rcb-border)] px-6 py-2 text-sm font-medium text-[var(--rcb-primary)] transition-colors hover:bg-[var(--rcb-surface)] disabled:cursor-default disabled:opacity-60"
-                >
-                  {addedToCart
-                    ? (t.registration?.addedToCart ?? "Added to cart")
-                    : (t.shop?.orderStickers ?? "Order stickers")}
-                </button>
               </>
             )}
           </div>
@@ -308,6 +295,15 @@ export function ItemDetailPage() {
           </Button>
         </div>
       </Modal>
+
+      {/* Assign-RNBP modal */}
+      <AssignRnbpModal
+        open={assignOpen}
+        onClose={() => setAssignOpen(false)}
+        itemId={item.id}
+        itemName={item.name}
+        onSuccess={handleAssignSuccess}
+      />
 
       {/* Archive modal */}
       <Modal open={archiveOpen} onClose={() => setArchiveOpen(false)} title={arc?.modalTitle ?? "Archive item"}>
