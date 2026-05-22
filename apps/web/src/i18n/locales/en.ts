@@ -2,65 +2,65 @@ import type { SiteContent } from "@/types/content";
 
 const en: SiteContent = {
   meta: {
-    title: "National Registry of Personal Property",
+    title: "Badge",
     description:
-      "National Registry of Personal Property \u2014 protect and recover your valuable belongings.",
+      "Badge \u2014 protect and recover your valuable belongings.",
   },
   pages: {
     home: {
-      title: "Protect and recover your valuable belongings | NRPP",
+      title: "Protect and recover your valuable belongings | Badge",
       description: "Register your valuable belongings in a secure registry. Protect and recover your items in case of loss or theft.",
     },
     faq: {
-      title: "Frequently Asked Questions | NRPP",
-      description: "Find answers to common questions about registering your belongings in the National Registry of Personal Property.",
+      title: "Frequently Asked Questions | Badge",
+      description: "Find answers to common questions about registering your belongings in the Badge.",
     },
     partners: {
-      title: "Consult the Registry | NRPP",
+      title: "Consult the Registry | Badge",
       description: "Consult the registry to verify an item. Citizens, law enforcement and insurance companies.",
     },
     privacy: {
-      title: "Privacy Policy | NRPP",
-      description: "Learn how the NRPP protects your personal information and complies with federal privacy laws.",
+      title: "Privacy Policy | Badge",
+      description: "Learn how the Badge protects your personal information and complies with federal privacy laws.",
     },
     terms: {
-      title: "Terms of Service | NRPP",
-      description: "Review the terms of service for the National Registry of Personal Property.",
+      title: "Terms of Service | Badge",
+      description: "Review the terms of service for the Badge.",
     },
     dataDeletion: {
-      title: "Account Deletion | NRPP",
-      description: "How to request the complete deletion of your account and data from the National Registry of Personal Property.",
+      title: "Account Deletion | Badge",
+      description: "How to request the complete deletion of your account and data from the Badge.",
     },
     about: {
-      title: "About | NRPP",
-      description: "Learn about the National Registry of Personal Property, a platform to protect, identify and recover your valuable belongings.",
+      title: "About | Badge",
+      description: "Learn about the Badge, a platform to protect, identify and recover your valuable belongings.",
     },
     lookup: {
-      title: "Verify an Item | NRPP",
-      description: "Enter an RNBP number, serial number, or another compatible identifier to check the status of a registered item.",
+      title: "Verify an Item | Badge",
+      description: "Enter an Badge code, serial number, or another compatible identifier to check the status of a registered item.",
     },
     login: {
-      title: "Login | NRPP",
-      description: "Sign in to your NRPP account to manage your registered items.",
+      title: "Login | Badge",
+      description: "Sign in to your Badge account to manage your registered items.",
     },
     register: {
-      title: "Create an Account | NRPP",
+      title: "Create an Account | Badge",
       description: "Sign up for free to register and protect your valuable belongings.",
     },
     contact: {
-      title: "Contact Us | NRPP",
+      title: "Contact Us | Badge",
       description: "Have a question or comment? Send us a message and we\u2019ll get back to you as soon as possible.",
     },
     shop: {
-      title: "Shop | NRPP",
-      description: "Buy NRPP identification stickers to protect your valuable belongings.",
+      title: "Shop | Badge",
+      description: "Buy Badge identification stickers to protect your valuable belongings.",
     },
     shopSuccess: {
-      title: "Order Confirmed | NRPP",
+      title: "Order Confirmed | Badge",
       description: "Your order has been successfully confirmed.",
     },
     profile: {
-      title: "My Profile | NRPP",
+      title: "My Profile | Badge",
       description: "Manage your personal information and civic address.",
     },
   },
@@ -121,7 +121,7 @@ const en: SiteContent = {
     headingLine1: "The Canadian",
     headingLine2: "Personal Property Registry",
     description:
-      "The NRPP covers a wide variety of items, including rolling stock, electronics, specialized tools and other valuable articles.",
+      "The Badge covers a wide variety of items, including rolling stock, electronics, specialized tools and other valuable articles.",
     tagline: "Clear proof of ownership, all in one place.",
     imageAlt: "Riding lawn mower",
     viewCategoriesLink: "View item categories",
@@ -129,7 +129,7 @@ const en: SiteContent = {
   allCategories: {
     heading: "Eligible item types",
     description:
-      "The NRPP lets you register any personal property valued over $250.",
+      "The Badge lets you register any personal property valued over $250.",
     toggleButton: "Show categories",
     items: [
       "Electric Bicycle",
@@ -230,9 +230,9 @@ const en: SiteContent = {
           "Registering your belongings is completely free. No hidden fees, no subscription. You can register as many items as you want at no cost.",
       },
       {
-        question: "Who funds the NRPP?",
+        question: "Who funds the Badge?",
         answer:
-          "The NRPP is financially supported in part by partners from the insurance industry. These stakeholders have a direct interest in improving the traceability and recovery of stolen or lost property.",
+          "The Badge is financially supported in part by partners from the insurance industry. These stakeholders have a direct interest in improving the traceability and recovery of stolen or lost property.",
       },
       {
         question: "What is the minimum threshold?",
@@ -242,7 +242,7 @@ const en: SiteContent = {
       {
         question: "Is my data protected?",
         answer:
-          "Yes. The NRPP complies with federal data protection laws. Your personal information is never sold or shared without consent.",
+          "Yes. The Badge complies with federal data protection laws. Your personal information is never sold or shared without consent.",
       },
       {
         question: "How long does registration take?",
@@ -262,7 +262,7 @@ const en: SiteContent = {
       {
         question: "Why is the registry necessary?",
         answer:
-          "Every year, thousands of items are lost or stolen in Canada, and the majority are never recovered. Without centralized proof of ownership, it is difficult for police to identify an owner and for insurers to process a claim efficiently. The NRPP creates an official, secure and dated record of your belongings \u2014 serial number, photos, proof of purchase \u2014 in a single file. It turns an anonymous object into an identifiable asset, makes reselling stolen goods much harder, and speeds up your recovery process.",
+          "Every year, thousands of items are lost or stolen in Canada, and the majority are never recovered. Without centralized proof of ownership, it is difficult for police to identify an owner and for insurers to process a claim efficiently. The Badge creates an official, secure and dated record of your belongings \u2014 serial number, photos, proof of purchase \u2014 in a single file. It turns an anonymous object into an identifiable asset, makes reselling stolen goods much harder, and speeds up your recovery process.",
       },
       {
         question: "What types of items can I register?",
@@ -288,12 +288,12 @@ const en: SiteContent = {
       {
         question: "Can I register an item without a serial number?",
         answer:
-          "Yes. You can register an item by adding photos, a detailed description and other identifying characteristics. However, adding a serial number is recommended. Using registration stickers available in the NRPP online store can also improve item identification.",
+          "Yes. You can register an item by adding photos, a detailed description and other identifying characteristics. However, adding a serial number is recommended. Using registration stickers available in the Badge online store can also improve item identification.",
       },
       {
         question: "How can I recover my item?",
         answer:
-          "When an item registered with the NRPP is found, it is handled by the registry to verify identification and ownership. Once ownership is confirmed through registered information (photos, description, serial number, etc.), the NRPP contacts the owner and arranges the return of the item.",
+          "When an item registered with the Badge is found, it is handled by the registry to verify identification and ownership. Once ownership is confirmed through registered information (photos, description, serial number, etc.), the Badge contacts the owner and arranges the return of the item.",
       },
       {
         question: "Are there fees to recover my item?",
@@ -337,7 +337,7 @@ const en: SiteContent = {
       {
         question: "Can the registry help deter theft?",
         answer:
-          "Yes. A registered and NRPP-identifiable item is harder to resell and can be more easily traced.",
+          "Yes. A registered and Badge-identifiable item is harder to resell and can be more easily traced.",
       },
       {
         question: "Can I delete my account?",
@@ -360,19 +360,19 @@ const en: SiteContent = {
           "No. The registry does not replace insurance, but it can facilitate certain processes in case of theft.",
       },
       {
-        question: "If my item is already covered by my home insurance, should I still register it on the NRPP?",
+        question: "If my item is already covered by my home insurance, should I still register it on the Badge?",
         answer:
-          "Yes. Registering your item on the NRPP can reduce the consequences of a theft if the item is recovered. It could then be identified and returned to its owner or the insurer, which can reduce losses related to the claim.",
+          "Yes. Registering your item on the Badge can reduce the consequences of a theft if the item is recovered. It could then be identified and returned to its owner or the insurer, which can reduce losses related to the claim.",
       },
       {
         question: "What is the advantage for my home insurer to give me a discount?",
         answer:
-          "Some items are covered by home insurance. If an insurer compensates a policyholder following a theft and the item is later recovered through the registry, it can be retrieved and returned to the insurer. This reduces the financial loss related to the compensation, which is why some insurers offer a discount to policyholders who register their items on the NRPP.",
+          "Some items are covered by home insurance. If an insurer compensates a policyholder following a theft and the item is later recovered through the registry, it can be retrieved and returned to the insurer. This reduces the financial loss related to the compensation, which is why some insurers offer a discount to policyholders who register their items on the Badge.",
       },
       {
-        question: "Which items do not need to be registered on the NRPP?",
+        question: "Which items do not need to be registered on the Badge?",
         answer:
-          "Real estate, registered vehicles and firearms generally do not need to be registered on the NRPP, as these items already have their own official registries. The NRPP primarily targets personal property not covered by an existing registry.",
+          "Real estate, registered vehicles and firearms generally do not need to be registered on the Badge, as these items already have their own official registries. The Badge primarily targets personal property not covered by an existing registry.",
       },
     ],
   },
@@ -387,8 +387,8 @@ const en: SiteContent = {
     dataDeletion: "Account deletion",
     cookieSettings: "Cookie Settings",
     copyright:
-      "\u00a9 {{year}} National Registry of Personal Property. All rights reserved.",
-    promoLine: "Protect your valuables — Free RNBP stickers",
+      "\u00a9 {{year}} Badge. All rights reserved.",
+    promoLine: "Protect your valuables — Free Badge stickers",
   },
   buttons: {
     registerItem: "Register for free",
@@ -400,11 +400,11 @@ const en: SiteContent = {
     skipToContent: "Skip to main content",
     mainNav: "Main navigation",
     mobileNav: "Mobile navigation",
-    logoAlt: "NRPP",
+    logoAlt: "Badge",
   },
   auth: {
     loginHeading: "Login",
-    loginDescription: "Sign in to your NRPP account",
+    loginDescription: "Sign in to your Badge account",
     registerHeading: "Create an account",
     registerDescription: "Sign up to register your belongings",
     emailLabel: "Email",
@@ -454,14 +454,14 @@ const en: SiteContent = {
     alreadyInCartCancel: "No thanks",
     alreadyInCartViewCart: "View cart",
     awaitingNumber: "Awaiting assignment",
-    noNumberHint: "No RNBP code assigned yet.",
+    noNumberHint: "No badge code assigned yet.",
     clientNumber: "Client no.",
     editItem: "Edit",
-    assignRnbpButton: "Assign an RNBP code",
-    assignRnbpModalTitle: "Assign an RNBP code",
-    assignRnbpModalHelp: "Enter one of the codes printed on your sticker sheet.",
-    assignRnbpModalSubmit: "Assign",
-    assignRnbpSuccess: "RNBP code assigned. Your item is now protected.",
+    assignBadgeButton: "Assign an badge code",
+    assignBadgeModalTitle: "Assign an badge code",
+    assignBadgeModalHelp: "Enter one of the codes printed on your sticker sheet.",
+    assignBadgeModalSubmit: "Assign",
+    assignBadgeSuccess: "badge code assigned. Your item is now protected.",
     orderStickersGlobal: "Buy stickers",
   },
   editItem: {
@@ -477,9 +477,9 @@ const en: SiteContent = {
     recoverConfirmButton: "Yes, mark as recovered",
     recoverCancel: "Cancel",
     recovering: "Processing\u2026",
-    rnbpNumberLabel: "RNBP number",
-    rnbpNumberHelper: "Enter the code printed on your sticker to physically link this item to the registry.",
-    rnbpOverwriteWarning: "Changing this code will replace the published identifier in the registry. Use this only to fix a typo or replace a damaged sheet.",
+    badgeCodeLabel: "Badge code",
+    badgeCodeHelper: "Enter the code printed on your sticker to physically link this item to the registry.",
+    badgeCodeOverwriteWarning: "Changing this code will replace the published identifier in the registry. Use this only to fix a typo or replace a damaged sheet.",
   },
   settings: {
     heading: "Settings",
@@ -533,7 +533,7 @@ const en: SiteContent = {
   },
   registration: {
     heading: "Register an item",
-    description: "Fill out the form to register your item in the NRPP.",
+    description: "Fill out the form to register your item in the Badge.",
     step1Title: "Item information",
     step2Title: "Photos and documents",
     step3Title: "Protection",
@@ -566,12 +566,12 @@ const en: SiteContent = {
     confirmButton: "Confirm registration",
     submitting: "Saving...",
     successHeading: "Item registered successfully!",
-    successDescription: "Your item has been registered in the NRPP.",
-    successNoNumber: "Order stickers from the shop to receive your unique RNBP number.",
-    rnbpNumberLabel: "Your RNBP number",
+    successDescription: "Your item has been registered in the Badge.",
+    successNoNumber: "Order stickers from the shop to receive your unique Badge code.",
+    badgeCodeLabel: "Your Badge code",
     goToDashboard: "Go to dashboard",
     stickerHeading: "Protect your item with our identification stickers",
-    stickerPitch: "Our tamper-proof stickers display your unique RNBP number. Apply them to your valuables to make identification and recovery easy in case of theft. Proven deterrent effect.",
+    stickerPitch: "Our tamper-proof stickers display your unique Badge code. Apply them to your valuables to make identification and recovery easy in case of theft. Proven deterrent effect.",
     stickerCta: "Order my stickers",
     addToCart: "Add to cart",
     addedToCart: "Added to cart!",
@@ -579,15 +579,15 @@ const en: SiteContent = {
   },
   shop: {
     heading: "Shop",
-    productName: "Sheet of 10 RNBP identification stickers",
-    productDescription: "Each sheet contains 10 unique RNBP codes that you assign yourself to your items from your dashboard.",
+    productName: "Sheet of 10 Badge identification stickers",
+    productDescription: "Each sheet contains 10 unique badge codes that you assign yourself to your items from your dashboard.",
     productFeatures: [
       "10 unique stickers",
-      "RNBP codes to assign to your items",
+      "badge codes to assign to your items",
       "Durable material",
       "Free shipping across Canada",
     ],
-    productImageAlt: "Sheet of 10 RNBP identification stickers",
+    productImageAlt: "Sheet of 10 Badge identification stickers",
     priceLabel: "Price",
     quantityLabel: "Quantity",
     buyButton: "Buy",
@@ -639,7 +639,7 @@ const en: SiteContent = {
     description: "Check the status of a registered item.",
     inputLabel: "Item identifier to verify",
     inputPlaceholder: "Unique identifier",
-    inputHint: "RNBP number, serial number or another compatible identifier",
+    inputHint: "Badge code, serial number or another compatible identifier",
     searchButton: "Verify",
     searching: "Searching...",
     foundMessage: "Item found in the registry",
@@ -654,9 +654,9 @@ const en: SiteContent = {
     yourItem: "Your item",
     viewItem: "View item",
     markRecovered: "Mark as recovered",
-    publicViewTitle: "Item registered with the NRPP",
-    stolenBanner: "This item has been reported stolen. Contact the NRPP if you've recovered it.",
-    contactLink: "Contact the NRPP",
+    publicViewTitle: "Item registered with the Badge",
+    stolenBanner: "This item has been reported stolen. Contact the Badge if you've recovered it.",
+    contactLink: "Contact the Badge",
     codeIsYours: "This code belongs to you!",
     assignPrompt: "Would you like to assign it to one of your items?",
     assignButton: "Assign",
@@ -692,25 +692,25 @@ const en: SiteContent = {
     contactButton: "Contact us",
     policeAccordion: {
       title: "Discover the benefits for law enforcement",
-      intro: "The National Registry of Personal Property (NRPP) is a digital infrastructure aimed at improving the identification, traceability and recovery of stolen or recovered property in Canada.\nBy collaborating with law enforcement, the NRPP helps optimize the management of recovered property, reduce administrative tasks and increase the rate of return to legitimate owners.",
+      intro: "The Badge (Badge) is a digital infrastructure aimed at improving the identification, traceability and recovery of stolen or recovered property in Canada.\nBy collaborating with law enforcement, the Badge helps optimize the management of recovered property, reduce administrative tasks and increase the rate of return to legitimate owners.",
       subheading: "Benefits for law enforcement",
       advantages: [
         { title: "Quick identification of recovered property", text: "Using the national registry, officers can quickly check whether an item (bicycle, tool, electronic device, etc.) is registered and identify its owner in seconds." },
-        { title: "Operational efficiency gains", text: "The NRPP reduces the time spent searching for owners and managing the administrative tasks related to recovered items." },
+        { title: "Operational efficiency gains", text: "The Badge reduces the time spent searching for owners and managing the administrative tasks related to recovered items." },
         { title: "Reduced storage in police stations", text: "Police station storage rooms are often filled with unidentified property. The registry helps locate owners more quickly and free up space." },
         { title: "Improved investigative work", text: "Registered property often includes photos, serial numbers and detailed descriptions, facilitating proof of ownership and certain investigations." },
         { title: "Fighting against fencing", text: "Property traceability makes reselling stolen items more difficult and helps discourage certain illegal resale networks." },
         { title: "Increased recovery rate", text: "Recovered property can be returned much more quickly to its owners, improving citizen satisfaction." },
         { title: "Fewer procedures for unclaimed property", text: "Fewer unidentified items means fewer auctions, less material destruction and less administrative management." },
-        { title: "Recovery and return service offered by the NRPP", text: "The registry can also handle the coordination of property recovery and return to the owner, further reducing logistical tasks for law enforcement." },
+        { title: "Recovery and return service offered by the Badge", text: "The registry can also handle the coordination of property recovery and return to the owner, further reducing logistical tasks for law enforcement." },
         { title: "Easier collaboration with insurers", text: "The registry allows for efficient coordination of cases involving insurers when stolen property has already been subject to compensation." },
-        { title: "Technology integration", text: "The NRPP offers law enforcement free access to an AI-powered application for automated and instant verification in the national registry, to quickly identify the owner of recovered property and facilitate its return." },
+        { title: "Technology integration", text: "The Badge offers law enforcement free access to an AI-powered application for automated and instant verification in the national registry, to quickly identify the owner of recovered property and facilitate its return." },
         { title: "Improved public relations", text: "The quick recovery of stolen property strengthens public trust in law enforcement." },
       ],
     },
     insurerAccordion: {
       title: "Discover the benefits for insurers",
-      intro: "The National Registry of Personal Property (NRPP) collaborates with insurers to improve the traceability of valuable property and increase the chances of recovery in case of theft.\nBy facilitating the identification and return of recovered property, the NRPP helps reduce financial losses related to insurance claims and improve the efficiency of case processing.",
+      intro: "The Badge (Badge) collaborates with insurers to improve the traceability of valuable property and increase the chances of recovery in case of theft.\nBy facilitating the identification and return of recovered property, the Badge helps reduce financial losses related to insurance claims and improve the efficiency of case processing.",
       subheading: "Benefits for insurers",
       advantages: [
         { title: "Reduced theft-related losses", text: "The ability to identify and recover stolen property can allow the insurer to reduce or avoid full compensation." },
@@ -722,10 +722,10 @@ const en: SiteContent = {
         { title: "Lower average claim costs", text: "Better traceability and a higher recovery rate can help reduce the overall cost of theft-related claims." },
         { title: "Prevention tool for policyholders", text: "Insurers can recommend using the registry to their clients as a proactive property protection measure." },
         { title: "Improved customer relations", text: "The ability to increase the chances of recovering stolen property can strengthen policyholder satisfaction and loyalty." },
-        { title: "Technology integration", text: "The NRPP can offer API integration with insurance systems, facilitating automated verifications during claims processing." },
-        { title: "Management of recovery and resale of found property", text: "The NRPP can also handle the recovery of found property, its resale on the secondary market and the remittance of funds to the insurer, further reducing financial losses while simplifying logistics management for the insurer." },
+        { title: "Technology integration", text: "The Badge can offer API integration with insurance systems, facilitating automated verifications during claims processing." },
+        { title: "Management of recovery and resale of found property", text: "The Badge can also handle the recovery of found property, its resale on the secondary market and the remittance of funds to the insurer, further reducing financial losses while simplifying logistics management for the insurer." },
       ],
-      quote: "The NRPP turns a potential loss into a recoverable asset.",
+      quote: "The Badge turns a potential loss into a recoverable asset.",
     },
     ctaDescription: "Contact our partnerships team to discuss collaboration opportunities tailored to your business.",
     formHeading: "Send us a message",
@@ -763,7 +763,7 @@ const en: SiteContent = {
   insurance: {
     heading: "Get a discount on your insurance",
     promo: "Register your belongings and get a discount on your home insurance",
-    description: "Most insurers offer a discount to NRPP members. Select your insurer and contact them to check if you're eligible.",
+    description: "Most insurers offer a discount to Badge members. Select your insurer and contact them to check if you're eligible.",
     featuredHeading: "Choose your insurer",
     featuredHint: "Click a logo to select the insurer and scroll down to the ready-to-send message.",
     moreButton: "View all insurers",
@@ -774,20 +774,20 @@ const en: SiteContent = {
     selectLabel: "Your insurer",
     selectPlaceholder: "Select your insurer",
     messageLabel: "Pre-filled message",
-    messageTemplate: "Hello {{insurer}}, my home is insured with you and I have just registered my valuable belongings on the NRPP (National Registry of Personal Property). I would like to check with you if I am eligible for a discount on my home insurance.\n\nThank you",
+    messageTemplate: "Hello {{insurer}}, my home is insured with you and I have just registered my valuable belongings on the Badge (Badge). I would like to check with you if I am eligible for a discount on my home insurance.\n\nThank you",
     sendButton: "Copy message",
     copiedToast: "Message copied! Send it to your insurer.",
-    emailSubject: "NRPP Discount Request",
+    emailSubject: "Badge Discount Request",
     emailButton: "Send by email",
   },
   about: {
-    heading: "About the NRPP",
+    heading: "About the Badge",
     paragraphs: [
-      "The National Registry of Personal Property (NRPP) is a platform designed to help citizens protect, identify and recover their valuable belongings in case of theft, loss or recovery by authorities.",
-      "With the NRPP, owners can register their important items (bicycles, tools, electronics, artwork, instruments, etc.) in a secure database. Each registered item is associated with information that proves ownership and facilitates identification if it is found.",
+      "The Badge (Badge) is a platform designed to help citizens protect, identify and recover their valuable belongings in case of theft, loss or recovery by authorities.",
+      "With the Badge, owners can register their important items (bicycles, tools, electronics, artwork, instruments, etc.) in a secure database. Each registered item is associated with information that proves ownership and facilitates identification if it is found.",
       "The registry works in collaboration with law enforcement and insurers, who can access the necessary information to quickly identify the owner of a recovered item. Citizens can also perform public verifications to reduce the risk of purchasing a potentially stolen item.",
-      "In addition to facilitating the return of belongings, the NRPP helps reduce the stolen goods resale market, improve insurance claims processes and strengthen citizen safety.",
-      "The NRPP takes a modern approach to property protection, using advanced technological tools to simplify verifications, speed up owner identification and increase the chances of recovering stolen items.",
+      "In addition to facilitating the return of belongings, the Badge helps reduce the stolen goods resale market, improve insurance claims processes and strengthen citizen safety.",
+      "The Badge takes a modern approach to property protection, using advanced technological tools to simplify verifications, speed up owner identification and increase the chances of recovering stolen items.",
     ],
   },
   promo: {
@@ -797,7 +797,7 @@ const en: SiteContent = {
     dismiss: "Close",
     dontShowAgain: "Don't show again",
     calloutDashboard: "Your belongings are not yet physically protected. Take advantage of the free offer!",
-    calloutItem: "This item doesn't have an RNBP number yet. Order your free labels!",
+    calloutItem: "This item doesn't have an Badge code yet. Order your free labels!",
     calloutRegistration: "Your item is registered! Order your free labels to protect it.",
   },
   legal: {
@@ -805,7 +805,7 @@ const en: SiteContent = {
     privacyContent: [
       {
         title: "1. Collection of Personal Information",
-        body: "The NRPP collects only the information necessary to create your account and register your belongings: name, email address, phone number (optional), civic address (optional), and descriptive information about your property (category, brand, model, serial number, photos). This information is provided voluntarily during registration or when updating your profile.",
+        body: "The Badge collects only the information necessary to create your account and register your belongings: name, email address, phone number (optional), civic address (optional), and descriptive information about your property (category, brand, model, serial number, photos). This information is provided voluntarily during registration or when updating your profile.",
       },
       {
         title: "2. Use of Information",
@@ -817,19 +817,19 @@ const en: SiteContent = {
       },
       {
         title: "4. Third-Party Sign-In (OAuth)",
-        body: "The NRPP allows you to create an account or sign in via Google or Facebook. When you choose this option, we receive only your name, email address, a unique provider identifier, and whether your email has been verified by the provider. No other data is requested or collected: we do not access your profile photo, contacts, calendar, date of birth, gender, friends list, photos, or posts. You can revoke this access at any time through your account settings at the provider (Google, Facebook).",
+        body: "The Badge allows you to create an account or sign in via Google or Facebook. When you choose this option, we receive only your name, email address, a unique provider identifier, and whether your email has been verified by the provider. No other data is requested or collected: we do not access your profile photo, contacts, calendar, date of birth, gender, friends list, photos, or posts. You can revoke this access at any time through your account settings at the provider (Google, Facebook).",
       },
       {
         title: "5. Account Retention and Deletion",
-        body: "Your data is retained as long as your account is active. You may request the complete deletion of your account and data at any time by contacting us at tech@rnbp.ca. We process requests within a maximum of 30 days. Deletion covers your account, your registered items, your photos, and your documents. Some data may persist for up to 14 days in our automated backups before being permanently erased. Financial data related to your orders is retained in anonymized form to comply with our accounting and tax obligations. Theft reports are retained for traceability purposes even after account deletion, in accordance with applicable legal obligations.",
+        body: "Your data is retained as long as your account is active. You may request the complete deletion of your account and data at any time by contacting us at tech@badgeid.ca. We process requests within a maximum of 30 days. Deletion covers your account, your registered items, your photos, and your documents. Some data may persist for up to 14 days in our automated backups before being permanently erased. Financial data related to your orders is retained in anonymized form to comply with our accounting and tax obligations. Theft reports are retained for traceability purposes even after account deletion, in accordance with applicable legal obligations.",
       },
       {
         title: "6. Public Verification",
-        body: "The public verification feature (search by RNBP number) does not disclose any personal information about the owner. Only the property status (registered, reported stolen) is displayed.",
+        body: "The public verification feature (search by Badge code) does not disclose any personal information about the owner. Only the property status (registered, reported stolen) is displayed.",
       },
       {
         title: "7. Cookies and Similar Technologies",
-        body: "The NRPP uses only strictly necessary cookies for site functionality (authentication, language preferences). No advertising tracking or third-party analytics cookies are used.",
+        body: "The Badge uses only strictly necessary cookies for site functionality (authentication, language preferences). No advertising tracking or third-party analytics cookies are used.",
       },
       {
         title: "8. Changes",
@@ -837,18 +837,18 @@ const en: SiteContent = {
       },
       {
         title: "9. Contact",
-        body: "For any questions regarding the protection of your personal information, contact us at tech@rnbp.ca.",
+        body: "For any questions regarding the protection of your personal information, contact us at tech@badgeid.ca.",
       },
     ],
     termsHeading: "Terms of Service",
     termsContent: [
       {
         title: "1. Acceptance of Terms",
-        body: "By using the National Registry of Personal Property (NRPP) website and services, you agree to be bound by these terms of service. If you do not accept these terms, please do not use our services.",
+        body: "By using the Badge (Badge) website and services, you agree to be bound by these terms of service. If you do not accept these terms, please do not use our services.",
       },
       {
         title: "2. Description of Service",
-        body: "The NRPP offers a free registration service for valuable personal property. The registry allows users to document their belongings, report thefts and verify the status of property using its unique RNBP number. The service is provided \"as is\" and the NRPP does not guarantee recovery of lost or stolen property.",
+        body: "The Badge offers a free registration service for valuable personal property. The registry allows users to document their belongings, report thefts and verify the status of property using its unique Badge code. The service is provided \"as is\" and the Badge does not guarantee recovery of lost or stolen property.",
       },
       {
         title: "3. Registration and Account",
@@ -856,23 +856,23 @@ const en: SiteContent = {
       },
       {
         title: "4. Property Registration",
-        body: "You may only register property that you legitimately own. Registration of property does not constitute proof of ownership in a legal sense. It is prohibited to register stolen, counterfeit or illegal property. The NRPP reserves the right to remove any fraudulent registration.",
+        body: "You may only register property that you legitimately own. Registration of property does not constitute proof of ownership in a legal sense. It is prohibited to register stolen, counterfeit or illegal property. The Badge reserves the right to remove any fraudulent registration.",
       },
       {
         title: "5. Theft Reporting",
-        body: "By reporting property as stolen on the NRPP, you attest that this declaration is truthful. False theft reports are prohibited and may result in account suspension as well as legal prosecution. We encourage you to also file a report with your local police service.",
+        body: "By reporting property as stolen on the Badge, you attest that this declaration is truthful. False theft reports are prohibited and may result in account suspension as well as legal prosecution. We encourage you to also file a report with your local police service.",
       },
       {
         title: "6. User Content",
-        body: "You retain ownership of the photos and documents you upload. By submitting them, you grant the NRPP a non-exclusive license to use them for the operation of the service. You warrant that uploaded content does not violate any intellectual property rights or applicable laws.",
+        body: "You retain ownership of the photos and documents you upload. By submitting them, you grant the Badge a non-exclusive license to use them for the operation of the service. You warrant that uploaded content does not violate any intellectual property rights or applicable laws.",
       },
       {
         title: "7. Limitation of Liability",
-        body: "The NRPP shall not be held liable for any direct, indirect or consequential damages resulting from the use or inability to use the service. The NRPP does not guarantee uninterrupted availability of the service and cannot be held liable for data loss due to circumstances beyond its control.",
+        body: "The Badge shall not be held liable for any direct, indirect or consequential damages resulting from the use or inability to use the service. The Badge does not guarantee uninterrupted availability of the service and cannot be held liable for data loss due to circumstances beyond its control.",
       },
       {
         title: "8. Termination",
-        body: "You may close your account at any time. The NRPP reserves the right to suspend or close an account for violation of these terms, without prior notice.",
+        body: "You may close your account at any time. The Badge reserves the right to suspend or close an account for violation of these terms, without prior notice.",
       },
       {
         title: "9. Governing Law",
@@ -880,23 +880,23 @@ const en: SiteContent = {
       },
       {
         title: "10. Changes",
-        body: "The NRPP reserves the right to modify these terms at any time. Changes will take effect upon publication on the site. Continued use of the service after a change constitutes your acceptance of the new terms.",
+        body: "The Badge reserves the right to modify these terms at any time. Changes will take effect upon publication on the site. Continued use of the service after a change constitutes your acceptance of the new terms.",
       },
     ],
     dataDeletion: {
       heading: "Account and Data Deletion",
-      intro: "You can request the complete deletion of your account and all your data from the National Registry of Personal Property (NRPP) at any time, free of charge. This page describes the procedure and timelines.",
+      intro: "You can request the complete deletion of your account and all your data from the Badge (Badge) at any time, free of charge. This page describes the procedure and timelines.",
       stepsHeading: "How to request deletion",
       steps: [
-        "Send an email to tech@rnbp.ca with the subject \"Account deletion request\".",
-        "Include the email address associated with your NRPP account so we can identify you.",
+        "Send an email to tech@badgeid.ca with the subject \"Account deletion request\".",
+        "Include the email address associated with your Badge account so we can identify you.",
         "We will send a confirmation email to that address to validate the request.",
         "Once confirmed, your account and data are deleted within a maximum of 30 days.",
       ],
       timelineHeading: "Timelines and scope of deletion",
       timeline: "Deletion covers your account, your registered items, your photos, and your documents. Some data may persist for up to 14 days in our automated backups before being permanently erased. Financial data related to your orders (sticker purchases) is retained in anonymized form to comply with our Canadian accounting and tax obligations. Past theft reports are retained for traceability purposes, in accordance with applicable legal obligations.",
       contactHeading: "Have a question?",
-      contactBody: "If you have a question about the procedure or have not received a confirmation within 48 hours, contact us at tech@rnbp.ca.",
+      contactBody: "If you have a question about the procedure or have not received a confirmation within 48 hours, contact us at tech@badgeid.ca.",
     },
   },
   verifyBeforeBuy: {
@@ -1007,7 +1007,7 @@ const en: SiteContent = {
       created: "Product created successfully.",
       error: "Error saving product.",
       notFound: "Product not found.",
-      customMechanicBadge: "Custom mechanic active — This product has custom behavior managed by code (item selection, ownership validation, RNBP assignment). To add a similar mechanic to another product, a code change is required.",
+      customMechanicBadge: "Custom mechanic active — This product has custom behavior managed by code (item selection, ownership validation, badge assignment). To add a similar mechanic to another product, a code change is required.",
     },
   },
   apiErrors: {
@@ -1040,17 +1040,17 @@ const en: SiteContent = {
     // Admin
     ORDER_NOT_FOUND: "Order not found",
     ORDER_LINE_NOT_FOUND: "Order line not found",
-    INVALID_RNBP_FORMAT: "Invalid format (RNBP-XXXXXXXX)",
+    INVALID_BADGE_FORMAT: "Invalid format (BADGE-XXXXXXXX)",
     ORDER_NOT_PAID: "Only paid orders can be shipped",
     // Sticker codes
     INVALID_RANGE: "The range must contain exactly 10 codes.",
     CODES_ALREADY_EXIST: "One or more codes already exist in the database.",
     CODES_NOT_REGISTERED: "Codes not registered. Prepare the shipment before shipping.",
     CODES_HAVE_CLAIMS: "Cannot void codes after the customer has claimed at least one.",
-    RNBP_CODE_UNKNOWN: "This code doesn't exist. Check your entry.",
-    RNBP_CODE_NOT_YOURS: "This code was not purchased on your account.",
-    RNBP_CODE_ALREADY_USED: "This code is already assigned to another of your items.",
-    RNBP_CODE_VOIDED: "This code is no longer valid. Contact support.",
+    BADGE_CODE_UNKNOWN: "This code doesn't exist. Check your entry.",
+    BADGE_CODE_NOT_YOURS: "This code was not purchased on your account.",
+    BADGE_CODE_ALREADY_USED: "This code is already assigned to another of your items.",
+    BADGE_CODE_VOIDED: "This code is no longer valid. Contact support.",
     // General
     TOO_MANY_REQUESTS: "Too many requests. Please try again later.",
     INTERNAL_ERROR: "Internal server error",

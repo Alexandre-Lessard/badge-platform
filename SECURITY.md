@@ -2,9 +2,9 @@
 
 ## Reporting Vulnerabilities
 
-If you discover a security vulnerability in RNBP, please report it responsibly.
+If you discover a security vulnerability in Badge, please report it responsibly.
 
-**Email:** security@rnbp.ca
+**Email:** security@badgeid.ca
 
 Please include:
 - Description of the vulnerability
@@ -16,7 +16,7 @@ We will acknowledge receipt within 48 hours and provide an initial assessment wi
 
 ## Scope
 
-This policy applies to the RNBP platform codebase and its production deployment at rnbp.ca / nrpp.ca.
+This policy applies to the Badge platform codebase and its production deployment at badgeid.ca.
 
 ## Out of Scope
 

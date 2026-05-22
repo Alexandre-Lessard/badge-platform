@@ -35,17 +35,17 @@ export const FILE_TOO_LARGE = "FILE_TOO_LARGE";
 // ── Admin ────────────────────────────────────────────────────────────
 export const ORDER_NOT_FOUND = "ORDER_NOT_FOUND";
 export const ORDER_LINE_NOT_FOUND = "ORDER_LINE_NOT_FOUND";
-export const INVALID_RNBP_FORMAT = "INVALID_RNBP_FORMAT";
+export const INVALID_BADGE_FORMAT = "INVALID_BADGE_FORMAT";
 export const ORDER_NOT_PAID = "ORDER_NOT_PAID";
 
 // ── Sticker codes ────────────────────────────────────────────────────
 export const INVALID_RANGE = "INVALID_RANGE";
 export const CODES_ALREADY_EXIST = "CODES_ALREADY_EXIST";
 export const CODES_NOT_REGISTERED = "CODES_NOT_REGISTERED";
-export const RNBP_CODE_UNKNOWN = "RNBP_CODE_UNKNOWN";
-export const RNBP_CODE_NOT_YOURS = "RNBP_CODE_NOT_YOURS";
-export const RNBP_CODE_ALREADY_USED = "RNBP_CODE_ALREADY_USED";
-export const RNBP_CODE_VOIDED = "RNBP_CODE_VOIDED";
+export const BADGE_CODE_UNKNOWN = "BADGE_CODE_UNKNOWN";
+export const BADGE_CODE_NOT_YOURS = "BADGE_CODE_NOT_YOURS";
+export const BADGE_CODE_ALREADY_USED = "BADGE_CODE_ALREADY_USED";
+export const BADGE_CODE_VOIDED = "BADGE_CODE_VOIDED";
 export const CODES_HAVE_CLAIMS = "CODES_HAVE_CLAIMS";
 
 // ── Products ─────────────────────────────────────────────────────────

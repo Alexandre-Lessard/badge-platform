@@ -14,7 +14,7 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 function detectLocale(): SupportedLocale {
   // SSR / build-time: no browser APIs available.
   // BUILD_LOCALE=en switches the prerender output to English (used to generate
-  // index.en.html for nrpp.ca). Access process via globalThis cast so we don't
+  // index.en.html for badgeid.ca). Access process via globalThis cast so we don't
   // need @types/node in the web app, and so the whole branch is dead-code in
   // the browser bundle — both FR and EN builds produce identical client assets,
   // only the prerendered HTML differs.
@@ -30,12 +30,7 @@ function detectLocale(): SupportedLocale {
   const stored = localStorage.getItem("locale");
   if (stored && stored in locales) return stored as SupportedLocale;
 
-  // 2. Hostname-based default (rnbp.ca → FR, nrpp.ca → EN)
-  const hostname = window.location.hostname;
-  if (hostname.includes("nrpp")) return "en";
-  if (hostname.includes("rnbp")) return "fr";
-
-  // 3. Browser language
+  // 2. Browser language
   const browserLang = navigator.language.slice(0, 2);
   if (browserLang in locales) return browserLang as SupportedLocale;
 

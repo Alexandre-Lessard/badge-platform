@@ -38,8 +38,8 @@ describe("FaqAccordion", () => {
           description="Réponse rapide au sujet du financement."
           items={[
             {
-              question: "Qui finance le RNBP?",
-              answer: "Le RNBP est financé par ses activités commerciales.",
+              question: "Qui finance Badge?",
+              answer: "Badge est financé par ses activités commerciales.",
             },
           ]}
         />
@@ -48,6 +48,6 @@ describe("FaqAccordion", () => {
 
     expect(screen.getByRole("heading", { name: "FAQ assureurs" })).toBeInTheDocument();
     expect(screen.getByText("Réponse rapide au sujet du financement.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Qui finance le RNBP?" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Qui finance Badge?" })).toBeInTheDocument();
   });
 });

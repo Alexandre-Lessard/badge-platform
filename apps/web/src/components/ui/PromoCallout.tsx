@@ -5,7 +5,7 @@ import { ROUTES } from "@/routes/routes";
 type PromoCalloutProps = {
   variant: "dashboard" | "item" | "registration";
   /** Pass the user's items to check if they already ordered stickers */
-  items?: { rnbpNumber?: string | null }[];
+  items?: { badgeCode?: string | null }[];
 };
 
 export function PromoCallout({ variant, items }: PromoCalloutProps) {
@@ -14,12 +14,12 @@ export function PromoCallout({ variant, items }: PromoCalloutProps) {
 
   if (!promo) return null;
 
-  // Hide if user already has at least one item with an RNBP number
-  if (items?.some((item) => item.rnbpNumber)) return null;
+  // Hide if user already has at least one item with an Badge code
+  if (items?.some((item) => item.badgeCode)) return null;
 
   const texts = {
     dashboard: promo.calloutDashboard ?? "Your items are not yet physically protected. Take advantage of the free offer!",
-    item: promo.calloutItem ?? "This item doesn't have an RNBP number yet. Order your stickers for free!",
+    item: promo.calloutItem ?? "This item doesn't have an Badge code yet. Order your stickers for free!",
     registration: promo.calloutRegistration ?? "Your item is registered! Order your stickers for free to protect it.",
   };
 

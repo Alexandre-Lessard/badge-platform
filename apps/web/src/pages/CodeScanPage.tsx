@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { getButtonClasses } from "@/lib/button-styles";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { AssignRnbpModal } from "@/components/AssignRnbpModal";
-import { normalizeRnbpCode } from "@rnbp/shared";
+import { normalizeBadgeCode } from "@rnbp/shared";
 import { ROUTES } from "@/routes/routes";
 
 type ScanResponse = {
@@ -37,7 +37,7 @@ const statusColors: Record<string, string> = {
 
 export function CodeScanPage() {
   const { code: rawCode } = useParams<{ code: string }>();
-  const code = normalizeRnbpCode(rawCode ?? "");
+  const code = normalizeBadgeCode(rawCode ?? "");
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { user } = useAuth();
@@ -62,7 +62,7 @@ export function CodeScanPage() {
 
   function handleAssignSuccess(_claimedCode: string, itemId: string) {
     // Send the user to their item's detail page — that's where they see the
-    // photos, the claimed RNBP code, and any next-step actions. Patching the
+    // photos, the claimed badge code, and any next-step actions. Patching the
     // scan-page card with partial data here would show empty placeholders.
     navigate(ROUTES.itemDetail(itemId));
   }
@@ -141,7 +141,7 @@ export function CodeScanPage() {
             to={ROUTES.contact}
             className={`${getButtonClasses("outline", "sm")} mt-6 inline-block`}
           >
-            {scan?.contactLink ?? "Contact the NRPP"}
+            {scan?.contactLink ?? "Contact the Badge"}
           </Link>
         </div>
       </section>
@@ -219,11 +219,11 @@ export function CodeScanPage() {
           {item.status === "stolen" && (
             <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {scan?.stolenBanner ??
-                "This item has been reported stolen. Contact the NRPP if you've recovered it."}
+                "This item has been reported stolen. Contact the Badge if you've recovered it."}
             </div>
           )}
           <p className="text-xs font-semibold uppercase tracking-wide text-[var(--rcb-text-muted)]">
-            {scan?.publicViewTitle ?? "Item registered with the NRPP"}
+            {scan?.publicViewTitle ?? "Item registered with the Badge"}
           </p>
           <h1 className="mt-1 text-xl font-bold text-[var(--rcb-text-strong)]">
             {[item.brand, item.model].filter(Boolean).join(" ") || item.category}
@@ -242,7 +242,7 @@ export function CodeScanPage() {
               to={ROUTES.contact}
               className={`${getButtonClasses("primary", "sm", "mt-6 w-full text-center")}`}
             >
-              {scan?.contactLink ?? "Contact the NRPP"}
+              {scan?.contactLink ?? "Contact the Badge"}
             </Link>
           )}
         </div>

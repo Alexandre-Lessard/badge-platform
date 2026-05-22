@@ -9,5 +9,5 @@ export const PRODUCT_SLUGS = {
 
 export type ProductSlug = (typeof PRODUCT_SLUGS)[keyof typeof PRODUCT_SLUGS];
 
-/** Number of unique RNBP codes per sticker sheet. */
+/** Number of unique badge codes per sticker sheet. */
 export const CODES_PER_SHEET = 10;

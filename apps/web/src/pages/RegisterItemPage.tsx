@@ -238,7 +238,7 @@ export function RegisterItemPage() {
   return (
     <section className="bg-[var(--rcb-white)] py-16">
       <div className="section-shell">
-        <title>{`${reg?.heading ?? "Register an item"} | RNBP`}</title>
+        <title>{`${reg?.heading ?? "Register an item"} | Badge`}</title>
         <h1 className="text-center text-3xl font-bold text-[var(--rcb-text-strong)]">
           {reg?.heading ?? "Register an item"}
         </h1>

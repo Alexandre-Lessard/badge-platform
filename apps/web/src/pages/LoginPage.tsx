@@ -61,7 +61,7 @@ export function LoginPage() {
         </h1>
         <p className="mt-2 text-[var(--rcb-text-muted)]">
           {t.auth?.loginDescription ??
-            "Log in to your RNBP account"}
+            "Log in to your Badge account"}
         </p>
 
         <div className="mt-8">

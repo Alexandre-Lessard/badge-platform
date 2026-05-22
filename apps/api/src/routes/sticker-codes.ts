@@ -5,13 +5,13 @@ import { getDb } from "../db/client.js";
 import { stickerCodes, items } from "../db/schema.js";
 import { requireVerifiedEmail, tryAuth } from "../middleware/auth.js";
 import {
-  rnbpNumberSchema,
-  normalizeRnbpCode,
-  INVALID_RNBP_FORMAT,
-  RNBP_CODE_UNKNOWN,
-  RNBP_CODE_NOT_YOURS,
-  RNBP_CODE_ALREADY_USED,
-  RNBP_CODE_VOIDED,
+  badgeCodeSchema,
+  normalizeBadgeCode,
+  INVALID_BADGE_FORMAT,
+  BADGE_CODE_UNKNOWN,
+  BADGE_CODE_NOT_YOURS,
+  BADGE_CODE_ALREADY_USED,
+  BADGE_CODE_VOIDED,
   ITEM_NOT_FOUND,
   ITEM_ALREADY_STOLEN,
 } from "@rnbp/shared";
@@ -31,11 +31,11 @@ export async function stickerCodesRoutes(app: FastifyInstance) {
     },
     async (request, reply) => {
       const rawCode = (request.params as { code: string }).code;
-      const code = normalizeRnbpCode(rawCode);
+      const code = normalizeBadgeCode(rawCode);
 
-      const parsed = rnbpNumberSchema.safeParse(code);
+      const parsed = badgeCodeSchema.safeParse(code);
       if (!parsed.success) {
-        throw new AppError(400, INVALID_RNBP_FORMAT, "Invalid RNBP code format");
+        throw new AppError(400, INVALID_BADGE_FORMAT, "Invalid badge code format");
       }
 
       const { itemId } = claimBodySchema.parse(request.body);
@@ -48,13 +48,13 @@ export async function stickerCodesRoutes(app: FastifyInstance) {
         .limit(1);
 
       if (!stickerCode) {
-        throw new AppError(404, RNBP_CODE_UNKNOWN, "Unknown RNBP code");
+        throw new AppError(404, BADGE_CODE_UNKNOWN, "Unknown badge code");
       }
       if (stickerCode.voidedAt) {
-        throw new AppError(410, RNBP_CODE_VOIDED, "This code is no longer valid");
+        throw new AppError(410, BADGE_CODE_VOIDED, "This code is no longer valid");
       }
       if (stickerCode.userId !== request.userId!) {
-        throw new AppError(403, RNBP_CODE_NOT_YOURS, "This code was not purchased on your account");
+        throw new AppError(403, BADGE_CODE_NOT_YOURS, "This code was not purchased on your account");
       }
 
       if (stickerCode.assignedItemId === itemId) {
@@ -63,7 +63,7 @@ export async function stickerCodesRoutes(app: FastifyInstance) {
       if (stickerCode.assignedItemId !== null) {
         throw new AppError(
           409,
-          RNBP_CODE_ALREADY_USED,
+          BADGE_CODE_ALREADY_USED,
           "This code is already assigned to another of your items",
         );
       }
@@ -72,7 +72,7 @@ export async function stickerCodesRoutes(app: FastifyInstance) {
         .select({
           ownerId: items.ownerId,
           status: items.status,
-          rnbpNumber: items.rnbpNumber,
+          badgeCode: items.badgeCode,
         })
         .from(items)
         .where(eq(items.id, itemId))
@@ -90,7 +90,7 @@ export async function stickerCodesRoutes(app: FastifyInstance) {
 
       await db.transaction(async (tx) => {
         // If the target item already had a code, free the previous one.
-        if (item.rnbpNumber) {
+        if (item.badgeCode) {
           await tx
             .update(stickerCodes)
             .set({ assignedItemId: null, claimedAt: null })
@@ -108,14 +108,14 @@ export async function stickerCodesRoutes(app: FastifyInstance) {
         if (claimed.length === 0) {
           throw new AppError(
             409,
-            RNBP_CODE_ALREADY_USED,
+            BADGE_CODE_ALREADY_USED,
             "This code was just claimed by another request",
           );
         }
 
         await tx
           .update(items)
-          .set({ rnbpNumber: code, updatedAt: new Date() })
+          .set({ badgeCode: code, updatedAt: new Date() })
           .where(eq(items.id, itemId));
       });
 
@@ -139,9 +139,9 @@ export async function stickerCodesRoutes(app: FastifyInstance) {
     },
     async (request, reply) => {
       const rawCode = (request.params as { code: string }).code;
-      const code = normalizeRnbpCode(rawCode);
+      const code = normalizeBadgeCode(rawCode);
 
-      if (!rnbpNumberSchema.safeParse(code).success) {
+      if (!badgeCodeSchema.safeParse(code).success) {
         return reply.send({ format: "invalid" as const });
       }
 

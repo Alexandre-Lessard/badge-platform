@@ -6,13 +6,13 @@ import { useLanguage } from "@/i18n/context";
 import { apiRequest } from "@/lib/api-client";
 import { getErrorMessage } from "@/lib/error-utils";
 import { getButtonClasses } from "@/lib/button-styles";
-import { normalizeRnbpCode, RNBP_REGEX } from "@rnbp/shared";
+import { normalizeBadgeCode, BADGE_CODE_REGEX } from "@rnbp/shared";
 import { ROUTES } from "@/routes/routes";
 
 type AssignableItem = {
   id: string;
   name: string;
-  rnbpNumber: string | null;
+  badgeCode: string | null;
 };
 
 type CommonProps = {
@@ -54,7 +54,7 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
       .then(({ items: list }) => {
         // Only items without a code can receive one (otherwise the claim would
         // overwrite their existing code, which is the edit-form's job, not this).
-        setItems(list.filter((i) => !i.rnbpNumber));
+        setItems(list.filter((i) => !i.badgeCode));
       })
       .catch((err) => setError(getErrorMessage(err, t)))
       .finally(() => setLoadingItems(false));
@@ -67,15 +67,15 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
     let code: string;
     let itemId: string;
     if (mode === "fixed-item") {
-      code = normalizeRnbpCode(codeInput);
+      code = normalizeBadgeCode(codeInput);
       itemId = props.itemId!;
     } else {
-      code = normalizeRnbpCode(props.code!);
+      code = normalizeBadgeCode(props.code!);
       itemId = pickedItemId;
     }
 
-    if (!RNBP_REGEX.test(code)) {
-      setError(t.apiErrors?.INVALID_RNBP_FORMAT ?? "Invalid RNBP code format.");
+    if (!BADGE_CODE_REGEX.test(code)) {
+      setError(t.apiErrors?.INVALID_BADGE_FORMAT ?? "Invalid badge code format.");
       return;
     }
     if (!itemId) {
@@ -109,7 +109,7 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
     <Modal
       open={open}
       onClose={onClose}
-      title={dash?.assignRnbpModalTitle ?? "Assign an RNBP code"}
+      title={dash?.assignBadgeModalTitle ?? "Assign an badge code"}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {mode === "fixed-item" && props.itemName && (
@@ -119,7 +119,7 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
         {mode === "fixed-item" ? (
           <>
             <p className="text-sm text-[var(--rcb-text-muted)]">
-              {dash?.assignRnbpModalHelp ??
+              {dash?.assignBadgeModalHelp ??
                 "Enter one of the codes printed on your sticker sheet."}
             </p>
             <input
@@ -127,7 +127,7 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
               autoFocus
               value={codeInput}
               onChange={(e) => setCodeInput(e.target.value)}
-              placeholder="RNBP-XXXXXXXX"
+              placeholder="BADGE-XXXXXXXX"
               maxLength={13}
               className="h-12 w-full rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-4 font-mono uppercase tracking-wider text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
             />
@@ -192,7 +192,7 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
             <Button type="submit" size="sm" disabled={submitDisabled}>
               {submitting
                 ? "..."
-                : (dash?.assignRnbpModalSubmit ?? "Assign")}
+                : (dash?.assignBadgeModalSubmit ?? "Assign")}
             </Button>
           )}
         </div>

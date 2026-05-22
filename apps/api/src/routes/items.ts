@@ -286,7 +286,7 @@ export async function itemRoutes(app: FastifyInstance) {
     },
   );
 
-  // ── Public unified lookup (RNBP number or serial number) ─────────
+  // ── Public unified lookup (badge code or serial number) ─────────
 
   app.get("/lookup", {
     config: { rateLimit: { max: 30, timeWindow: "1 minute" } },
@@ -311,7 +311,7 @@ export async function itemRoutes(app: FastifyInstance) {
       .from(items)
       .where(
         or(
-          eq(items.rnbpNumber, query),
+          eq(items.badgeCode, query),
           sql`upper(replace(replace(replace(${items.serialNumber}, ' ', ''), '-', ''), '_', '')) = ${normalized}`,
         ),
       )
@@ -330,12 +330,12 @@ export async function itemRoutes(app: FastifyInstance) {
     });
   });
 
-  // ── Public lookup by RNBP number (backward compat) ────────────
+  // ── Public lookup by badge code (backward compat) ────────────
 
-  app.get("/lookup/:rnbpNumber", {
+  app.get("/lookup/:badgeCode", {
     config: { rateLimit: { max: 30, timeWindow: "1 minute" } },
   }, async (request, reply) => {
-    const { rnbpNumber } = request.params as { rnbpNumber: string };
+    const { badgeCode } = request.params as { badgeCode: string };
     const db = getDb();
 
     const [item] = await db
@@ -346,7 +346,7 @@ export async function itemRoutes(app: FastifyInstance) {
         model: items.model,
       })
       .from(items)
-      .where(eq(items.rnbpNumber, rnbpNumber.toUpperCase()))
+      .where(eq(items.badgeCode, badgeCode.toUpperCase()))
       .limit(1);
 
     if (!item) {

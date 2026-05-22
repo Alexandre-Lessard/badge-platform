@@ -8,7 +8,7 @@ export function LookupPhotoPage() {
 
   const i18n = {
     fr: {
-      title: "Recherche par photo | RNBP",
+      title: "Recherche par photo | Badge",
       description: "Recherchez un bien enregistré à l'aide d'une photo.",
       heading: "Recherche par photo",
       badge: "Bientôt disponible",
@@ -17,7 +17,7 @@ export function LookupPhotoPage() {
       back: "Retour à la recherche",
     },
     en: {
-      title: "Photo search | NRPP",
+      title: "Photo search | Badge",
       description: "Search for a registered item using a photo.",
       heading: "Photo search",
       badge: "Coming soon",

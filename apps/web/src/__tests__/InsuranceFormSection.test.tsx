@@ -33,7 +33,7 @@ describe("InsuranceFormSection", () => {
 
     const textarea = screen.getByLabelText("Message pré-rempli") as HTMLTextAreaElement;
     expect(textarea.value).toContain("Intact Assurance");
-    expect(textarea.value).toContain("RNBP");
+    expect(textarea.value).toContain("Badge");
     expect(screen.getByText("Assureur sélectionné : Intact Assurance")).toBeInTheDocument();
     expect(scrollIntoView).toHaveBeenCalled();
   });

@@ -1,5 +1,5 @@
 /**
- * RNBP branded HTML email base template.
+ * Branded HTML email base template (Badge).
  * Table-based layout for Outlook compatibility. All styles inline.
  */
 
@@ -11,7 +11,7 @@ type BaseEmailOptions = {
 };
 
 /**
- * Wrap email body content in the branded RNBP template.
+ * Wrap email body content in the branded template.
  *
  * - Table-based (Outlook-safe, no flexbox/grid)
  * - All inline CSS
@@ -22,10 +22,9 @@ export function buildBaseEmail({ body, variant = "user" }: BaseEmailOptions): st
   const isAdmin = variant === "admin";
 
   const footerText = isAdmin
-    ? `<p style="color: #999999; font-size: 11px; margin: 0;">RNBP — Notification automatique</p>`
-    : `<p style="color: #999999; font-size: 12px; margin: 0;">RNBP — Registre national des biens personnels</p>
-       <p style="color: #999999; font-size: 12px; margin: 4px 0 0;">NRPP — National Registry of Personal Property</p>
-       <p style="color: #999999; font-size: 11px; margin: 8px 0 0;"><a href="mailto:info@rnbp.ca" style="color: #999999;">info@rnbp.ca</a> · <a href="https://rnbp.ca" style="color: #999999;">rnbp.ca</a></p>`;
+    ? `<p style="color: #999999; font-size: 11px; margin: 0;">Badge — Notification automatique</p>`
+    : `<p style="color: #999999; font-size: 12px; margin: 0;">Badge — Identifiez. Protégez. Récupérez.</p>
+       <p style="color: #999999; font-size: 11px; margin: 8px 0 0;"><a href="mailto:info@badgeid.ca" style="color: #999999;">info@badgeid.ca</a> · <a href="https://badgeid.ca" style="color: #999999;">badgeid.ca</a></p>`;
 
   return `<!DOCTYPE html>
 <html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
@@ -34,7 +33,7 @@ export function buildBaseEmail({ body, variant = "user" }: BaseEmailOptions): st
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <meta name="supported-color-schemes" content="light dark">
-  <title>RNBP</title>
+  <title>Badge</title>
   <!--[if mso]>
   <style>table,td{font-family:Arial,sans-serif!important;}</style>
   <![endif]-->
@@ -54,8 +53,8 @@ export function buildBaseEmail({ body, variant = "user" }: BaseEmailOptions): st
             <td style="background-color: #ffffff; padding: 24px 32px 16px; text-align: left;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td style="font-size: 20px; font-weight: 700; color: #1a2e44; letter-spacing: 0.5px;">RNBP</td>
-                  <td style="padding-left: 8px; font-size: 11px; color: #999999; vertical-align: bottom; padding-bottom: 2px;">Registre national des biens personnels</td>
+                  <td style="font-size: 20px; font-weight: 700; color: #1a2e44; letter-spacing: 0.5px;">Badge</td>
+                  <td style="padding-left: 8px; font-size: 11px; color: #999999; vertical-align: bottom; padding-bottom: 2px;">badgeid.ca</td>
                 </tr>
               </table>
             </td>

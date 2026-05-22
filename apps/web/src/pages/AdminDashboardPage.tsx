@@ -326,7 +326,7 @@ export function AdminDashboardPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <title>{`Admin — ${d.title} | RNBP`}</title>
+      <title>{`Admin — ${d.title} | Badge`}</title>
       {/* Page title */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--rcb-text-strong)] lg:text-3xl">

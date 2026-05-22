@@ -89,7 +89,7 @@ export function ItemDetailPage() {
   }
 
   function handleAssignSuccess(code: string) {
-    setItem((prev) => (prev ? { ...prev, rnbpNumber: code } : prev));
+    setItem((prev) => (prev ? { ...prev, badgeCode: code } : prev));
   }
 
   const canArchive = archiveReason !== "" && (archiveReason !== "other" || archiveCustom.trim() !== "");
@@ -121,7 +121,7 @@ export function ItemDetailPage() {
 
   return (
     <section className="min-h-[80vh] bg-[var(--rcb-white)]">
-      <title>{`${item.name} | RNBP`}</title>
+      <title>{`${item.name} | Badge`}</title>
       <div className="section-shell py-16">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -168,17 +168,17 @@ export function ItemDetailPage() {
             </span>
           </div>
 
-          {/* RNBP number */}
-          {item.rnbpNumber ? (
+          {/* Badge code */}
+          {item.badgeCode ? (
             <div className="mt-4 inline-block rounded-lg bg-[var(--rcb-surface)] px-4 py-2">
-              <span className="text-xs text-[var(--rcb-text-muted)]">RNBP</span>
-              <p className="font-mono text-lg font-bold tracking-wider text-[var(--rcb-primary)]">{item.rnbpNumber}</p>
+              <span className="text-xs text-[var(--rcb-text-muted)]">Badge</span>
+              <p className="font-mono text-lg font-bold tracking-wider text-[var(--rcb-primary)]">{item.badgeCode}</p>
             </div>
           ) : (
             item.status === "active" && (
               <div className="mt-4">
                 <Button size="sm" variant="outline" onClick={() => setAssignOpen(true)}>
-                  {dash?.assignRnbpButton ?? "Assign an RNBP code"}
+                  {dash?.assignBadgeButton ?? "Assign an badge code"}
                 </Button>
               </div>
             )
@@ -296,7 +296,7 @@ export function ItemDetailPage() {
         </div>
       </Modal>
 
-      {/* Assign-RNBP modal */}
+      {/* Assign-badge modal */}
       <AssignRnbpModal
         open={assignOpen}
         onClose={() => setAssignOpen(false)}

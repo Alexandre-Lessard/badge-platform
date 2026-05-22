@@ -2,65 +2,65 @@ import type { SiteContent } from "@/types/content";
 
 const fr: SiteContent = {
   meta: {
-    title: "Registre national des biens personnels",
+    title: "Badge",
     description:
-      "Registre national des biens personnels \u2014 prot\u00e9gez et retrouvez vos biens de valeur.",
+      "Badge \u2014 prot\u00e9gez et retrouvez vos biens de valeur.",
   },
   pages: {
     home: {
-      title: "Protégez et retrouvez vos biens de valeur | RNBP Canada",
+      title: "Protégez et retrouvez vos biens de valeur | Badge Canada",
       description: "Enregistrez vos biens de valeur dans un registre sécurisé. Protégez et retrouvez vos biens en cas de perte ou de vol.",
     },
     faq: {
-      title: "Questions fréquentes | RNBP",
-      description: "Trouvez les réponses aux questions courantes sur l'enregistrement de vos biens au Registre national des biens personnels.",
+      title: "Questions fréquentes | Badge",
+      description: "Trouvez les réponses aux questions courantes sur l'enregistrement de vos biens au Badge.",
     },
     partners: {
-      title: "Consulter le registre | RNBP",
+      title: "Consulter le registre | Badge",
       description: "Consultez le registre pour vérifier un bien. Citoyens, services policiers et compagnies d'assurance.",
     },
     privacy: {
-      title: "Politique de confidentialité | RNBP",
-      description: "Découvrez comment le RNBP protège vos renseignements personnels et respecte les lois fédérales sur la vie privée.",
+      title: "Politique de confidentialité | Badge",
+      description: "Découvrez comment Badge protège vos renseignements personnels et respecte les lois fédérales sur la vie privée.",
     },
     terms: {
-      title: "Conditions d'utilisation | RNBP",
-      description: "Consultez les conditions d'utilisation du Registre national des biens personnels.",
+      title: "Conditions d'utilisation | Badge",
+      description: "Consultez les conditions d'utilisation du Badge.",
     },
     dataDeletion: {
-      title: "Suppression de votre compte | RNBP",
-      description: "Comment demander la suppression complète de votre compte et de vos données du Registre national des biens personnels.",
+      title: "Suppression de votre compte | Badge",
+      description: "Comment demander la suppression complète de votre compte et de vos données du Badge.",
     },
     about: {
-      title: "À propos | RNBP",
-      description: "Découvrez le Registre national des biens personnels, une plateforme pour protéger, identifier et retrouver vos biens de valeur.",
+      title: "À propos | Badge",
+      description: "Découvrez le Badge, une plateforme pour protéger, identifier et retrouver vos biens de valeur.",
     },
     lookup: {
-      title: "Vérifier un bien | RNBP",
-      description: "Entrez un numéro RNBP, un numéro de série ou un autre identifiant compatible pour vérifier le statut d'un bien enregistré.",
+      title: "Vérifier un bien | Badge",
+      description: "Entrez un badge, un numéro de série ou un autre identifiant compatible pour vérifier le statut d'un bien enregistré.",
     },
     login: {
-      title: "Connexion | RNBP",
-      description: "Connectez-vous à votre compte RNBP pour gérer vos biens enregistrés.",
+      title: "Connexion | Badge",
+      description: "Connectez-vous à votre compte Badge pour gérer vos biens enregistrés.",
     },
     register: {
-      title: "Créer un compte | RNBP",
-      description: "Inscrivez-vous gratuitement au RNBP pour enregistrer et protéger vos biens de valeur.",
+      title: "Créer un compte | Badge",
+      description: "Inscrivez-vous gratuitement à Badge pour enregistrer et protéger vos biens de valeur.",
     },
     contact: {
-      title: "Contactez-nous | RNBP",
+      title: "Contactez-nous | Badge",
       description: "Une question ou un commentaire\u00a0? Envoyez-nous un message et nous vous répondrons dans les plus brefs délais.",
     },
     shop: {
-      title: "Boutique | RNBP",
-      description: "Achetez des étiquettes d'identification RNBP pour protéger vos biens de valeur.",
+      title: "Boutique | Badge",
+      description: "Achetez des étiquettes d'identification Badge pour protéger vos biens de valeur.",
     },
     shopSuccess: {
-      title: "Commande confirmée | RNBP",
+      title: "Commande confirmée | Badge",
       description: "Votre commande a été confirmée avec succès.",
     },
     profile: {
-      title: "Mon profil | RNBP",
+      title: "Mon profil | Badge",
       description: "Gérez vos informations personnelles et votre adresse civique.",
     },
   },
@@ -121,7 +121,7 @@ const fr: SiteContent = {
     headingLine1: "Le Registre national",
     headingLine2: "des biens personnels",
     description:
-      "Le RNBP couvre une grande variété de biens, incluant le matériel roulant, l\u2019électronique, les outils spécialisés et d\u2019autres articles de valeur.",
+      "Badge couvre une grande variété de biens, incluant le matériel roulant, l\u2019électronique, les outils spécialisés et d\u2019autres articles de valeur.",
     tagline:
       "Une preuve claire de propri\u00e9t\u00e9, au m\u00eame endroit.",
     imageAlt: "Tracteur \u00e0 gazon",
@@ -130,7 +130,7 @@ const fr: SiteContent = {
   allCategories: {
     heading: "Types de biens admissibles",
     description:
-      "Le RNBP vous permet d\u2019enregistrer tout bien personnel d\u2019une valeur de plus de 250\u00a0$.",
+      "Badge vous permet d\u2019enregistrer tout bien personnel d\u2019une valeur de plus de 250\u00a0$.",
     toggleButton: "Afficher les cat\u00e9gories",
     items: [
       "V\u00e9lo \u00e9lectrique",
@@ -232,9 +232,9 @@ const fr: SiteContent = {
           "L\u2019enregistrement de vos biens est enti\u00e8rement gratuit. Aucun frais cach\u00e9, aucun abonnement. Vous pouvez enregistrer autant de biens que vous le souhaitez sans rien payer.",
       },
       {
-        question: "Qui finance le RNBP?",
+        question: "Qui finance Badge?",
         answer:
-          "Le RNBP est soutenu financi\u00e8rement en partie par des partenaires issus de l\u2019industrie de l\u2019assurance. Ces acteurs ont un int\u00e9r\u00eat direct \u00e0 am\u00e9liorer la tra\u00e7abilit\u00e9 et la r\u00e9cup\u00e9ration des biens vol\u00e9s ou perdus.",
+          "Badge est soutenu financi\u00e8rement en partie par des partenaires issus de l\u2019industrie de l\u2019assurance. Ces acteurs ont un int\u00e9r\u00eat direct \u00e0 am\u00e9liorer la tra\u00e7abilit\u00e9 et la r\u00e9cup\u00e9ration des biens vol\u00e9s ou perdus.",
       },
       {
         question: "Quel est le seuil minimum\u00a0?",
@@ -244,7 +244,7 @@ const fr: SiteContent = {
       {
         question: "Mes donn\u00e9es sont-elles prot\u00e9g\u00e9es\u00a0?",
         answer:
-          "Oui. Le RNBP respecte les lois f\u00e9d\u00e9rales sur la protection des donn\u00e9es. Vos informations personnelles ne sont jamais vendues ni partag\u00e9es sans consentement.",
+          "Oui. Badge respecte les lois f\u00e9d\u00e9rales sur la protection des donn\u00e9es. Vos informations personnelles ne sont jamais vendues ni partag\u00e9es sans consentement.",
       },
       {
         question:
@@ -268,7 +268,7 @@ const fr: SiteContent = {
         question:
           "Pourquoi le registre est-il n\u00e9cessaire\u00a0?",
         answer:
-          "Chaque ann\u00e9e, des milliers de biens sont perdus ou vol\u00e9s au Canada, et la majorit\u00e9 ne sont jamais retrouv\u00e9s. Sans preuve centralis\u00e9e de propri\u00e9t\u00e9, il est difficile pour la police d\u2019identifier un propri\u00e9taire et pour les assureurs de traiter efficacement une r\u00e9clamation. Le RNBP cr\u00e9e une preuve officielle, s\u00e9curis\u00e9e et dat\u00e9e de vos biens \u2014 num\u00e9ro de s\u00e9rie, photos, preuves d\u2019achat \u2014 dans un dossier unique. Il transforme un objet anonyme en bien identifiable, rend la revente de biens vol\u00e9s beaucoup plus difficile et acc\u00e9l\u00e8re vos d\u00e9marches de restitution.",
+          "Chaque ann\u00e9e, des milliers de biens sont perdus ou vol\u00e9s au Canada, et la majorit\u00e9 ne sont jamais retrouv\u00e9s. Sans preuve centralis\u00e9e de propri\u00e9t\u00e9, il est difficile pour la police d\u2019identifier un propri\u00e9taire et pour les assureurs de traiter efficacement une r\u00e9clamation. Badge cr\u00e9e une preuve officielle, s\u00e9curis\u00e9e et dat\u00e9e de vos biens \u2014 num\u00e9ro de s\u00e9rie, photos, preuves d\u2019achat \u2014 dans un dossier unique. Il transforme un objet anonyme en bien identifiable, rend la revente de biens vol\u00e9s beaucoup plus difficile et acc\u00e9l\u00e8re vos d\u00e9marches de restitution.",
       },
       {
         question: "Quels types de biens puis-je enregistrer\u00a0?",
@@ -294,12 +294,12 @@ const fr: SiteContent = {
       {
         question: "Puis-je enregistrer un bien sans num\u00e9ro de s\u00e9rie\u00a0?",
         answer:
-          "Oui. Il est possible d\u2019enregistrer un bien en ajoutant des photos, une description d\u00e9taill\u00e9e et d\u2019autres caract\u00e9ristiques permettant de l\u2019identifier. Toutefois, l\u2019ajout d\u2019un num\u00e9ro de s\u00e9rie est recommand\u00e9. L\u2019utilisation d\u2019autocollants d\u2019enregistrement disponibles dans la boutique en ligne du RNBP permet \u00e9galement d\u2019am\u00e9liorer l\u2019identification du bien.",
+          "Oui. Il est possible d\u2019enregistrer un bien en ajoutant des photos, une description d\u00e9taill\u00e9e et d\u2019autres caract\u00e9ristiques permettant de l\u2019identifier. Toutefois, l\u2019ajout d\u2019un num\u00e9ro de s\u00e9rie est recommand\u00e9. L\u2019utilisation d\u2019autocollants d\u2019enregistrement disponibles dans la boutique en ligne de Badge permet \u00e9galement d\u2019am\u00e9liorer l\u2019identification du bien.",
       },
       {
         question: "Comment puis-je r\u00e9cup\u00e9rer mon bien\u00a0?",
         answer:
-          "Lorsqu\u2019un bien enregistr\u00e9 au RNBP est retrouv\u00e9, celui-ci est pris en charge par le registre afin d\u2019en v\u00e9rifier l\u2019identification et la propri\u00e9t\u00e9. Une fois la propri\u00e9t\u00e9 confirm\u00e9e gr\u00e2ce aux informations enregistr\u00e9es (photos, description, num\u00e9ro de s\u00e9rie, etc.), le RNBP communique avec le propri\u00e9taire et organise la restitution du bien.",
+          "Lorsqu\u2019un bien enregistr\u00e9 à Badge est retrouv\u00e9, celui-ci est pris en charge par le registre afin d\u2019en v\u00e9rifier l\u2019identification et la propri\u00e9t\u00e9. Une fois la propri\u00e9t\u00e9 confirm\u00e9e gr\u00e2ce aux informations enregistr\u00e9es (photos, description, num\u00e9ro de s\u00e9rie, etc.), Badge communique avec le propri\u00e9taire et organise la restitution du bien.",
       },
       {
         question: "Y a-t-il des frais pour r\u00e9cup\u00e9rer mon bien\u00a0?",
@@ -343,7 +343,7 @@ const fr: SiteContent = {
       {
         question: "Le registre peut-il aider \u00e0 dissuader le vol\u00a0?",
         answer:
-          "Oui. Un objet enregistr\u00e9 et identifiable RNBP est plus difficile \u00e0 revendre et peut \u00eatre plus facilement retrac\u00e9.",
+          "Oui. Un objet enregistr\u00e9 et identifiabBadge est plus difficile \u00e0 revendre et peut \u00eatre plus facilement retrac\u00e9.",
       },
       {
         question: "Puis-je supprimer mon compte\u00a0?",
@@ -366,19 +366,19 @@ const fr: SiteContent = {
           "Non. Le registre ne remplace pas une assurance, mais il peut faciliter certaines d\u00e9marches en cas de vol.",
       },
       {
-        question: "Si mon bien est d\u00e9j\u00e0 assur\u00e9 par mon assurance habitation, dois-je quand m\u00eame l\u2019enregistrer sur le RNBP\u00a0?",
+        question: "Si mon bien est d\u00e9j\u00e0 assur\u00e9 par mon assurance habitation, dois-je quand m\u00eame l\u2019enregistrer sur Badge\u00a0?",
         answer:
-          "Oui. L\u2019enregistrement de votre bien au RNBP peut r\u00e9duire les cons\u00e9quences d\u2019un vol dans le cas o\u00f9 le bien serait retrouv\u00e9. Celui-ci pourrait alors \u00eatre identifi\u00e9 et restitu\u00e9 \u00e0 son propri\u00e9taire ou \u00e0 l\u2019assureur, ce qui peut diminuer les pertes li\u00e9es au sinistre.",
+          "Oui. L\u2019enregistrement de votre bien à Badge peut r\u00e9duire les cons\u00e9quences d\u2019un vol dans le cas o\u00f9 le bien serait retrouv\u00e9. Celui-ci pourrait alors \u00eatre identifi\u00e9 et restitu\u00e9 \u00e0 son propri\u00e9taire ou \u00e0 l\u2019assureur, ce qui peut diminuer les pertes li\u00e9es au sinistre.",
       },
       {
         question: "Quel est l\u2019avantage pour mon assureur habitation de me donner un rabais\u00a0?",
         answer:
-          "Certains biens sont couverts par l\u2019assurance habitation. Si un assureur indemnise un assur\u00e9 \u00e0 la suite d\u2019un vol et que le bien est retrouv\u00e9 par la suite gr\u00e2ce au registre, celui-ci peut \u00eatre r\u00e9cup\u00e9r\u00e9 et remis \u00e0 l\u2019assureur. Cela permet de r\u00e9duire la perte financi\u00e8re li\u00e9e \u00e0 l\u2019indemnisation, ce qui explique pourquoi certains assureurs offrent un rabais aux assur\u00e9s qui enregistrent leurs biens au RNBP.",
+          "Certains biens sont couverts par l\u2019assurance habitation. Si un assureur indemnise un assur\u00e9 \u00e0 la suite d\u2019un vol et que le bien est retrouv\u00e9 par la suite gr\u00e2ce au registre, celui-ci peut \u00eatre r\u00e9cup\u00e9r\u00e9 et remis \u00e0 l\u2019assureur. Cela permet de r\u00e9duire la perte financi\u00e8re li\u00e9e \u00e0 l\u2019indemnisation, ce qui explique pourquoi certains assureurs offrent un rabais aux assur\u00e9s qui enregistrent leurs biens à Badge.",
       },
       {
-        question: "Quels biens n\u2019est-il pas n\u00e9cessaire d\u2019enregistrer au RNBP\u00a0?",
+        question: "Quels biens n\u2019est-il pas n\u00e9cessaire d\u2019enregistrer à Badge\u00a0?",
         answer:
-          "Les immeubles, les v\u00e9hicules immatricul\u00e9s et les armes \u00e0 feu n\u2019ont g\u00e9n\u00e9ralement pas besoin d\u2019\u00eatre enregistr\u00e9s au RNBP, car ces biens disposent d\u00e9j\u00e0 de leurs propres registres officiels. Le RNBP vise principalement les biens personnels qui ne sont pas couverts par un registre existant.",
+          "Les immeubles, les v\u00e9hicules immatricul\u00e9s et les armes \u00e0 feu n\u2019ont g\u00e9n\u00e9ralement pas besoin d\u2019\u00eatre enregistr\u00e9s à Badge, car ces biens disposent d\u00e9j\u00e0 de leurs propres registres officiels. Badge vise principalement les biens personnels qui ne sont pas couverts par un registre existant.",
       },
     ],
   },
@@ -393,8 +393,8 @@ const fr: SiteContent = {
     dataDeletion: "Suppression de compte",
     cookieSettings: "Param\u00e8tres de cookies",
     copyright:
-      "\u00a9 {{year}} Registre national des biens personnels. Tous droits r\u00e9serv\u00e9s.",
-    promoLine: "Protégez vos biens — Autocollants RNBP gratuits",
+      "\u00a9 {{year}} Badge. Tous droits r\u00e9serv\u00e9s.",
+    promoLine: "Protégez vos biens — Autocollants Badge gratuits",
   },
   buttons: {
     registerItem: "Enregistrer gratuitement",
@@ -406,11 +406,11 @@ const fr: SiteContent = {
     skipToContent: "Aller au contenu principal",
     mainNav: "Navigation principale",
     mobileNav: "Navigation mobile",
-    logoAlt: "RNBP",
+    logoAlt: "Badge",
   },
   auth: {
     loginHeading: "Connexion",
-    loginDescription: "Connectez-vous à votre compte RNBP",
+    loginDescription: "Connectez-vous à votre compte Badge",
     registerHeading: "Créer un compte",
     registerDescription: "Inscrivez-vous pour enregistrer vos biens",
     emailLabel: "Courriel",
@@ -460,14 +460,14 @@ const fr: SiteContent = {
     alreadyInCartCancel: "Non merci",
     alreadyInCartViewCart: "Voir le panier",
     awaitingNumber: "En attente d'attribution",
-    noNumberHint: "Aucun code RNBP attribué pour le moment.",
+    noNumberHint: "Aucun code Badge attribué pour le moment.",
     clientNumber: "No. client",
     editItem: "Modifier",
-    assignRnbpButton: "Assigner un code RNBP",
-    assignRnbpModalTitle: "Assigner un code RNBP",
-    assignRnbpModalHelp: "Saisissez l'un des codes imprimés sur votre feuille d'autocollants.",
-    assignRnbpModalSubmit: "Assigner",
-    assignRnbpSuccess: "Code RNBP assigné. Votre bien est maintenant protégé.",
+    assignBadgeButton: "Assigner un code Badge",
+    assignBadgeModalTitle: "Assigner un code Badge",
+    assignBadgeModalHelp: "Saisissez l'un des codes imprimés sur votre feuille d'autocollants.",
+    assignBadgeModalSubmit: "Assigner",
+    assignBadgeSuccess: "Code Badge assigné. Votre bien est maintenant protégé.",
     orderStickersGlobal: "Acheter des autocollants",
   },
   editItem: {
@@ -483,9 +483,9 @@ const fr: SiteContent = {
     recoverConfirmButton: "Oui, marquer comme retrouvé",
     recoverCancel: "Annuler",
     recovering: "En cours…",
-    rnbpNumberLabel: "Numéro RNBP",
-    rnbpNumberHelper: "Entrez le code imprimé sur votre autocollant pour lier physiquement ce bien au registre.",
-    rnbpOverwriteWarning: "Modifier ce code remplacera l'identifiant publié dans le registre. Utilisez cette option pour corriger une faute de frappe ou remplacer une feuille endommagée.",
+    badgeCodeLabel: "Badge",
+    badgeCodeHelper: "Entrez le code imprimé sur votre autocollant pour lier physiquement ce bien au registre.",
+    badgeCodeOverwriteWarning: "Modifier ce code remplacera l'identifiant publié dans le registre. Utilisez cette option pour corriger une faute de frappe ou remplacer une feuille endommagée.",
   },
   settings: {
     heading: "Paramètres",
@@ -539,7 +539,7 @@ const fr: SiteContent = {
   },
   registration: {
     heading: "Enregistrer un bien",
-    description: "Remplissez le formulaire pour enregistrer votre bien dans le RNBP.",
+    description: "Remplissez le formulaire pour enregistrer votre bien dans Badge.",
     step1Title: "Informations du bien",
     step2Title: "Photos et documents",
     step3Title: "Protection",
@@ -572,12 +572,12 @@ const fr: SiteContent = {
     confirmButton: "Confirmer l'enregistrement",
     submitting: "Enregistrement...",
     successHeading: "Bien enregistré avec succès !",
-    successDescription: "Votre bien a été enregistré dans le RNBP.",
-    successNoNumber: "Commandez des autocollants dans la boutique pour recevoir votre numéro RNBP unique.",
-    rnbpNumberLabel: "Votre numéro RNBP",
+    successDescription: "Votre bien a été enregistré dans Badge.",
+    successNoNumber: "Commandez des autocollants dans la boutique pour recevoir votre badge unique.",
+    badgeCodeLabel: "Votre badge",
     goToDashboard: "Voir mon tableau de bord",
     stickerHeading: "Protégez votre bien avec nos étiquettes d'identification",
-    stickerPitch: "Nos étiquettes inaltérables affichent votre numéro RNBP unique. Apposez-les sur vos biens pour faciliter leur identification et leur récupération en cas de vol. Effet dissuasif garanti.",
+    stickerPitch: "Nos étiquettes inaltérables affichent votre badge unique. Apposez-les sur vos biens pour faciliter leur identification et leur récupération en cas de vol. Effet dissuasif garanti.",
     stickerCta: "Commander mes étiquettes",
     addToCart: "Ajouter au panier",
     addedToCart: "Ajouté au panier !",
@@ -585,15 +585,15 @@ const fr: SiteContent = {
   },
   shop: {
     heading: "Boutique",
-    productName: "Feuille de 10 autocollants d'identification RNBP",
-    productDescription: "Chaque feuille contient 10 codes RNBP uniques que vous assignez vous-même à vos biens depuis votre tableau de bord.",
+    productName: "Feuille de 10 autocollants d'identification Badge",
+    productDescription: "Chaque feuille contient 10 codes Badge uniques que vous assignez vous-même à vos biens depuis votre tableau de bord.",
     productFeatures: [
       "10 autocollants uniques",
-      "Codes RNBP à associer à vos biens",
+      "Codes Badge à associer à vos biens",
       "Matériau durable",
       "Livraison incluse partout au Canada",
     ],
-    productImageAlt: "Feuille de 10 autocollants d'identification RNBP",
+    productImageAlt: "Feuille de 10 autocollants d'identification Badge",
     priceLabel: "Prix",
     quantityLabel: "Quantité",
     buyButton: "Acheter",
@@ -645,7 +645,7 @@ const fr: SiteContent = {
     description: "Vérifiez le statut d'un bien enregistré.",
     inputLabel: "Identifiant du bien à vérifier",
     inputPlaceholder: "Identifiant unique",
-    inputHint: "Numéro RNBP, numéro de série ou autre identifiant compatible",
+    inputHint: "Badge, numéro de série ou autre identifiant compatible",
     searchButton: "Vérifier",
     searching: "Recherche...",
     foundMessage: "Bien trouvé dans le registre",
@@ -660,9 +660,9 @@ const fr: SiteContent = {
     yourItem: "Votre bien",
     viewItem: "Voir la fiche",
     markRecovered: "Marquer comme retrouvé",
-    publicViewTitle: "Bien enregistré au RNBP",
-    stolenBanner: "Ce bien a été déclaré volé. Contactez le RNBP si vous l'avez retrouvé.",
-    contactLink: "Contacter le RNBP",
+    publicViewTitle: "Bien enregistré à Badge",
+    stolenBanner: "Ce bien a été déclaré volé. Contactez Badge si vous l'avez retrouvé.",
+    contactLink: "Contacter Badge",
     codeIsYours: "Ce code vous appartient !",
     assignPrompt: "Voulez-vous l'assigner à un de vos biens ?",
     assignButton: "Assigner",
@@ -698,25 +698,25 @@ const fr: SiteContent = {
     contactButton: "Nous contacter",
     policeAccordion: {
       title: "Découvrez les avantages pour la police",
-      intro: "Le Registre national des biens personnels (RNBP) est une infrastructure numérique visant à améliorer l\u2019identification, la traçabilité et la restitution des biens volés ou retrouvés au Canada.\nEn collaborant avec les services policiers, le RNBP permet d\u2019optimiser la gestion des biens retrouvés, de réduire les tâches administratives et d\u2019augmenter le taux de restitution aux propriétaires légitimes.",
+      intro: "Badge est une infrastructure numérique visant à améliorer l\u2019identification, la traçabilité et la restitution des biens volés ou retrouvés au Canada.\nEn collaborant avec les services policiers, Badge permet d\u2019optimiser la gestion des biens retrouvés, de réduire les tâches administratives et d\u2019augmenter le taux de restitution aux propriétaires légitimes.",
       subheading: "Les avantages pour les services policiers",
       advantages: [
         { title: "Identification rapide des biens retrouvés", text: "Grâce au registre national, les policiers peuvent vérifier rapidement si un objet (vélo, outil, appareil électronique, etc.) est enregistré et identifier son propriétaire en quelques secondes." },
-        { title: "Gain d\u2019efficacité opérationnelle", text: "Le RNBP réduit le temps consacré à la recherche de propriétaires et à la gestion administrative des objets retrouvés." },
+        { title: "Gain d\u2019efficacité opérationnelle", text: "Badge réduit le temps consacré à la recherche de propriétaires et à la gestion administrative des objets retrouvés." },
         { title: "Réduction de l\u2019entreposage dans les postes de police", text: "Les salles d\u2019entreposage des services policiers sont souvent remplies de biens non identifiés. Le registre permet de retrouver plus rapidement les propriétaires et de libérer de l\u2019espace." },
         { title: "Amélioration du travail d\u2019enquête", text: "Les biens enregistrés incluent souvent des photos, numéros de série et descriptions détaillées, facilitant la preuve de propriété et certaines enquêtes." },
         { title: "Lutte contre le recel", text: "La traçabilité des biens rend la revente d\u2019objets volés plus difficile et contribue à décourager certains réseaux de revente illégale." },
         { title: "Augmentation du taux de restitution", text: "Les biens retrouvés peuvent être retournés beaucoup plus rapidement à leurs propriétaires, améliorant la satisfaction des citoyens." },
         { title: "Réduction des procédures liées aux biens non réclamés", text: "Moins d\u2019objets non identifiés signifie moins de ventes aux enchères, moins de destruction de matériel et moins de gestion administrative." },
-        { title: "Service de récupération et de restitution offert par le RNBP", text: "Le registre peut également prendre en charge la coordination de la récupération et de la restitution des biens au propriétaire, ce qui réduit encore davantage les tâches logistiques pour les services policiers." },
+        { title: "Service de récupération et de restitution offert par Badge", text: "Le registre peut également prendre en charge la coordination de la récupération et de la restitution des biens au propriétaire, ce qui réduit encore davantage les tâches logistiques pour les services policiers." },
         { title: "Collaboration facilitée avec les assureurs", text: "Le registre permet de coordonner efficacement les dossiers impliquant des assureurs lorsque les biens volés ont déjà fait l\u2019objet d\u2019une indemnisation." },
-        { title: "Intégration technologique", text: "Le RNBP offre aux services policiers un accès gratuit à une application dotée d\u2019intelligence artificielle permettant d\u2019effectuer des vérifications automatisées et instantanées dans le registre national, afin d\u2019identifier rapidement le propriétaire d\u2019un bien retrouvé et faciliter sa restitution." },
+        { title: "Intégration technologique", text: "Badge offre aux services policiers un accès gratuit à une application dotée d\u2019intelligence artificielle permettant d\u2019effectuer des vérifications automatisées et instantanées dans le registre national, afin d\u2019identifier rapidement le propriétaire d\u2019un bien retrouvé et faciliter sa restitution." },
         { title: "Amélioration de la relation avec les citoyens", text: "La restitution rapide des biens volés renforce la confiance du public envers les services policiers." },
       ],
     },
     insurerAccordion: {
       title: "Découvrez les avantages pour les assurances",
-      intro: "Le Registre national des biens personnels (RNBP) collabore avec les assureurs afin d\u2019améliorer la traçabilité des biens de valeur et d\u2019augmenter les chances de récupération en cas de vol.\nEn facilitant l\u2019identification et la restitution des biens retrouvés, le RNBP contribue à réduire les pertes financières liées aux réclamations d\u2019assurance et à améliorer l\u2019efficacité du traitement des dossiers.",
+      intro: "Badge collabore avec les assureurs afin d\u2019améliorer la traçabilité des biens de valeur et d\u2019augmenter les chances de récupération en cas de vol.\nEn facilitant l\u2019identification et la restitution des biens retrouvés, Badge contribue à réduire les pertes financières liées aux réclamations d\u2019assurance et à améliorer l\u2019efficacité du traitement des dossiers.",
       subheading: "Les avantages pour les assureurs",
       advantages: [
         { title: "Réduction des pertes liées aux vols", text: "La possibilité d\u2019identifier et de récupérer un bien volé peut permettre à l\u2019assureur de réduire ou d\u2019éviter une indemnisation complète." },
@@ -728,10 +728,10 @@ const fr: SiteContent = {
         { title: "Réduction du coût moyen des réclamations", text: "Une meilleure traçabilité et un taux de récupération plus élevé peuvent contribuer à réduire le coût global des sinistres liés au vol." },
         { title: "Outil de prévention pour les assurés", text: "Les assureurs peuvent recommander l\u2019utilisation du registre à leurs clients comme mesure proactive de protection des biens." },
         { title: "Amélioration de la relation client", text: "La possibilité d\u2019augmenter les chances de récupération d\u2019un bien volé peut renforcer la satisfaction et la fidélité des assurés." },
-        { title: "Intégration technologique", text: "Le RNBP peut offrir une intégration API avec les systèmes d\u2019assurance, facilitant les vérifications automatisées lors du traitement des réclamations." },
-        { title: "Gestion de la récupération et de la revente des biens retrouvés", text: "Le RNBP peut également prendre en charge la récupération des biens retrouvés, leur revente sur le marché secondaire et la remise des fonds à l\u2019assureur, permettant ainsi de réduire davantage les pertes financières tout en simplifiant la gestion logistique pour l\u2019assureur." },
+        { title: "Intégration technologique", text: "Badge peut offrir une intégration API avec les systèmes d\u2019assurance, facilitant les vérifications automatisées lors du traitement des réclamations." },
+        { title: "Gestion de la récupération et de la revente des biens retrouvés", text: "Badge peut également prendre en charge la récupération des biens retrouvés, leur revente sur le marché secondaire et la remise des fonds à l\u2019assureur, permettant ainsi de réduire davantage les pertes financières tout en simplifiant la gestion logistique pour l\u2019assureur." },
       ],
-      quote: "Le RNBP transforme un sinistre potentiel en actif récupérable.",
+      quote: "Badge transforme un sinistre potentiel en actif récupérable.",
     },
     ctaDescription: "Contactez notre équipe de partenariats pour discuter des possibilités de collaboration adaptées à votre entreprise.",
     formHeading: "Envoyez-nous un message",
@@ -769,7 +769,7 @@ const fr: SiteContent = {
   insurance: {
     heading: "Obtenez un rabais sur votre assurance",
     promo: "Enregistrez vos biens et obtenez un rabais sur votre assurance habitation",
-    description: "La plupart des assureurs offrent un rabais aux membres du RNBP. Sélectionnez votre assureur et contactez-le pour vérifier si vous êtes éligible.",
+    description: "La plupart des assureurs offrent un rabais aux membres de Badge. Sélectionnez votre assureur et contactez-le pour vérifier si vous êtes éligible.",
     featuredHeading: "Choisissez votre assureur",
     featuredHint: "Cliquez sur un logo pour sélectionner l'assureur et faire défiler vers le message prêt à envoyer.",
     moreButton: "Voir tous les assureurs",
@@ -780,20 +780,20 @@ const fr: SiteContent = {
     selectLabel: "Votre assureur",
     selectPlaceholder: "Sélectionnez votre assureur",
     messageLabel: "Message pré-rempli",
-    messageTemplate: "Bonjour {{insurer}}, ma résidence est assurée avec vous et je viens d'inscrire mes biens de valeur sur le RNBP (Registre national des biens personnels). J'aimerais vérifier avec vous si je suis éligible à un rabais sur mon assurance habitation.\n\nMerci",
+    messageTemplate: "Bonjour {{insurer}}, ma résidence est assurée avec vous et je viens d'inscrire mes biens de valeur sur Badge (Badge). J'aimerais vérifier avec vous si je suis éligible à un rabais sur mon assurance habitation.\n\nMerci",
     sendButton: "Copier le message",
     copiedToast: "Message copié ! Envoyez-le à votre assureur.",
-    emailSubject: "Demande de rabais RNBP",
+    emailSubject: "Demande de rabais Badge",
     emailButton: "Envoyer par courriel",
   },
   about: {
-    heading: "À propos du RNBP",
+    heading: "À propos de Badge",
     paragraphs: [
-      "Le Registre National des Biens Personnels (RNBP) est une plateforme conçue pour aider les citoyens à protéger, identifier et retrouver leurs biens de valeur en cas de vol, de perte ou de récupération par les autorités.",
-      "Grâce au RNBP, les propriétaires peuvent enregistrer leurs objets importants (vélos, outils, équipements électroniques, œuvres d'art, instruments, etc.) dans une base de données sécurisée. Chaque bien enregistré est associé à des informations permettant de prouver la propriété et d'en faciliter l'identification si celui-ci est retrouvé.",
+      "Badge est une plateforme conçue pour aider les citoyens à protéger, identifier et retrouver leurs biens de valeur en cas de vol, de perte ou de récupération par les autorités.",
+      "Grâce à Badge, les propriétaires peuvent enregistrer leurs objets importants (vélos, outils, équipements électroniques, œuvres d'art, instruments, etc.) dans une base de données sécurisée. Chaque bien enregistré est associé à des informations permettant de prouver la propriété et d'en faciliter l'identification si celui-ci est retrouvé.",
       "Le registre travaille en collaboration avec les corps policiers et les assureurs, qui peuvent accéder aux informations nécessaires afin d'identifier rapidement le propriétaire d'un bien retrouvé. De leur côté, les citoyens peuvent effectuer certaines vérifications publiques afin de réduire les risques d'acheter un bien potentiellement volé.",
-      "En plus de faciliter la restitution des biens, le RNBP contribue à réduire le marché de la revente de biens volés, à améliorer les démarches auprès des assureurs et à renforcer la sécurité des citoyens.",
-      "Le RNBP s'inscrit dans une approche moderne de protection des biens, utilisant des outils technologiques avancés pour simplifier les vérifications, accélérer l'identification des propriétaires et augmenter les chances de récupération des objets volés.",
+      "En plus de faciliter la restitution des biens, Badge contribue à réduire le marché de la revente de biens volés, à améliorer les démarches auprès des assureurs et à renforcer la sécurité des citoyens.",
+      "Badge s'inscrit dans une approche moderne de protection des biens, utilisant des outils technologiques avancés pour simplifier les vérifications, accélérer l'identification des propriétaires et augmenter les chances de récupération des objets volés.",
     ],
   },
   promo: {
@@ -803,7 +803,7 @@ const fr: SiteContent = {
     dismiss: "Fermer",
     dontShowAgain: "Ne plus afficher",
     calloutDashboard: "Vos biens ne sont pas encore protégés physiquement. Profitez de l'offre gratuite\u00a0!",
-    calloutItem: "Ce bien n'a pas encore de numéro RNBP. Commandez vos étiquettes gratuitement\u00a0!",
+    calloutItem: "Ce bien n'a pas encore de badge. Commandez vos étiquettes gratuitement\u00a0!",
     calloutRegistration: "Votre bien est enregistré\u00a0! Commandez vos étiquettes gratuitement pour le protéger.",
   },
   legal: {
@@ -811,7 +811,7 @@ const fr: SiteContent = {
     privacyContent: [
       {
         title: "1. Collecte de renseignements personnels",
-        body: "Le RNBP recueille uniquement les renseignements nécessaires à la création de votre compte et à l'enregistrement de vos biens : nom, adresse courriel, numéro de téléphone (facultatif), adresse civique (facultative), ainsi que les informations descriptives de vos biens (catégorie, marque, modèle, numéro de série, photos). Ces renseignements sont fournis volontairement lors de votre inscription ou lors de la mise à jour de votre profil.",
+        body: "Badge recueille uniquement les renseignements nécessaires à la création de votre compte et à l'enregistrement de vos biens : nom, adresse courriel, numéro de téléphone (facultatif), adresse civique (facultative), ainsi que les informations descriptives de vos biens (catégorie, marque, modèle, numéro de série, photos). Ces renseignements sont fournis volontairement lors de votre inscription ou lors de la mise à jour de votre profil.",
       },
       {
         title: "2. Utilisation des renseignements",
@@ -823,19 +823,19 @@ const fr: SiteContent = {
       },
       {
         title: "4. Connexion via fournisseurs tiers (OAuth)",
-        body: "Le RNBP permet de créer un compte ou de se connecter via Google ou Facebook. Lorsque vous choisissez cette option, nous recevons uniquement votre nom, votre adresse courriel, un identifiant unique du fournisseur et l'indication si votre courriel a été vérifié par celui-ci. Aucune autre donnée n'est demandée ni collectée : pas d'accès à votre photo de profil, vos contacts, votre calendrier, votre date de naissance, votre genre, votre liste d'amis, vos photos ou vos publications. Vous pouvez révoquer cet accès à tout moment via les paramètres de votre compte chez le fournisseur (Google, Facebook).",
+        body: "Badge permet de créer un compte ou de se connecter via Google ou Facebook. Lorsque vous choisissez cette option, nous recevons uniquement votre nom, votre adresse courriel, un identifiant unique du fournisseur et l'indication si votre courriel a été vérifié par celui-ci. Aucune autre donnée n'est demandée ni collectée : pas d'accès à votre photo de profil, vos contacts, votre calendrier, votre date de naissance, votre genre, votre liste d'amis, vos photos ou vos publications. Vous pouvez révoquer cet accès à tout moment via les paramètres de votre compte chez le fournisseur (Google, Facebook).",
       },
       {
         title: "5. Conservation et suppression de votre compte",
-        body: "Vos données sont conservées aussi longtemps que votre compte est actif. Vous pouvez demander la suppression complète de votre compte et de vos données à tout moment en nous contactant à tech@rnbp.ca. Nous traitons les demandes dans un délai maximum de 30 jours. La suppression couvre votre compte, vos biens enregistrés, vos photos et vos documents. Certaines données peuvent persister jusqu'à 14 jours dans nos sauvegardes automatiques avant d'être définitivement effacées. Les données financières liées à vos commandes sont conservées de manière anonymisée pour respecter nos obligations comptables et fiscales. Les déclarations de vol sont conservées à des fins de traçabilité même après la suppression du compte, conformément aux obligations légales applicables.",
+        body: "Vos données sont conservées aussi longtemps que votre compte est actif. Vous pouvez demander la suppression complète de votre compte et de vos données à tout moment en nous contactant à tech@badgeid.ca. Nous traitons les demandes dans un délai maximum de 30 jours. La suppression couvre votre compte, vos biens enregistrés, vos photos et vos documents. Certaines données peuvent persister jusqu'à 14 jours dans nos sauvegardes automatiques avant d'être définitivement effacées. Les données financières liées à vos commandes sont conservées de manière anonymisée pour respecter nos obligations comptables et fiscales. Les déclarations de vol sont conservées à des fins de traçabilité même après la suppression du compte, conformément aux obligations légales applicables.",
       },
       {
         title: "6. Vérification publique",
-        body: "La fonction de vérification publique (recherche par numéro RNBP) ne divulgue aucune information personnelle sur le propriétaire. Seul le statut du bien (enregistré, déclaré volé) est affiché.",
+        body: "La fonction de vérification publique (recherche par badge) ne divulgue aucune information personnelle sur le propriétaire. Seul le statut du bien (enregistré, déclaré volé) est affiché.",
       },
       {
         title: "7. Cookies et technologies similaires",
-        body: "Le RNBP utilise des cookies strictement nécessaires au fonctionnement du site (authentification, préférences linguistiques). Aucun cookie de suivi publicitaire ou d'analyse tiers n'est utilisé.",
+        body: "Badge utilise des cookies strictement nécessaires au fonctionnement du site (authentification, préférences linguistiques). Aucun cookie de suivi publicitaire ou d'analyse tiers n'est utilisé.",
       },
       {
         title: "8. Modifications",
@@ -843,18 +843,18 @@ const fr: SiteContent = {
       },
       {
         title: "9. Contact",
-        body: "Pour toute question relative à la protection de vos renseignements personnels, contactez-nous à tech@rnbp.ca.",
+        body: "Pour toute question relative à la protection de vos renseignements personnels, contactez-nous à tech@badgeid.ca.",
       },
     ],
     termsHeading: "Conditions d'utilisation",
     termsContent: [
       {
         title: "1. Acceptation des conditions",
-        body: "En utilisant le site et les services du Registre national des biens personnels (RNBP), vous acceptez d'être lié par les présentes conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser nos services.",
+        body: "En utilisant le site et les services du Badge , vous acceptez d'être lié par les présentes conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser nos services.",
       },
       {
         title: "2. Description du service",
-        body: "Le RNBP offre un service gratuit d'enregistrement de biens personnels de valeur. Le registre permet aux utilisateurs de documenter leurs biens, de déclarer des vols et de vérifier le statut d'un bien à l'aide de son numéro RNBP unique. Le service est offert « tel quel » et le RNBP ne garantit pas la récupération d'un bien perdu ou volé.",
+        body: "Badge offre un service gratuit d'enregistrement de biens personnels de valeur. Le registre permet aux utilisateurs de documenter leurs biens, de déclarer des vols et de vérifier le statut d'un bien à l'aide de son badge unique. Le service est offert « tel quel » et Badge ne garantit pas la récupération d'un bien perdu ou volé.",
       },
       {
         title: "3. Inscription et compte",
@@ -862,23 +862,23 @@ const fr: SiteContent = {
       },
       {
         title: "4. Enregistrement de biens",
-        body: "Vous ne pouvez enregistrer que des biens dont vous êtes le propriétaire légitime. L'enregistrement d'un bien ne constitue pas une preuve de propriété au sens juridique. Il est interdit d'enregistrer des biens volés, contrefaits ou illégaux. Le RNBP se réserve le droit de supprimer tout enregistrement frauduleux.",
+        body: "Vous ne pouvez enregistrer que des biens dont vous êtes le propriétaire légitime. L'enregistrement d'un bien ne constitue pas une preuve de propriété au sens juridique. Il est interdit d'enregistrer des biens volés, contrefaits ou illégaux. Badge se réserve le droit de supprimer tout enregistrement frauduleux.",
       },
       {
         title: "5. Déclaration de vol",
-        body: "En déclarant un bien comme volé sur le RNBP, vous attestez que cette déclaration est véridique. Les fausses déclarations de vol sont interdites et peuvent entraîner la suspension de votre compte ainsi que des poursuites légales. Nous vous encourageons à déposer également un rapport auprès de votre service de police local.",
+        body: "En déclarant un bien comme volé sur Badge, vous attestez que cette déclaration est véridique. Les fausses déclarations de vol sont interdites et peuvent entraîner la suspension de votre compte ainsi que des poursuites légales. Nous vous encourageons à déposer également un rapport auprès de votre service de police local.",
       },
       {
         title: "6. Contenu utilisateur",
-        body: "Vous conservez la propriété des photos et documents que vous téléversez. En les soumettant, vous accordez au RNBP une licence non exclusive d'utilisation pour le fonctionnement du service. Vous garantissez que le contenu téléversé ne viole aucun droit de propriété intellectuelle ni aucune loi applicable.",
+        body: "Vous conservez la propriété des photos et documents que vous téléversez. En les soumettant, vous accordez à Badge une licence non exclusive d'utilisation pour le fonctionnement du service. Vous garantissez que le contenu téléversé ne viole aucun droit de propriété intellectuelle ni aucune loi applicable.",
       },
       {
         title: "7. Limitation de responsabilité",
-        body: "Le RNBP ne peut être tenu responsable de tout dommage direct, indirect ou consécutif résultant de l'utilisation ou de l'impossibilité d'utiliser le service. Le RNBP ne garantit pas la disponibilité ininterrompue du service et ne peut être tenu responsable des pertes de données dues à des circonstances hors de son contrôle.",
+        body: "Badge ne peut être tenu responsable de tout dommage direct, indirect ou consécutif résultant de l'utilisation ou de l'impossibilité d'utiliser le service. Badge ne garantit pas la disponibilité ininterrompue du service et ne peut être tenu responsable des pertes de données dues à des circonstances hors de son contrôle.",
       },
       {
         title: "8. Résiliation",
-        body: "Vous pouvez fermer votre compte à tout moment. Le RNBP se réserve le droit de suspendre ou de fermer un compte en cas de violation des présentes conditions, sans préavis.",
+        body: "Vous pouvez fermer votre compte à tout moment. Badge se réserve le droit de suspendre ou de fermer un compte en cas de violation des présentes conditions, sans préavis.",
       },
       {
         title: "9. Loi applicable",
@@ -886,23 +886,23 @@ const fr: SiteContent = {
       },
       {
         title: "10. Modifications",
-        body: "Le RNBP se réserve le droit de modifier les présentes conditions à tout moment. Les modifications entreront en vigueur dès leur publication sur le site. L'utilisation continue du service après une modification constitue votre acceptation des nouvelles conditions.",
+        body: "Badge se réserve le droit de modifier les présentes conditions à tout moment. Les modifications entreront en vigueur dès leur publication sur le site. L'utilisation continue du service après une modification constitue votre acceptation des nouvelles conditions.",
       },
     ],
     dataDeletion: {
       heading: "Suppression de votre compte et de vos données",
-      intro: "Vous pouvez demander la suppression complète de votre compte et de toutes vos données du Registre national des biens personnels (RNBP) à tout moment, et ce, sans frais. Cette page décrit la procédure et les délais.",
+      intro: "Vous pouvez demander la suppression complète de votre compte et de toutes vos données du Badge  à tout moment, et ce, sans frais. Cette page décrit la procédure et les délais.",
       stepsHeading: "Comment demander la suppression",
       steps: [
-        "Envoyez un courriel à tech@rnbp.ca avec comme objet « Demande de suppression de compte ».",
-        "Indiquez l'adresse courriel associée à votre compte RNBP afin que nous puissions vous identifier.",
+        "Envoyez un courriel à tech@badgeid.ca avec comme objet « Demande de suppression de compte ».",
+        "Indiquez l'adresse courriel associée à votre compte Badge afin que nous puissions vous identifier.",
         "Nous vous enverrons un courriel de confirmation à cette adresse pour valider la demande.",
         "Une fois confirmée, votre compte et vos données sont supprimés dans un délai maximum de 30 jours.",
       ],
       timelineHeading: "Délais et portée de la suppression",
       timeline: "La suppression couvre votre compte, vos biens enregistrés, vos photos et vos documents. Certaines données peuvent persister jusqu'à 14 jours dans nos sauvegardes automatiques avant d'être définitivement effacées. Les données financières liées à vos commandes (achats d'étiquettes) sont conservées de manière anonymisée pour respecter nos obligations comptables et fiscales canadiennes. Les déclarations de vol antérieures sont conservées à des fins de traçabilité, conformément aux obligations légales applicables.",
       contactHeading: "Une question ?",
-      contactBody: "Si vous avez une question sur la procédure ou si vous n'avez pas reçu de confirmation dans les 48 heures, contactez-nous à tech@rnbp.ca.",
+      contactBody: "Si vous avez une question sur la procédure ou si vous n'avez pas reçu de confirmation dans les 48 heures, contactez-nous à tech@badgeid.ca.",
     },
   },
   verifyBeforeBuy: {
@@ -1013,7 +1013,7 @@ const fr: SiteContent = {
       created: "Produit créé avec succès.",
       error: "Erreur lors de l'enregistrement.",
       notFound: "Produit introuvable.",
-      customMechanicBadge: "Mécanique spéciale active — Ce produit a un comportement personnalisé géré par le code (sélection du bien, validation de propriété, assignation RNBP). Pour ajouter une mécanique similaire à un autre produit, une modification au code est requise.",
+      customMechanicBadge: "Mécanique spéciale active — Ce produit a un comportement personnalisé géré par le code (sélection du bien, validation de propriété, assignation Badge). Pour ajouter une mécanique similaire à un autre produit, une modification au code est requise.",
     },
   },
   apiErrors: {
@@ -1046,17 +1046,17 @@ const fr: SiteContent = {
     // Admin
     ORDER_NOT_FOUND: "Commande introuvable",
     ORDER_LINE_NOT_FOUND: "Ligne de commande introuvable",
-    INVALID_RNBP_FORMAT: "Format invalide (RNBP-XXXXXXXX)",
+    INVALID_BADGE_FORMAT: "Format invalide (BADGE-XXXXXXXX)",
     ORDER_NOT_PAID: "Seules les commandes payées peuvent être expédiées",
     // Sticker codes
     INVALID_RANGE: "La plage doit contenir exactement 10 codes.",
     CODES_ALREADY_EXIST: "Un ou plusieurs codes existent déjà en base.",
     CODES_NOT_REGISTERED: "Codes non enregistrés. Préparez l'envoi avant d'expédier.",
     CODES_HAVE_CLAIMS: "Impossible d'invalider les codes après qu'un client en a réclamé au moins un.",
-    RNBP_CODE_UNKNOWN: "Ce code n'existe pas. Vérifiez votre saisie.",
-    RNBP_CODE_NOT_YOURS: "Ce code n'a pas été acheté avec votre compte.",
-    RNBP_CODE_ALREADY_USED: "Ce code est déjà assigné à un autre de vos biens.",
-    RNBP_CODE_VOIDED: "Ce code n'est plus valide. Contactez le support.",
+    BADGE_CODE_UNKNOWN: "Ce code n'existe pas. Vérifiez votre saisie.",
+    BADGE_CODE_NOT_YOURS: "Ce code n'a pas été acheté avec votre compte.",
+    BADGE_CODE_ALREADY_USED: "Ce code est déjà assigné à un autre de vos biens.",
+    BADGE_CODE_VOIDED: "Ce code n'est plus valide. Contactez le support.",
     // General
     TOO_MANY_REQUESTS: "Trop de requêtes. Réessayez plus tard.",
     INTERNAL_ERROR: "Erreur interne du serveur",

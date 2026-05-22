@@ -10,7 +10,7 @@ import { Modal } from "@/components/ui/Modal";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { PromoCallout } from "@/components/ui/PromoCallout";
 import { ItemImage } from "@/components/ui/ItemImage";
-import { ITEM_CATEGORIES, normalizeRnbpCode, RNBP_REGEX } from "@rnbp/shared";
+import { ITEM_CATEGORIES, normalizeBadgeCode, BADGE_CODE_REGEX } from "@rnbp/shared";
 import type { ItemWithFiles } from "@rnbp/shared";
 import { ROUTES } from "@/routes/routes";
 
@@ -24,7 +24,7 @@ type FormData = {
   trackerId: string;
   estimatedValue: string;
   description: string;
-  rnbpNumber: string;
+  badgeCode: string;
 };
 
 export function EditItemPage() {
@@ -42,13 +42,13 @@ export function EditItemPage() {
     trackerId: "",
     estimatedValue: "",
     description: "",
-    rnbpNumber: "",
+    badgeCode: "",
   });
   const [photos, setPhotos] = useState<{ id: string; url: string }[]>([]);
   const [documents, setDocuments] = useState<{ id: string; url: string; fileName: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [itemStatus, setItemStatus] = useState("");
-  const [itemRnbpNumber, setItemRnbpNumber] = useState<string | null>(null);
+  const [itemBadgeCode, setItemBadgeCode] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notFound, setNotFound] = useState(false);
@@ -75,7 +75,7 @@ export function EditItemPage() {
           return;
         }
         setItemStatus(item.status);
-        setItemRnbpNumber(item.rnbpNumber);
+        setItemBadgeCode(item.badgeCode);
         setPhotos(item.photos.map((p) => ({ id: p.id, url: p.url })));
         setDocuments(item.documents.map((d) => ({ id: d.id, url: d.url, fileName: d.fileName })));
         setForm({
@@ -88,7 +88,7 @@ export function EditItemPage() {
           trackerId: item.trackerId ?? "",
           estimatedValue: item.estimatedValue?.toString() ?? "",
           description: item.description ?? "",
-          rnbpNumber: item.rnbpNumber ?? "",
+          badgeCode: item.badgeCode ?? "",
         });
       })
       .catch((err) => {
@@ -112,12 +112,12 @@ export function EditItemPage() {
     setSaving(true);
     setError("");
 
-    const desiredCode = normalizeRnbpCode(form.rnbpNumber);
-    const currentCode = itemRnbpNumber ?? "";
+    const desiredCode = normalizeBadgeCode(form.badgeCode);
+    const currentCode = itemBadgeCode ?? "";
     const codeChanged = desiredCode !== currentCode;
 
-    if (codeChanged && desiredCode !== "" && !RNBP_REGEX.test(desiredCode)) {
-      setError(t.apiErrors?.INVALID_RNBP_FORMAT ?? "Invalid RNBP code format.");
+    if (codeChanged && desiredCode !== "" && !BADGE_CODE_REGEX.test(desiredCode)) {
+      setError(t.apiErrors?.INVALID_BADGE_FORMAT ?? "Invalid badge code format.");
       setSaving(false);
       return;
     }
@@ -135,14 +135,14 @@ export function EditItemPage() {
     };
 
     try {
-      // Claim the new RNBP code (separate endpoint) before saving the rest.
+      // Claim the new badge code (separate endpoint) before saving the rest.
       // If the claim fails, abort — don't leave the item partially updated.
       if (codeChanged && desiredCode !== "") {
         await apiRequest(`/sticker-codes/${encodeURIComponent(desiredCode)}/claim`, {
           method: "POST",
           body: { itemId: id },
         });
-        setItemRnbpNumber(desiredCode);
+        setItemBadgeCode(desiredCode);
       }
       await apiRequest(`/items/${id}`, { method: "PATCH", body });
       navigate(ROUTES.dashboard);
@@ -293,7 +293,7 @@ export function EditItemPage() {
 
   return (
     <section className="min-h-[80vh] bg-[var(--rcb-white)]">
-      <title>{`${edit?.heading ?? "Edit item"} | RNBP`}</title>
+      <title>{`${edit?.heading ?? "Edit item"} | Badge`}</title>
       <div className="section-shell py-16">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-[var(--rcb-text-strong)]">
@@ -307,9 +307,9 @@ export function EditItemPage() {
           </Link>
         </div>
 
-        {!itemRnbpNumber && (
+        {!itemBadgeCode && (
           <div className="mt-6">
-            <PromoCallout variant="item" items={[{ rnbpNumber: itemRnbpNumber }]} />
+            <PromoCallout variant="item" items={[{ badgeCode: itemBadgeCode }]} />
           </div>
         )}
 
@@ -434,24 +434,24 @@ export function EditItemPage() {
 
           <div>
             <label htmlFor="edit-rnbp" className="mb-1 block text-sm font-medium text-[var(--rcb-text-strong)]">
-              {edit?.rnbpNumberLabel ?? "RNBP number"}
+              {edit?.badgeCodeLabel ?? "Badge code"}
             </label>
             <input
               id="edit-rnbp"
               type="text"
               maxLength={13}
-              value={form.rnbpNumber}
-              onChange={(e) => update("rnbpNumber", e.target.value.toUpperCase())}
-              placeholder="RNBP-XXXXXXXX"
+              value={form.badgeCode}
+              onChange={(e) => update("badgeCode", e.target.value.toUpperCase())}
+              placeholder="BADGE-XXXXXXXX"
               className="h-12 w-full rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-4 font-mono uppercase tracking-wider text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
             />
             <p className="mt-1 text-xs text-[var(--rcb-text-muted)]">
-              {edit?.rnbpNumberHelper ??
+              {edit?.badgeCodeHelper ??
                 "Enter the code printed on your sticker to physically link this item to the registry."}
             </p>
-            {itemRnbpNumber && (
+            {itemBadgeCode && (
               <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                {edit?.rnbpOverwriteWarning ??
+                {edit?.badgeCodeOverwriteWarning ??
                   "Changing this code will replace the published identifier in the registry. Use this only to fix a typo or replace a damaged sheet."}
               </p>
             )}

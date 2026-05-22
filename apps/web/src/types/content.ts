@@ -169,11 +169,11 @@ export type SiteContent = {
     noNumberHint: string;
     clientNumber: string;
     editItem: string;
-    assignRnbpButton?: string;
-    assignRnbpModalTitle?: string;
-    assignRnbpModalHelp?: string;
-    assignRnbpModalSubmit?: string;
-    assignRnbpSuccess?: string;
+    assignBadgeButton?: string;
+    assignBadgeModalTitle?: string;
+    assignBadgeModalHelp?: string;
+    assignBadgeModalSubmit?: string;
+    assignBadgeSuccess?: string;
     orderStickersGlobal?: string;
   };
   editItem?: {
@@ -189,9 +189,9 @@ export type SiteContent = {
     recoverConfirmButton: string;
     recoverCancel: string;
     recovering: string;
-    rnbpNumberLabel?: string;
-    rnbpNumberHelper?: string;
-    rnbpOverwriteWarning?: string;
+    badgeCodeLabel?: string;
+    badgeCodeHelper?: string;
+    badgeCodeOverwriteWarning?: string;
   };
   settings?: {
     heading: string;
@@ -274,7 +274,7 @@ export type SiteContent = {
     successHeading: string;
     successDescription: string;
     successNoNumber: string;
-    rnbpNumberLabel: string;
+    badgeCodeLabel: string;
     goToDashboard: string;
     stickerHeading: string;
     stickerPitch: string;

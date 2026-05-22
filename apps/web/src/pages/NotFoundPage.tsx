@@ -7,7 +7,7 @@ export function NotFoundPage() {
 
   return (
     <section className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
-      <title>{`${t.errors?.notFound ?? "Page not found"} | RNBP`}</title>
+      <title>{`${t.errors?.notFound ?? "Page not found"} | Badge`}</title>
       <h1 className="text-6xl font-bold text-[var(--rcb-primary)]">404</h1>
       <p className="mt-4 text-xl text-[var(--rcb-text-strong)]">
         {t.errors?.notFound ?? "Page not found"}

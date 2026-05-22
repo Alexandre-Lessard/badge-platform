@@ -10,7 +10,7 @@ type AdminItem = {
   name: string;
   category: string;
   status: string;
-  rnbpNumber: string | null;
+  badgeCode: string | null;
   serialNumber: string | null;
   createdAt: string;
   ownerName: string;
@@ -99,7 +99,7 @@ export function AdminItemsPage() {
 
   return (
     <section className="min-h-[80vh] bg-[var(--rcb-white)]">
-      <title>{`Admin — ${t.admin?.nav.items ?? "Items"} | RNBP`}</title>
+      <title>{`Admin — ${t.admin?.nav.items ?? "Items"} | Badge`}</title>
       <div className="section-shell py-16">
         <h1 className="text-3xl font-bold text-[var(--rcb-text-strong)]">
           {t.admin?.nav.items ?? "Items"}
@@ -111,7 +111,7 @@ export function AdminItemsPage() {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="RNBP#, serial, name..."
+            placeholder="Badge#, serial, name..."
             className="h-10 flex-1 rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-4 text-sm text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
           />
           <Button size="sm" onClick={() => setSearch(searchInput)}>
@@ -170,7 +170,7 @@ export function AdminItemsPage() {
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-[var(--rcb-border)] text-xs uppercase text-[var(--rcb-text-muted)]">
-                    <th className="px-3 py-2">RNBP#</th>
+                    <th className="px-3 py-2">Badge#</th>
                     <th className="px-3 py-2">Name</th>
                     <th className="px-3 py-2">Category</th>
                     <th className="px-3 py-2">Status</th>
@@ -186,7 +186,7 @@ export function AdminItemsPage() {
                       className="border-b border-[var(--rcb-border)] transition-colors hover:bg-[var(--rcb-surface)]"
                     >
                       <td className="px-3 py-3 font-mono text-xs">
-                        {item.rnbpNumber ?? "—"}
+                        {item.badgeCode ?? "—"}
                       </td>
                       <td className="px-3 py-3 font-medium text-[var(--rcb-text-strong)]">
                         {item.name}

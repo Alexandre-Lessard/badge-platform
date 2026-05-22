@@ -16,7 +16,7 @@ export const links = () => [
   // W3C standard rel for declaring the privacy policy URL of a site.
   // Recognized by Google and Meta OAuth verifiers as an explicit signal
   // independent of the visible DOM.
-  { rel: "privacy-policy", href: "https://rnbp.ca/privacy" },
+  { rel: "privacy-policy", href: "https://badgeid.ca/privacy" },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
   {

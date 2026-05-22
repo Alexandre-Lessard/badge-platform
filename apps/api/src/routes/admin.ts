@@ -22,7 +22,7 @@ import {
   ORDER_NOT_PAID,
   PRODUCT_NOT_FOUND,
   INVALID_RANGE,
-  INVALID_RNBP_FORMAT,
+  INVALID_BADGE_FORMAT,
   CODES_ALREADY_EXIST,
   CODES_HAVE_CLAIMS,
   CODES_NOT_REGISTERED,
@@ -30,7 +30,7 @@ import {
   CODES_PER_SHEET,
 } from "@rnbp/shared";
 import { AppError } from "../utils/errors.js";
-import { expandRange } from "../utils/rnbp-sequence.js";
+import { expandRange } from "../utils/badge-sequence.js";
 
 export async function adminRoutes(app: FastifyInstance) {
   // ── List items (with search & status filter) ───────────────────
@@ -63,7 +63,7 @@ export async function adminRoutes(app: FastifyInstance) {
           or(
             ilike(items.name, search),
             ilike(items.serialNumber, search),
-            ilike(items.rnbpNumber, search),
+            ilike(items.badgeCode, search),
           )!,
         );
       }
@@ -76,7 +76,7 @@ export async function adminRoutes(app: FastifyInstance) {
           name: items.name,
           category: items.category,
           status: items.status,
-          rnbpNumber: items.rnbpNumber,
+          badgeCode: items.badgeCode,
           serialNumber: items.serialNumber,
           createdAt: items.createdAt,
           ownerName: sql<string>`concat(${users.firstName}, ' ', ${users.lastName})`,
@@ -166,7 +166,7 @@ export async function adminRoutes(app: FastifyInstance) {
             .select({
               id: orderItems.id,
               itemId: orderItems.itemId,
-              rnbpNumber: orderItems.rnbpNumber,
+              badgeCode: orderItems.badgeCode,
               productType: orderItems.productType,
               quantity: orderItems.quantity,
               itemName: items.name,
@@ -224,7 +224,7 @@ export async function adminRoutes(app: FastifyInstance) {
         .select({
           id: orderItems.id,
           itemId: orderItems.itemId,
-          rnbpNumber: orderItems.rnbpNumber,
+          badgeCode: orderItems.badgeCode,
           productType: orderItems.productType,
           quantity: orderItems.quantity,
           unitPriceCents: orderItems.unitPriceCents,
@@ -232,7 +232,7 @@ export async function adminRoutes(app: FastifyInstance) {
           itemCategory: items.category,
           itemBrand: items.brand,
           itemModel: items.model,
-          itemRnbpNumber: items.rnbpNumber,
+          itemBadgeCode: items.badgeCode,
           productSlug: products.slug,
           productNameFr: products.nameFr,
           productNameEn: products.nameEn,
@@ -329,10 +329,10 @@ export async function adminRoutes(app: FastifyInstance) {
           codes = expandRange(range.firstCode, range.lastCode);
         } catch (err) {
           const msg = err instanceof Error ? err.message : "INVALID_RANGE";
-          if (msg === "INVALID_RNBP_FORMAT") {
+          if (msg === "INVALID_BADGE_FORMAT") {
             throw new AppError(
               400,
-              INVALID_RNBP_FORMAT,
+              INVALID_BADGE_FORMAT,
               `Range ${i + 1} has invalid code format`,
             );
           }

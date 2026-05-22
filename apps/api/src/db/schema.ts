@@ -110,9 +110,9 @@ export const items = pgTable(
     estimatedValue: integer("estimated_value"),
     purchaseDate: timestamp("purchase_date", { withTimezone: true }),
     status: itemStatusEnum("status").notNull().default("active"),
-    // Format: RNBP-XXXXXXXX — manually assigned by admin when processing orders
+    // Format: BADGE-XXXXXXXX — manually assigned by admin when processing orders
     // Null = not yet assigned (pending sticker purchase)
-    rnbpNumber: varchar("rnbp_number", { length: 13 }).unique(),
+    badgeCode: varchar("badge_code", { length: 15 }).unique(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -125,7 +125,7 @@ export const items = pgTable(
   },
   (table) => [
     index("items_owner_id_idx").on(table.ownerId),
-    index("items_rnbp_number_idx").on(table.rnbpNumber),
+    index("items_badge_code_idx").on(table.badgeCode),
     index("items_status_idx").on(table.status),
   ],
 );
@@ -314,7 +314,7 @@ export const orderItems = pgTable(
     productId: uuid("product_id").references(() => products.id, {
       onDelete: "set null",
     }),
-    rnbpNumber: varchar("rnbp_number", { length: 13 }),
+    badgeCode: varchar("badge_code", { length: 15 }),
     productType: varchar("product_type", { length: 50 }).notNull(),
     quantity: integer("quantity").notNull(),
     unitPriceCents: integer("unit_price_cents").notNull(),
@@ -327,17 +327,17 @@ export const orderItems = pgTable(
 
 // ── Sticker codes ──────────────────────────────────────────────────────
 //
-// Source of truth for RNBP codes sold to a customer. Each row represents
+// Source of truth for badge codes sold to a customer. Each row represents
 // one printed code from a sticker sheet. The code is "claimed" when the
 // customer assigns it to one of their items via the self-service UI.
 //
-// items.rnbpNumber is kept in sync on claim/unclaim — it remains the
+// items.badgeCode is kept in sync on claim/unclaim — it remains the
 // fast denormalized field used by the public /lookup endpoint.
 
 export const stickerCodes = pgTable(
   "sticker_codes",
   {
-    code: varchar("code", { length: 13 }).primaryKey(), // RNBP-XXXXXXXX
+    code: varchar("code", { length: 15 }).primaryKey(), // BADGE-XXXXXXXX
     orderItemId: uuid("order_item_id")
       .notNull()
       .references(() => orderItems.id, { onDelete: "restrict" }),

@@ -9,208 +9,208 @@ type LocaleMeta = Record<string, PageMeta>;
 const META: Record<"fr" | "en", { defaults: PageMeta; pages: LocaleMeta }> = {
   fr: {
     defaults: {
-      title: "Protégez et retrouvez vos biens de valeur | RNBP Canada",
+      title: "Protégez et retrouvez vos biens de valeur | Badge",
       description:
         "Enregistrez vos biens de valeur dans un registre sécurisé. Protégez et retrouvez vos biens en cas de perte ou de vol.",
     },
     pages: {
       "/": {
-        title: "Protégez et retrouvez vos biens de valeur | RNBP Canada",
+        title: "Protégez et retrouvez vos biens de valeur | Badge",
         description:
           "Enregistrez vos biens de valeur dans un registre sécurisé. Protégez et retrouvez vos biens en cas de perte ou de vol.",
       },
       "/faq": {
-        title: "Questions fréquentes | RNBP",
+        title: "Questions fréquentes | Badge",
         description:
-          "Trouvez les réponses aux questions courantes sur l'enregistrement de vos biens au Registre national des biens personnels.",
+          "Trouvez les réponses aux questions courantes sur l'enregistrement de vos biens au Badge.",
       },
       "/registry": {
-        title: "Consulter le registre | RNBP",
+        title: "Consulter le registre | Badge",
         description:
           "Consultez le registre pour vérifier un bien. Citoyens, services policiers et compagnies d'assurance.",
       },
       "/privacy": {
-        title: "Politique de confidentialité | RNBP",
+        title: "Politique de confidentialité | Badge",
         description:
-          "Découvrez comment le RNBP protège vos renseignements personnels et respecte les lois fédérales sur la vie privée.",
+          "Découvrez comment Badge protège vos renseignements personnels et respecte les lois fédérales sur la vie privée.",
       },
       "/terms": {
-        title: "Conditions d'utilisation | RNBP",
+        title: "Conditions d'utilisation | Badge",
         description:
-          "Consultez les conditions d'utilisation du Registre national des biens personnels.",
+          "Consultez les conditions d'utilisation du Badge.",
       },
       "/data-deletion": {
-        title: "Suppression de votre compte | RNBP",
+        title: "Suppression de votre compte | Badge",
         description:
-          "Comment demander la suppression complète de votre compte et de vos données du Registre national des biens personnels.",
+          "Comment demander la suppression complète de votre compte et de vos données du Badge.",
       },
       "/lookup": {
-        title: "Vérifier un bien | RNBP",
+        title: "Vérifier un bien | Badge",
         description:
-          "Entrez un numéro RNBP pour vérifier le statut d'un bien enregistré dans le registre.",
+          "Entrez un code Badge pour vérifier le statut d'un bien enregistré dans le registre.",
       },
       "/login": {
-        title: "Connexion | RNBP",
+        title: "Connexion | Badge",
         description:
-          "Connectez-vous à votre compte RNBP pour gérer vos biens enregistrés.",
+          "Connectez-vous à votre compte Badge pour gérer vos biens enregistrés.",
       },
       "/register": {
-        title: "Créer un compte | RNBP",
+        title: "Créer un compte | Badge",
         description:
-          "Inscrivez-vous gratuitement au RNBP pour enregistrer et protéger vos biens de valeur.",
+          "Inscrivez-vous gratuitement à Badge pour enregistrer et protéger vos biens de valeur.",
       },
       "/dashboard": {
-        title: "Tableau de bord | RNBP",
+        title: "Tableau de bord | Badge",
         description: "Gérez vos biens enregistrés.",
         robots: "noindex, nofollow",
       },
       "/report-theft": {
-        title: "Déclarer un vol | RNBP",
+        title: "Déclarer un vol | Badge",
         description: "Déclarez un bien volé.",
         robots: "noindex, nofollow",
       },
       "/register-item": {
-        title: "Enregistrer un bien | RNBP",
+        title: "Enregistrer un bien | Badge",
         description: "Enregistrez un bien dans le registre.",
         robots: "noindex, nofollow",
       },
       "/shop": {
-        title: "Boutique | RNBP",
+        title: "Boutique | Badge",
         description:
-          "Achetez des étiquettes d'identification RNBP pour protéger vos biens de valeur.",
+          "Achetez des étiquettes d'identification Badge pour protéger vos biens de valeur.",
       },
       "/shop/success": {
-        title: "Commande confirmée | RNBP",
+        title: "Commande confirmée | Badge",
         description: "Votre commande a été confirmée avec succès.",
         robots: "noindex, nofollow",
       },
       "/contact": {
-        title: "Contactez-nous | RNBP",
+        title: "Contactez-nous | Badge",
         description:
-          "Contactez l'équipe du Registre national des biens personnels pour toute question ou demande.",
+          "Contactez l'équipe du Badge pour toute question ou demande.",
       },
       "/verify-email": {
-        title: "Vérification du courriel | RNBP",
+        title: "Vérification du courriel | Badge",
         description: "Vérifiez votre adresse courriel.",
         robots: "noindex, nofollow",
       },
       "/email-pending": {
-        title: "Vérification en attente | RNBP",
+        title: "Vérification en attente | Badge",
         description: "Vérification de votre courriel en cours.",
         robots: "noindex, nofollow",
       },
       "/admin/orders": {
-        title: "Admin — Commandes | RNBP",
+        title: "Admin — Commandes | Badge",
         description: "Gestion des commandes.",
         robots: "noindex, nofollow",
       },
       "/c": {
-        title: "Bien enregistré | RNBP",
-        description: "Vérifiez l'état d'un bien enregistré au RNBP via son code RNBP.",
+        title: "Bien enregistré | Badge",
+        description: "Vérifiez l'état d'un bien enregistré à Badge via son code Badge.",
         robots: "noindex, nofollow",
       },
     },
   },
   en: {
     defaults: {
-      title: "Protect and recover your valuable belongings | NRPP",
+      title: "Protect and recover your valuable belongings | Badge",
       description:
         "Register your valuable belongings in a secure registry. Protect and recover your items in case of loss or theft.",
     },
     pages: {
       "/": {
-        title: "Protect and recover your valuable belongings | NRPP",
+        title: "Protect and recover your valuable belongings | Badge",
         description:
           "Register your valuable belongings in a secure registry. Protect and recover your items in case of loss or theft.",
       },
       "/faq": {
-        title: "Frequently Asked Questions | NRPP",
+        title: "Frequently Asked Questions | Badge",
         description:
-          "Find answers to common questions about registering your belongings in the National Registry of Personal Property.",
+          "Find answers to common questions about registering your belongings in the Badge.",
       },
       "/registry": {
-        title: "Consult the Registry | NRPP",
+        title: "Consult the Registry | Badge",
         description:
           "Consult the registry to verify an item. Citizens, law enforcement and insurance companies.",
       },
       "/privacy": {
-        title: "Privacy Policy | NRPP",
+        title: "Privacy Policy | Badge",
         description:
-          "Learn how the NRPP protects your personal information and complies with federal privacy laws.",
+          "Learn how the Badge protects your personal information and complies with federal privacy laws.",
       },
       "/terms": {
-        title: "Terms of Service | NRPP",
+        title: "Terms of Service | Badge",
         description:
-          "Review the terms of service for the National Registry of Personal Property.",
+          "Review the terms of service for the Badge.",
       },
       "/data-deletion": {
-        title: "Account Deletion | NRPP",
+        title: "Account Deletion | Badge",
         description:
-          "How to request the complete deletion of your account and data from the National Registry of Personal Property.",
+          "How to request the complete deletion of your account and data from the Badge.",
       },
       "/lookup": {
-        title: "Verify an Item | NRPP",
+        title: "Verify an Item | Badge",
         description:
-          "Enter a NRPP number to check the status of a registered item.",
+          "Enter a Badge code to check the status of a registered item.",
       },
       "/login": {
-        title: "Login | NRPP",
+        title: "Login | Badge",
         description:
-          "Sign in to your NRPP account to manage your registered items.",
+          "Sign in to your Badge account to manage your registered items.",
       },
       "/register": {
-        title: "Create an Account | NRPP",
+        title: "Create an Account | Badge",
         description:
           "Sign up for free to register and protect your valuable belongings.",
       },
       "/dashboard": {
-        title: "Dashboard | NRPP",
+        title: "Dashboard | Badge",
         description: "Manage your registered items.",
         robots: "noindex, nofollow",
       },
       "/report-theft": {
-        title: "Report a Theft | NRPP",
+        title: "Report a Theft | Badge",
         description: "Report a stolen item.",
         robots: "noindex, nofollow",
       },
       "/register-item": {
-        title: "Register an Item | NRPP",
+        title: "Register an Item | Badge",
         description: "Register an item in the registry.",
         robots: "noindex, nofollow",
       },
       "/shop": {
-        title: "Shop | NRPP",
+        title: "Shop | Badge",
         description:
-          "Buy NRPP identification stickers to protect your valuable belongings.",
+          "Buy Badge identification stickers to protect your valuable belongings.",
       },
       "/shop/success": {
-        title: "Order Confirmed | NRPP",
+        title: "Order Confirmed | Badge",
         description: "Your order has been successfully confirmed.",
         robots: "noindex, nofollow",
       },
       "/contact": {
-        title: "Contact Us | NRPP",
+        title: "Contact Us | Badge",
         description:
-          "Contact the National Registry of Personal Property team for any questions or inquiries.",
+          "Contact the Badge team for any questions or inquiries.",
       },
       "/verify-email": {
-        title: "Email Verification | NRPP",
+        title: "Email Verification | Badge",
         description: "Verify your email address.",
         robots: "noindex, nofollow",
       },
       "/email-pending": {
-        title: "Verification Pending | NRPP",
+        title: "Verification Pending | Badge",
         description: "Email verification in progress.",
         robots: "noindex, nofollow",
       },
       "/admin/orders": {
-        title: "Admin — Orders | NRPP",
+        title: "Admin — Orders | Badge",
         description: "Order management.",
         robots: "noindex, nofollow",
       },
       "/c": {
-        title: "Registered item | NRPP",
-        description: "Check the status of an item registered with the NRPP via its RNBP code.",
+        title: "Registered item | Badge",
+        description: "Check the status of an item registered with Badge via its badge code.",
         robots: "noindex, nofollow",
       },
     },
@@ -228,7 +228,7 @@ const FAQ_FR = [
   },
   {
     q: "Mes données sont-elles protégées\u00a0?",
-    a: "Oui. Le RNBP respecte les lois fédérales sur la protection des données. Vos informations personnelles ne sont jamais vendues ni partagées sans consentement.",
+    a: "Oui. Badge respecte les lois fédérales sur la protection des données. Vos informations personnelles ne sont jamais vendues ni partagées sans consentement.",
   },
   {
     q: "Combien de temps prend l'enregistrement\u00a0?",
@@ -236,7 +236,7 @@ const FAQ_FR = [
   },
   {
     q: "Pourquoi le registre est-il nécessaire\u00a0?",
-    a: "Chaque année, des milliers de biens sont perdus ou volés au Canada. Le RNBP crée une preuve officielle, sécurisée et datée de vos biens dans un dossier unique.",
+    a: "Chaque année, des milliers de biens sont perdus ou volés au Canada. Badge crée une preuve officielle, sécurisée et datée de vos biens dans un dossier unique.",
   },
   {
     q: "Le registre fonctionne-t-il partout au pays\u00a0?",
@@ -255,7 +255,7 @@ const FAQ_EN = [
   },
   {
     q: "Is my data protected?",
-    a: "Yes. The NRPP complies with federal data protection laws. Your personal information is never sold or shared without consent.",
+    a: "Yes. The Badge complies with federal data protection laws. Your personal information is never sold or shared without consent.",
   },
   {
     q: "How long does registration take?",
@@ -263,7 +263,7 @@ const FAQ_EN = [
   },
   {
     q: "Why is the registry necessary?",
-    a: "Every year, thousands of items are lost or stolen in Canada. The NRPP creates an official, secure and dated record of your belongings in a single file.",
+    a: "Every year, thousands of items are lost or stolen in Canada. The Badge creates an official, secure and dated record of your belongings in a single file.",
   },
   {
     q: "Does the registry work across the country?",
@@ -283,23 +283,25 @@ const NOINDEX_PATHS = Object.entries(META.fr.pages)
 const ALL_KNOWN_PATHS = Object.keys(META.fr.pages);
 const PREFIX_PATHS = ["/admin/orders", "/c"];
 
-function detectLocale(hostname: string): "fr" | "en" {
-  if (hostname.includes("nrpp")) return "en";
+// Single-domain (badgeid.ca): locale detection moved client-side
+// (localStorage > navigator.language). Server-side prerender defaults to FR;
+// EN variant is generated via BUILD_LOCALE=en at build time.
+const BRAND_ORIGIN = "https://badgeid.ca";
+
+function detectLocale(): "fr" | "en" {
   return "fr";
 }
 
-function getDomain(locale: "fr" | "en"): string {
-  return locale === "fr" ? "https://rnbp.ca" : "https://nrpp.ca";
+function getDomain(): string {
+  return BRAND_ORIGIN;
 }
 
-function getOtherDomain(locale: "fr" | "en"): string {
-  return locale === "fr" ? "https://nrpp.ca" : "https://rnbp.ca";
+function getOtherDomain(): string {
+  return BRAND_ORIGIN;
 }
 
-function generateRobotsTxt(hostname: string): Response {
-  const domain = hostname.includes("nrpp")
-    ? "https://nrpp.ca"
-    : "https://rnbp.ca";
+function generateRobotsTxt(): Response {
+  const domain = BRAND_ORIGIN;
   const disallows = NOINDEX_PATHS.map((p) => `Disallow: ${p}`).join("\n");
   const body = `User-agent: *
 Allow: /
@@ -312,10 +314,10 @@ Sitemap: ${domain}/sitemap.xml
   });
 }
 
-function generateSitemapXml(hostname: string): Response {
-  const locale = detectLocale(hostname);
-  const domain = getDomain(locale);
-  const otherDomain = getOtherDomain(locale);
+function generateSitemapXml(): Response {
+  const locale = detectLocale();
+  const domain = getDomain();
+  const otherDomain = getOtherDomain();
 
   const urls = PUBLIC_PATHS.map((path) => {
     const loc = `${domain}${path === "/" ? "" : path}/`;
@@ -350,14 +352,14 @@ ${urls}
 function buildJsonLd(locale: "fr" | "en", path: string, domain: string): string {
   const orgName =
     locale === "fr"
-      ? "Registre national des biens personnels"
-      : "National Registry of Personal Property";
-  const altName = locale === "fr" ? "RNBP" : "NRPP";
+      ? "Badge"
+      : "Badge";
+  const altName = "Badge";
   const logoFile = locale === "fr" ? "logo-texte-fr.png" : "logo-texte-en.png";
   const description =
     locale === "fr"
-      ? "Registre national des biens personnels — protégez et retrouvez vos biens de valeur."
-      : "National Registry of Personal Property — protect and recover your valuable belongings.";
+      ? "Badge — protégez et retrouvez vos biens de valeur."
+      : "Badge — protect and recover your valuable belongings.";
 
   let jsonLd = `<script type="application/ld+json">
       {
@@ -414,7 +416,7 @@ function injectMeta(
   locale: "fr" | "en",
   path: string,
 ): string {
-  const domain = getDomain(locale);
+  const domain = getDomain();
   // Lookup exact path, then parent path (e.g. /admin/commandes for /admin/commandes/123)
   const meta = META[locale].pages[path]
     ?? META[locale].pages[path.replace(/\/[^/]+$/, "")]
@@ -422,13 +424,13 @@ function injectMeta(
 
   const ogLocale = locale === "fr" ? "fr_CA" : "en_CA";
   const ogLocaleAlt = locale === "fr" ? "en_CA" : "fr_CA";
-  const siteName = locale === "fr" ? "RNBP" : "NRPP";
+  const siteName = "Badge";
   const ogImageFile = locale === "fr" ? "og-image-fr.png" : "og-image-en.png";
   const canonicalUrl = `${domain}${path === "/" ? "" : path}/`;
   const ogUrl = canonicalUrl;
   const ogImage = `${domain}/assets/${ogImageFile}`;
-  const hreflangFr = `https://rnbp.ca${path === "/" ? "/" : path + "/"}`;
-  const hreflangEn = `https://nrpp.ca${path === "/" ? "/" : path + "/"}`;
+  const hreflangFr = `https://badgeid.ca${path === "/" ? "/" : path + "/"}`;
+  const hreflangEn = `https://badgeid.ca${path === "/" ? "/" : path + "/"}`;
   const robots = meta.robots ?? "index, follow";
   const lang = locale === "fr" ? "fr-CA" : "en-CA";
   const jsonLd = buildJsonLd(locale, path, domain);
@@ -458,16 +460,14 @@ function injectMeta(
 
 export const onRequest: PagesFunction = async (context) => {
   const url = new URL(context.request.url);
-  const { pathname, hostname } = url;
+  const { pathname } = url;
 
-  // Serve robots.txt dynamically per domain
   if (pathname === "/robots.txt") {
-    return generateRobotsTxt(hostname);
+    return generateRobotsTxt();
   }
 
-  // Serve sitemap.xml dynamically per domain
   if (pathname === "/sitemap.xml") {
-    return generateSitemapXml(hostname);
+    return generateSitemapXml();
   }
 
   // For non-HTML requests, pass through to static assets
@@ -478,7 +478,7 @@ export const onRequest: PagesFunction = async (context) => {
   }
 
   // For HTML responses, inject meta tags
-  const locale = detectLocale(hostname);
+  const locale = detectLocale();
 
   // On the EN domain, swap the prerendered body for the EN-prerendered HTML
   // (build produces index.html in FR and index.en.html in EN). We re-fetch

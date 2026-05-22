@@ -105,7 +105,7 @@ export function LookupPage() {
           </Button>
         </form>
         <p className="mt-3 text-sm text-[var(--rcb-text-muted)]">
-          {t.lookup?.inputHint ?? "RNBP number, serial number or other compatible identifier"}
+          {t.lookup?.inputHint ?? "Badge code, serial number or other compatible identifier"}
         </p>
 
         {error && (

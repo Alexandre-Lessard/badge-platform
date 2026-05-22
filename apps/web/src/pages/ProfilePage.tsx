@@ -75,7 +75,7 @@ export function ProfilePage() {
 
   return (
     <section className="min-h-[70vh] bg-[var(--rcb-white)]">
-      <title>{`${profile?.heading ?? "My profile"} | RNBP`}</title>
+      <title>{`${profile?.heading ?? "My profile"} | Badge`}</title>
       <div className="section-shell py-16">
         <div className="max-w-3xl">
           <h1 className="text-3xl font-bold text-[var(--rcb-text-strong)]">

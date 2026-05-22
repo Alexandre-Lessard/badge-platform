@@ -8,7 +8,7 @@ import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 type Item = {
   id: string;
   name: string;
-  rnbpNumber: string | null;
+  badgeCode: string | null;
   status: string;
   archivedAt: string | null;
 };
@@ -96,7 +96,7 @@ export function ReportTheftPage() {
 
   return (
     <section className="section-shell py-16">
-      <title>{`${t.report?.heading ?? "Report a theft"} | RNBP`}</title>
+      <title>{`${t.report?.heading ?? "Report a theft"} | Badge`}</title>
       <h1 className="text-3xl font-bold text-[var(--rcb-text-strong)]">
         {t.report?.heading ?? "Report a theft"}
       </h1>
@@ -141,7 +141,7 @@ export function ReportTheftPage() {
               {items.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.name}
-                  {item.rnbpNumber ? ` (${item.rnbpNumber})` : ""}
+                  {item.badgeCode ? ` (${item.badgeCode})` : ""}
                 </option>
               ))}
             </select>

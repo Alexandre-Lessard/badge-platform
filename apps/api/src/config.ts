@@ -28,8 +28,8 @@ const envSchema = z.object({
 
   // Email (Brevo)
   BREVO_API_KEY: z.string().optional(),
-  FROM_EMAIL: z.string().email().default("noreply@rnbp.ca"),
-  FROM_NAME: z.string().default("RNBP"),
+  FROM_EMAIL: z.string().email().default("noreply@badgeid.ca"),
+  FROM_NAME: z.string().default("Badge"),
 
   // Frontend URL (for email links)
   FRONTEND_URL: z.string().url().default("http://localhost:5173"),

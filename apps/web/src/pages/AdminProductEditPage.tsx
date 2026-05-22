@@ -208,7 +208,7 @@ export function AdminProductEditPage() {
 
   return (
     <section className="min-h-[80vh] bg-[var(--rcb-white)]">
-      <title>{`Admin — ${t.admin?.nav.products ?? "Products"} | RNBP`}</title>
+      <title>{`Admin — ${t.admin?.nav.products ?? "Products"} | Badge`}</title>
       <div className="section-shell py-16">
         <Link
           to={ROUTES.adminProducts}

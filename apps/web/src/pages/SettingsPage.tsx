@@ -37,7 +37,7 @@ export function SettingsPage() {
 
   return (
     <section className="min-h-[70vh] bg-[var(--rcb-white)]">
-      <title>{`${s?.heading ?? "Settings"} | RNBP`}</title>
+      <title>{`${s?.heading ?? "Settings"} | Badge`}</title>
       <div className="section-shell py-16">
         <h1 className="text-3xl font-bold text-[var(--rcb-text-strong)]">
           {s?.heading ?? "Settings"}

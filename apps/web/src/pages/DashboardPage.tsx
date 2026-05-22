@@ -21,7 +21,7 @@ type Item = {
   serialNumber: string | null;
   estimatedValue: number | null;
   status: string;
-  rnbpNumber: string | null;
+  badgeCode: string | null;
   primaryPhotoUrl: string | null;
   archivedAt: string | null;
   archiveReason: string | null;
@@ -75,7 +75,7 @@ export function DashboardPage() {
   function handleAssignSuccess(code: string) {
     if (!assignTargetId) return;
     setItems((prev) =>
-      prev.map((i) => (i.id === assignTargetId ? { ...i, rnbpNumber: code } : i)),
+      prev.map((i) => (i.id === assignTargetId ? { ...i, badgeCode: code } : i)),
     );
     setAssignedFlashId(assignTargetId);
     setTimeout(() => setAssignedFlashId(null), 2500);
@@ -91,7 +91,7 @@ export function DashboardPage() {
 
   return (
     <section className="min-h-[80vh] bg-[var(--rcb-white)]">
-      <title>{`${dash?.heading ?? "Dashboard"} | RNBP`}</title>
+      <title>{`${dash?.heading ?? "Dashboard"} | Badge`}</title>
       <div className="section-shell py-16">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -157,7 +157,7 @@ export function DashboardPage() {
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => {
-            const canAssign = !item.rnbpNumber && item.status === "active";
+            const canAssign = !item.badgeCode && item.status === "active";
             return (
               <Link
                 key={item.id}
@@ -188,13 +188,13 @@ export function DashboardPage() {
                     {item.brand}{item.model ? ` ${item.model}` : ""}
                   </p>
 
-                  {item.rnbpNumber ? (
+                  {item.badgeCode ? (
                     <p className="mt-2 font-mono text-xs tracking-wider text-[var(--rcb-primary)]">
-                      {item.rnbpNumber}
+                      {item.badgeCode}
                     </p>
                   ) : (
                     <p className="mt-2 text-xs text-[var(--rcb-text-muted)]">
-                      {dash?.noNumberHint ?? "No RNBP code assigned yet."}
+                      {dash?.noNumberHint ?? "No badge code assigned yet."}
                     </p>
                   )}
 
@@ -216,8 +216,8 @@ export function DashboardPage() {
                         className="w-full cursor-pointer rounded-lg bg-[var(--rcb-surface)] px-3 py-1.5 text-xs font-medium text-[var(--rcb-primary)] transition-colors hover:bg-[var(--rcb-border)]"
                       >
                         {assignedFlashId === item.id
-                          ? (dash?.assignRnbpSuccess ?? "✓ Code assigned")
-                          : (dash?.assignRnbpButton ?? "Assign an RNBP code")}
+                          ? (dash?.assignBadgeSuccess ?? "✓ Code assigned")
+                          : (dash?.assignBadgeButton ?? "Assign an badge code")}
                       </button>
                     </div>
                   )}
@@ -272,7 +272,7 @@ export function DashboardPage() {
         )}
       </div>
 
-      {/* Assign-RNBP modal */}
+      {/* Assign-badge modal */}
       {assignTarget && (
         <AssignRnbpModal
           open={true}

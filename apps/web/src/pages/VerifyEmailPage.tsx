@@ -36,7 +36,7 @@ export function VerifyEmailPage() {
 
   return (
     <section className="min-h-[80vh] bg-[var(--rcb-white)]">
-      <title>{`${locale === "fr" ? "Vérification du courriel" : "Email verification"} | RNBP`}</title>
+      <title>{`${locale === "fr" ? "Vérification du courriel" : "Email verification"} | Badge`}</title>
       <div className="section-shell flex flex-col items-center justify-center py-16">
         {status === "loading" && (
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--rcb-primary)] border-t-transparent" />

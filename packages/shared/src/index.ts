@@ -5,6 +5,7 @@ export * from "./constants/report-status.js";
 export * from "./constants/insurers.js";
 export * from "./constants/error-codes.js";
 export * from "./constants/products.js";
+export * from "./constants/brand.js";
 
 // Schemas
 export * from "./schemas/auth.js";
@@ -13,7 +14,7 @@ export * from "./schemas/report.js";
 export * from "./schemas/insurance.js";
 export * from "./schemas/newsletter.js";
 export * from "./schemas/contact.js";
-export * from "./schemas/rnbp.js";
+export * from "./schemas/badge.js";
 
 // Types
 export * from "./types/user.js";

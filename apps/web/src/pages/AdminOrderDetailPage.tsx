@@ -8,7 +8,7 @@ import { ROUTES } from "@/routes/routes";
 import {
   PRODUCT_SLUGS,
   CODES_PER_SHEET,
-  normalizeRnbpCode,
+  normalizeBadgeCode,
 } from "@rnbp/shared";
 
 type StickerCode = {
@@ -20,7 +20,7 @@ type OrderItem = {
   id: string;
   quantity: number;
   unitPriceCents: number;
-  rnbpNumber: string | null;
+  badgeCode: string | null;
   itemId: string | null;
   itemName: string | null;
   itemCategory: string | null;
@@ -100,8 +100,8 @@ export function AdminOrderDetailPage() {
   async function handleRegisterCodes(orderItemId: string) {
     const sheets = sheetInputs[orderItemId] ?? [];
     const ranges = sheets.map((s) => ({
-      firstCode: normalizeRnbpCode(s.firstCode),
-      lastCode: normalizeRnbpCode(s.lastCode),
+      firstCode: normalizeBadgeCode(s.firstCode),
+      lastCode: normalizeBadgeCode(s.lastCode),
     }));
     setPrepRunning((p) => ({ ...p, [orderItemId]: true }));
     setPrepErrors((p) => ({ ...p, [orderItemId]: "" }));
@@ -217,7 +217,7 @@ export function AdminOrderDetailPage() {
 
   return (
     <section className="min-h-[80vh] bg-[var(--rcb-white)]">
-      <title>{`Admin — ${t.admin?.nav.orders ?? "Orders"} | RNBP`}</title>
+      <title>{`Admin — ${t.admin?.nav.orders ?? "Orders"} | Badge`}</title>
       <div className="section-shell py-16">
         <Link
           to={ROUTES.adminOrders}
@@ -318,7 +318,7 @@ export function AdminOrderDetailPage() {
                   ) : (
                     <div className="mt-3 space-y-3">
                       <p className="text-xs text-[var(--rcb-text-muted)]">
-                        Enter the first and last RNBP code printed on each sheet (each
+                        Enter the first and last badge code printed on each sheet (each
                         sheet has {CODES_PER_SHEET} sequential codes).
                       </p>
                       {(sheetInputs[item.id] ?? []).map((sheet, sheetIdx) => (
@@ -328,7 +328,7 @@ export function AdminOrderDetailPage() {
                           </span>
                           <input
                             type="text"
-                            placeholder="First (RNBP-…)"
+                            placeholder="First (BADGE-…)"
                             value={sheet.firstCode}
                             onChange={(e) =>
                               updateSheetInput(item.id, sheetIdx, "firstCode", e.target.value)
@@ -337,7 +337,7 @@ export function AdminOrderDetailPage() {
                           />
                           <input
                             type="text"
-                            placeholder="Last (RNBP-…)"
+                            placeholder="Last (BADGE-…)"
                             value={sheet.lastCode}
                             onChange={(e) =>
                               updateSheetInput(item.id, sheetIdx, "lastCode", e.target.value)

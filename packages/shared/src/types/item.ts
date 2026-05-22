@@ -15,7 +15,7 @@ export type Item = {
   estimatedValue: number | null;
   purchaseDate: string | null;
   status: ItemStatus;
-  rnbpNumber: string | null;
+  badgeCode: string | null;
   archivedAt: string | null;
   archiveReason: string | null;
   archiveReasonCustom: string | null;
