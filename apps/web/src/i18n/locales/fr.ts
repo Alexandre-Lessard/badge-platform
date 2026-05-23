@@ -8,7 +8,7 @@ const fr: SiteContent = {
   },
   pages: {
     home: {
-      title: "Protégez et retrouvez vos biens de valeur | Badge Canada",
+      title: "Protégez et retrouvez vos biens de valeur | Badge",
       description: "Enregistrez vos biens de valeur dans un registre sécurisé. Protégez et retrouvez vos biens en cas de perte ou de vol.",
     },
     faq: {

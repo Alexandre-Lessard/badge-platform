@@ -34,13 +34,13 @@ copyFileSync(TMP_EN, "build/client/index.en.html");
 const HOME = {
   fr: {
     file: "build/client/index.html",
-    title: "Protégez et retrouvez vos biens de valeur | RNBP Canada",
+    title: "Protégez et retrouvez vos biens de valeur | Badge",
     description:
       "Enregistrez vos biens de valeur dans un registre sécurisé. Protégez et retrouvez vos biens en cas de perte ou de vol.",
   },
   en: {
     file: "build/client/index.en.html",
-    title: "Protect and recover your valuable belongings | NRPP",
+    title: "Protect and recover your valuable belongings | Badge",
     description:
       "Register your valuable belongings in a secure registry. Protect and recover your items in case of loss or theft.",
   },
