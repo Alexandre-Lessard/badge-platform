@@ -355,7 +355,7 @@ function buildJsonLd(locale: "fr" | "en", path: string, domain: string): string 
       ? "Badge"
       : "Badge";
   const altName = "Badge";
-  const logoFile = locale === "fr" ? "logo-texte-fr.png" : "logo-texte-en.png";
+  const logoFile = "logo.png";
   const description =
     locale === "fr"
       ? "Badge — protégez et retrouvez vos biens de valeur."

@@ -122,14 +122,14 @@ function AuthMobileInner({ onNav }: { onNav: () => void }) {
 }
 
 export function Navbar() {
-  const { t, locale } = useLanguage();
+  const { t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-[var(--rcb-header)]/95 backdrop-blur">
       <div className="section-shell flex min-h-20 items-center justify-between gap-6 py-3">
         <Link to="/" className="shrink-0">
-          <img src={`/assets/logo-texte-${locale}.png`} alt={t.a11y.logoAlt} className="h-10" />
+          <img src="/assets/logo.png" alt={t.a11y.logoAlt} className="h-10" />
         </Link>
 
         <nav aria-label={t.a11y.mainNav} className="hidden items-center gap-9 text-base font-medium text-[var(--rcb-text-strong)] lg:flex">
