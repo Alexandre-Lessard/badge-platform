@@ -1,12 +1,10 @@
 import { Link } from "react-router";
 import { useLanguage } from "@/i18n/context";
-import { useAuth } from "@/lib/auth-context";
 import { getButtonClasses } from "@/lib/button-styles";
 import { ROUTES } from "@/routes/routes";
 
 export function CycleSection() {
   const { t } = useLanguage();
-  const { user } = useAuth();
 
   return (
     <section id="about" className="scroll-mt-24 bg-[var(--rcb-surface)]">
@@ -47,7 +45,7 @@ export function CycleSection() {
 
         <div className="mt-14 text-center">
           <Link
-            to={user ? ROUTES.reportTheft : `${ROUTES.login}?redirect=${ROUTES.reportTheft}`}
+            to={ROUTES.lookup}
             className={getButtonClasses("outline")}
           >
             {t.buttons.declareStolen}

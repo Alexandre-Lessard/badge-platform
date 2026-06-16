@@ -82,7 +82,7 @@ const en: SiteContent = {
     subtitleLine1: "Your belongings deserve",
     titleLine1: "an identity and protection",
     description:
-      "The Canadian registry that documents your valuables to simplify identification and recovery in case of theft or loss. Free.",
+      "Badge makes them easier to identify and recover in case of theft or loss.",
     freeLabel: "Registration is 100% free",
     imageAlt:
       "Bike, laptop, phone, watch, golf cart and other belongings",
@@ -94,7 +94,7 @@ const en: SiteContent = {
     ],
   },
   cycle: {
-    heading: "Property Registry Cycle",
+    heading: "How Badge protects your belongings",
     imageAlt: "Officer taking note of a stolen bike",
     actions: [
       {
@@ -118,8 +118,8 @@ const en: SiteContent = {
     ],
   },
   rollingRegistry: {
-    headingLine1: "The Canadian",
-    headingLine2: "Personal Property Registry",
+    headingLine1: "Protect",
+    headingLine2: "what's yours",
     description:
       "The Badge covers a wide variety of items, including rolling stock, electronics, specialized tools and other valuable articles.",
     tagline: "Clear proof of ownership, all in one place.",
@@ -260,7 +260,7 @@ const en: SiteContent = {
           "Report it immediately via the \u201cReport a stolen item\u201d section. Your item\u2019s status will be updated in the registry.",
       },
       {
-        question: "Why is the registry necessary?",
+        question: "Why is a Badge necessary?",
         answer:
           "Every year, thousands of items are lost or stolen in Canada, and the majority are never recovered. Without centralized proof of ownership, it is difficult for police to identify an owner and for insurers to process a claim efficiently. The Badge creates an official, secure and dated record of your belongings \u2014 serial number, photos, proof of purchase \u2014 in a single file. It turns an anonymous object into an identifiable asset, makes reselling stolen goods much harder, and speeds up your recovery process.",
       },
@@ -335,9 +335,9 @@ const en: SiteContent = {
           "Photos are not mandatory but strongly recommended to facilitate identification.",
       },
       {
-        question: "Can the registry help deter theft?",
+        question: "Can the Badge registry help deter theft?",
         answer:
-          "Yes. A registered and Badge-identifiable item is harder to resell and can be more easily traced.",
+          "Yes. A registered and identifiable item is harder to resell and can be more easily traced.",
       },
       {
         question: "Can I delete my account?",
@@ -352,7 +352,7 @@ const en: SiteContent = {
       {
         question: "How does the registry help recover items?",
         answer:
-          "All police services have 24/7 access to the registry to help identify owners when an item is found. Thanks to registered information, it becomes simpler and faster to trace and return the item to its rightful owner.",
+          "All police services have 24/7 access to the Badge registry to help identify owners when an item is found. Thanks to registered information, it becomes simpler and faster to trace and return the item to its rightful owner.",
       },
       {
         question: "Does the registry replace insurance?",
@@ -903,7 +903,7 @@ const en: SiteContent = {
     headingAccent: "Verify",
     heading: "before you buy",
     description:
-      "Check the registry to find out if an item has been reported stolen before purchasing it. Protect yourself from fraudulent purchases in seconds.",
+      "Check our registry to find out if an item has been reported stolen before purchasing it. Protect yourself from fraudulent purchases in seconds.",
     buttonText: "Verify an item",
     imageAlt: "Verifying an item before purchase",
   },

@@ -82,7 +82,7 @@ const fr: SiteContent = {
     subtitleLine1: "Vos biens méritent",
     titleLine1: "une identité et une protection",
     description:
-      "Le registre canadien qui documente vos biens de valeur pour faciliter leur identification et leur restitution en cas de vol ou de perte. Gratuit.",
+      "Badge facilite leur identification et leur restitution en cas de vol ou de perte.",
     freeLabel: "Enregistrement 100% gratuit",
     imageAlt:
       "V\u00e9lo, laptop, cellulaire, montre, voiturette de golf et autres biens",
@@ -94,7 +94,7 @@ const fr: SiteContent = {
     ],
   },
   cycle: {
-    heading: "Cycle du Registre des biens",
+    heading: "Comment Badge protège vos biens",
     imageAlt: "Agent prenant note d\u2019un v\u00e9lo vol\u00e9",
     actions: [
       {
@@ -118,8 +118,8 @@ const fr: SiteContent = {
     ],
   },
   rollingRegistry: {
-    headingLine1: "Le Registre national",
-    headingLine2: "des biens personnels",
+    headingLine1: "Protégez",
+    headingLine2: "ce qui vous appartient",
     description:
       "Badge couvre une grande variété de biens, incluant le matériel roulant, l\u2019électronique, les outils spécialisés et d\u2019autres articles de valeur.",
     tagline:
@@ -266,7 +266,7 @@ const fr: SiteContent = {
       },
       {
         question:
-          "Pourquoi le registre est-il n\u00e9cessaire\u00a0?",
+          "Pourquoi un Badge est-il n\u00e9cessaire\u00a0?",
         answer:
           "Chaque ann\u00e9e, des milliers de biens sont perdus ou vol\u00e9s au Canada, et la majorit\u00e9 ne sont jamais retrouv\u00e9s. Sans preuve centralis\u00e9e de propri\u00e9t\u00e9, il est difficile pour la police d\u2019identifier un propri\u00e9taire et pour les assureurs de traiter efficacement une r\u00e9clamation. Badge cr\u00e9e une preuve officielle, s\u00e9curis\u00e9e et dat\u00e9e de vos biens \u2014 num\u00e9ro de s\u00e9rie, photos, preuves d\u2019achat \u2014 dans un dossier unique. Il transforme un objet anonyme en bien identifiable, rend la revente de biens vol\u00e9s beaucoup plus difficile et acc\u00e9l\u00e8re vos d\u00e9marches de restitution.",
       },
@@ -341,9 +341,9 @@ const fr: SiteContent = {
           "Les photos ne sont pas obligatoires mais fortement recommand\u00e9es pour faciliter l\u2019identification.",
       },
       {
-        question: "Le registre peut-il aider \u00e0 dissuader le vol\u00a0?",
+        question: "Le registre de Badge peut-il aider \u00e0 dissuader le vol\u00a0?",
         answer:
-          "Oui. Un objet enregistr\u00e9 et identifiabBadge est plus difficile \u00e0 revendre et peut \u00eatre plus facilement retrac\u00e9.",
+          "Oui. Un objet enregistr\u00e9 et identifiable est plus difficile \u00e0 revendre et peut \u00eatre plus facilement retrac\u00e9.",
       },
       {
         question: "Puis-je supprimer mon compte\u00a0?",
@@ -358,7 +358,7 @@ const fr: SiteContent = {
       {
         question: "Comment le registre aide-t-il \u00e0 retrouver un bien\u00a0?",
         answer:
-          "Tous les corps policiers ont acc\u00e8s au registre 24\u00a0h/24 afin de faciliter l\u2019identification du propri\u00e9taire lorsqu\u2019un bien est retrouv\u00e9. Gr\u00e2ce aux informations enregistr\u00e9es, il devient plus simple et rapide de retracer et de restituer le bien \u00e0 son propri\u00e9taire l\u00e9gitime.",
+          "Tous les corps policiers ont acc\u00e8s au registre de Badge 24\u00a0h/24 afin de faciliter l\u2019identification du propri\u00e9taire lorsqu\u2019un bien est retrouv\u00e9. Gr\u00e2ce aux informations enregistr\u00e9es, il devient plus simple et rapide de retracer et de restituer le bien \u00e0 son propri\u00e9taire l\u00e9gitime.",
       },
       {
         question: "Le registre remplace-t-il une assurance\u00a0?",
@@ -909,7 +909,7 @@ const fr: SiteContent = {
     headingAccent: "Vérifiez",
     heading: "avant d'acheter",
     description:
-      "Consultez le registre pour savoir si un bien a été déclaré volé avant de l'acheter. Protégez-vous contre les achats frauduleux en quelques secondes.",
+      "Consultez notre registre pour savoir si un bien a été déclaré volé avant de l'acheter. Protégez-vous contre les achats frauduleux en quelques secondes.",
     buttonText: "Vérifier un bien",
     imageAlt: "Vérification d'un bien avant achat",
   },

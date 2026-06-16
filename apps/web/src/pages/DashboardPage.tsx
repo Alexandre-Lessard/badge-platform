@@ -111,19 +111,19 @@ export function DashboardPage() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               to={ROUTES.registerItem}
-              className={getButtonClasses("primary", "sm", "w-[170px] whitespace-nowrap text-center")}
+              className={getButtonClasses("primary", "sm", "w-[225px] whitespace-nowrap text-center")}
             >
               + {dash?.addItem ?? "Register an item"}
             </Link>
             <Link
               to={ROUTES.shop}
-              className={getButtonClasses("outline", "sm", "w-[170px] whitespace-nowrap text-center")}
+              className={getButtonClasses("outline", "sm", "w-[225px] whitespace-nowrap text-center")}
             >
               {dash?.orderStickersGlobal ?? "Buy stickers"}
             </Link>
             <Link
               to={ROUTES.reportTheft}
-              className={getButtonClasses("outline", "sm", "w-[170px] whitespace-nowrap text-center")}
+              className={getButtonClasses("outline", "sm", "w-[225px] whitespace-nowrap text-center")}
             >
               {dash?.reportTheft ?? "Report a theft"}
             </Link>
