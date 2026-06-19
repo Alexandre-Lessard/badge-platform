@@ -1,14 +1,13 @@
-# Production Setup Guide — RNBP
+# Production Setup Guide — Badge
 
 Complete guide to deploy the project from scratch.
 
 ## Architecture
 
 ```
-[Browser] → rnbp.ca  → [Cloudflare Pages] → React SPA (FR by default)
-[Browser] → nrpp.ca  → [Cloudflare Pages] → React SPA (EN by default)
+[Browser] → badgeid.ca → [Cloudflare Pages] → React SPA (FR/EN, single domain)
                                   ↓ API calls
-[Browser] → api.rnbp.ca → [Cloudflare Tunnel] → 192.168.50.241:3000 → [Fastify]
+[Browser] → api.badgeid.ca → [Cloudflare Tunnel] → 192.168.50.241:3000 → [Fastify]
                                                                               ↓
                                                           192.168.50.239 → [PostgreSQL 16]
 ```
@@ -16,6 +15,7 @@ Complete guide to deploy the project from scratch.
 - **No nginx** — Cloudflare Tunnel connects directly to Fastify (existing nginx on the container does not interfere)
 - **No certbot** — Cloudflare handles TLS at the edge
 - **No public IP** — the tunnel is an outbound connection
+- **Legacy domains** — `rnbp.ca` / `nrpp.ca` (and `api.rnbp.ca`) remain pointed at Cloudflare and still resolve, kept for redirects/back-compat after the Badge rebrand
 
 ### Proxmox Infrastructure
 
@@ -27,7 +27,7 @@ Complete guide to deploy the project from scratch.
 ## Prerequisites
 
 - Proxmox with the 2 containers listed above
-- 2 domains: `rnbp.ca` and `nrpp.ca` (NS pointing to Cloudflare)
+- Primary domain: `badgeid.ca` (NS pointing to Cloudflare); legacy `rnbp.ca` / `nrpp.ca` also on Cloudflare for redirects
 - Cloudflare account (free tier is sufficient)
 
 ---
@@ -170,10 +170,10 @@ Edit `/opt/rnbp/.env` with production values:
 | `DATABASE_URL` | `postgresql://rnbp:<PASSWORD>@192.168.50.239:5432/rnbp_prod` |
 | `JWT_PRIVATE_KEY` | *(see below)* |
 | `JWT_PUBLIC_KEY` | *(see below)* |
-| `CORS_ORIGINS` | `https://rnbp.ca,https://nrpp.ca` |
+| `CORS_ORIGINS` | `https://badgeid.ca,https://www.badgeid.ca,https://rnbp.ca,https://nrpp.ca,https://www.rnbp.ca,https://www.nrpp.ca` |
 | `UPLOAD_DIR` | `/opt/rnbp/uploads` |
-| `FRONTEND_URL` | `https://rnbp.ca` |
-| `FROM_EMAIL` | `noreply@rnbp.ca` |
+| `FRONTEND_URL` | `https://badgeid.ca` |
+| `FROM_EMAIL` | `noreply@badgeid.ca` |
 | `BREVO_API_KEY` | *(Brevo key if emails are enabled)* |
 | `GOOGLE_CLIENT_ID` | *(Google OAuth client ID)* |
 | `GOOGLE_CLIENT_SECRET` | *(Google OAuth client secret)* |
@@ -301,7 +301,9 @@ tunnel: <TUNNEL_ID>
 credentials-file: /root/.cloudflared/<TUNNEL_ID>.json
 
 ingress:
-  - hostname: api.rnbp.ca
+  - hostname: api.badgeid.ca
+    service: http://localhost:3000
+  - hostname: api.rnbp.ca          # legacy, kept for back-compat
     service: http://localhost:3000
   - service: http_status:404
 ```
@@ -311,10 +313,10 @@ ingress:
 ### Configure DNS
 
 ```bash
-cloudflared tunnel route dns rnbp-api api.rnbp.ca
+cloudflared tunnel route dns rnbp-api api.badgeid.ca
 ```
 
-This automatically creates a CNAME `api.rnbp.ca` → `<TUNNEL_ID>.cfargotunnel.com`.
+This automatically creates a CNAME `api.badgeid.ca` → `<TUNNEL_ID>.cfargotunnel.com`.
 
 ### Install as a service
 
@@ -328,7 +330,7 @@ sudo systemctl start cloudflared
 
 ```bash
 sudo systemctl status cloudflared
-curl -s https://api.rnbp.ca/api/health | jq
+curl -s https://api.badgeid.ca/api/health | jq
 ```
 
 ---
@@ -339,7 +341,7 @@ curl -s https://api.rnbp.ca/api/health | jq
 
 ```bash
 # From the dev machine, at the repo root
-npx wrangler pages project create rnbp-web
+npx wrangler pages project create rnbp-platform
 ```
 
 ### First deployment
@@ -347,17 +349,17 @@ npx wrangler pages project create rnbp-web
 ```bash
 pnpm --filter @rnbp/shared build
 pnpm --filter @rnbp/web build
-npx wrangler pages deploy apps/web/build/client --project-name rnbp-web
+npx wrangler pages deploy apps/web/build/client --project-name rnbp-platform
 ```
 
 ### Custom domains
 
-In the Cloudflare Pages dashboard → project `rnbp-web` → Custom Domains:
+In the Cloudflare Pages dashboard → project `rnbp-platform` → Custom Domains:
 
-1. `rnbp.ca`
-2. `www.rnbp.ca` (redirect to `rnbp.ca`)
-3. `nrpp.ca`
-4. `www.nrpp.ca` (redirect to `nrpp.ca`)
+1. `badgeid.ca` (primary)
+2. `www.badgeid.ca` (redirect to `badgeid.ca`)
+3. `rnbp.ca` / `www.rnbp.ca` (legacy, redirect to `badgeid.ca`)
+4. `nrpp.ca` / `www.nrpp.ca` (legacy, redirect to `badgeid.ca`)
 
 ### SPA routing and legacy redirects
 
@@ -375,22 +377,30 @@ The `/*` line lets React Router handle every other path on the client. The home 
 
 ## 8. Cloudflare DNS
 
-Both domains (`rnbp.ca` and `nrpp.ca`) must have their nameservers pointing to Cloudflare.
+The primary domain (`badgeid.ca`) and the legacy domains (`rnbp.ca`, `nrpp.ca`) must all have their nameservers pointing to Cloudflare.
 
-### rnbp.ca
+### badgeid.ca (primary)
 
 | Type | Name | Content | Proxy |
 |------|------|---------|-------|
-| CNAME | `@` | `rnbp-web.pages.dev` | Yes |
-| CNAME | `www` | `rnbp-web.pages.dev` | Yes |
+| CNAME | `@` | `rnbp-platform.pages.dev` | Yes |
+| CNAME | `www` | `rnbp-platform.pages.dev` | Yes |
+| CNAME | `api` | `<TUNNEL_ID>.cfargotunnel.com` | Yes |
+
+### rnbp.ca (legacy)
+
+| Type | Name | Content | Proxy |
+|------|------|---------|-------|
+| CNAME | `@` | `rnbp-platform.pages.dev` | Yes |
+| CNAME | `www` | `rnbp-platform.pages.dev` | Yes |
 | CNAME | `api` | `<TUNNEL_ID>.cfargotunnel.com` | Yes |
 
 ### nrpp.ca
 
 | Type | Name | Content | Proxy |
 |------|------|---------|-------|
-| CNAME | `@` | `rnbp-web.pages.dev` | Yes |
-| CNAME | `www` | `rnbp-web.pages.dev` | Yes |
+| CNAME | `@` | `rnbp-platform.pages.dev` | Yes |
+| CNAME | `www` | `rnbp-platform.pages.dev` | Yes |
 
 > **Note**: The `@` and `www` CNAME records for Pages are often configured automatically by Cloudflare when adding custom domains.
 
@@ -506,7 +516,7 @@ gunzip -c /opt/rnbp/backups/rollback/db_YYYYMMDD_HHMMSS.sql.gz | psql "$DATABASE
 
 Set up a monitor on [UptimeRobot](https://uptimerobot.com/) (free):
 
-- **URL**: `https://api.rnbp.ca/api/health`
+- **URL**: `https://api.badgeid.ca/api/health`
 - **Interval**: 5 minutes
 - **Alert**: email
 
