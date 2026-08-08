@@ -17,6 +17,7 @@ import { TOKEN_EXPIRY } from "../constants/time.js";
 import {
   sendEmail,
   buildVerificationEmail,
+  buildSignupNotificationEmail,
   createSignedToken as createEmailToken,
 } from "../utils/email.js";
 import {
@@ -178,6 +179,22 @@ async function handleOAuthLogin(
         })
         .returning();
       user = created;
+
+      // Notify admin of the new signup (fire & forget)
+      const signupLang = (created.preferredLanguage as "fr" | "en") ?? "fr";
+      sendEmail(
+        buildSignupNotificationEmail(
+          {
+            firstName: created.firstName,
+            lastName: created.lastName,
+            email: created.email,
+            provider,
+          },
+          signupLang,
+        ),
+      ).catch(() => {
+        /* non-blocking: signup notification is best-effort */
+      });
     }
   }
 

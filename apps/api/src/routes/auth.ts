@@ -44,6 +44,7 @@ import {
   verifySignedToken,
   buildVerificationEmail,
   buildResetEmail,
+  buildSignupNotificationEmail,
 } from "../utils/email.js";
 import { getConfig } from "../config.js";
 import { TOKEN_EXPIRY } from "../constants/time.js";
@@ -124,6 +125,16 @@ export async function authRoutes(app: FastifyInstance) {
     const verifyUrl = `${config.FRONTEND_URL}/verify-email?token=${verifyTokenStr}`;
     sendEmail(buildVerificationEmail(user.firstName, user.email, verifyUrl, lang)).catch((err) => {
       app.log.error(err, "Failed to send verification email");
+    });
+
+    // Notify admin of the new signup (fire & forget)
+    sendEmail(
+      buildSignupNotificationEmail(
+        { firstName: user.firstName, lastName: user.lastName, email: user.email },
+        lang,
+      ),
+    ).catch((err) => {
+      app.log.error(err, "Failed to send signup notification email");
     });
 
     return reply.status(201).send({
@@ -309,6 +320,11 @@ export async function authRoutes(app: FastifyInstance) {
 
       if (body.firstName !== undefined) updates.firstName = body.firstName.trim();
       if (body.lastName !== undefined) updates.lastName = body.lastName.trim();
+
+      if (body.contactEmail !== undefined) {
+        const normalizedContactEmail = normalizeOptionalText(body.contactEmail);
+        updates.contactEmail = normalizedContactEmail ? normalizedContactEmail.toLowerCase() : null;
+      }
 
       const normalizedPhone = normalizeOptionalText(body.phone);
       if (normalizedPhone !== undefined) updates.phone = normalizedPhone;

@@ -123,6 +123,56 @@ export function buildContactNotificationEmail(
   };
 }
 
+// ── Signup admin notification ─────────────────────────────────────────
+
+export function buildSignupNotificationEmail(
+  opts: { firstName: string; lastName: string; email: string; provider?: string },
+  lang: "fr" | "en" = "fr",
+): EmailPayload {
+  const config = getConfig();
+  const adminEmail =
+    config.ADMIN_CONTACT_EMAIL ||
+    (config.NODE_ENV === "production" ? "info@badgeid.ca" : "dev@badgeid.ca");
+
+  const safeName = escapeHtml(`${opts.firstName} ${opts.lastName}`.trim());
+  const safeEmail = escapeHtml(opts.email);
+  const safeProvider = escapeHtml(opts.provider ?? (lang === "fr" ? "Courriel" : "Email"));
+
+  const t = {
+    fr: {
+      subject: `Nouvelle inscription — ${safeName}`,
+      heading: "Nouvelle inscription client",
+      nameLabel: "Nom",
+      emailLabel: "Courriel",
+      methodLabel: "Méthode",
+      footer: "Badge — Notification automatique d'inscription",
+    },
+    en: {
+      subject: `New signup — ${safeName}`,
+      heading: "New client signup",
+      nameLabel: "Name",
+      emailLabel: "Email",
+      methodLabel: "Method",
+      footer: "Badge — Automatic signup notification",
+    },
+  }[lang];
+
+  return {
+    to: adminEmail,
+    subject: t.subject,
+    html: buildBaseEmail({
+      variant: "admin",
+      body: `
+        <h2 style="margin: 0 0 16px; color: #1a2e44; font-size: 18px;">${t.heading}</h2>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+          <tr><td style="padding: 8px 0; font-weight: bold; color: #333333; width: 100px;">${t.nameLabel}</td><td style="padding: 8px 0; color: #333333;">${safeName}</td></tr>
+          <tr><td style="padding: 8px 0; font-weight: bold; color: #333333;">${t.emailLabel}</td><td style="padding: 8px 0;"><a href="mailto:${safeEmail}" style="color: #1a2e44;">${safeEmail}</a></td></tr>
+          <tr><td style="padding: 8px 0; font-weight: bold; color: #333333;">${t.methodLabel}</td><td style="padding: 8px 0; color: #333333;">${safeProvider}</td></tr>
+        </table>`,
+    }),
+  };
+}
+
 // ── Order admin notification ──────────────────────────────────────────
 
 export function buildOrderNotificationEmail(

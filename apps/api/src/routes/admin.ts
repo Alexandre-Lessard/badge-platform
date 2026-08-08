@@ -186,6 +186,56 @@ export async function adminRoutes(app: FastifyInstance) {
     },
   );
 
+  // ── List clients (registered users) ────────────────────────────
+
+  app.get(
+    "/admin/clients",
+    { preHandler: requireAdmin },
+    async (request, reply) => {
+      const db = getDb();
+      const { page = "1", limit = "50", q } = request.query as {
+        page?: string;
+        limit?: string;
+        q?: string;
+      };
+
+      const pageNum = Math.max(1, parseInt(page, 10) || 1);
+      const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 50));
+      const offset = (pageNum - 1) * limitNum;
+
+      const search = q && q.trim() ? `%${q.trim()}%` : null;
+      const where = search
+        ? or(
+            ilike(users.email, search),
+            ilike(users.firstName, search),
+            ilike(users.lastName, search),
+            ilike(users.clientNumber, search),
+          )
+        : undefined;
+
+      const [rows, [{ total }]] = await Promise.all([
+        db
+          .select({
+            id: users.id,
+            email: users.email,
+            firstName: users.firstName,
+            lastName: users.lastName,
+            clientNumber: users.clientNumber,
+            emailVerified: users.emailVerified,
+            createdAt: users.createdAt,
+          })
+          .from(users)
+          .where(where)
+          .orderBy(desc(users.createdAt))
+          .limit(limitNum)
+          .offset(offset),
+        db.select({ total: count() }).from(users).where(where),
+      ]);
+
+      return reply.send({ clients: rows, total, page: pageNum, limit: limitNum });
+    },
+  );
+
   // ── Order detail ──────────────────────────────────────────────
 
   app.get(

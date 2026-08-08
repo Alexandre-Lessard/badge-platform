@@ -87,6 +87,9 @@ export async function itemRoutes(app: FastifyInstance) {
           purchaseDate: body.purchaseDate
             ? new Date(body.purchaseDate)
             : null,
+          isInsured: body.isInsured ?? false,
+          insurerId: body.insurerId ?? null,
+          insurerName: body.insurerName ?? null,
         })
         .returning();
 
