@@ -10,7 +10,7 @@ import { Modal } from "@/components/ui/Modal";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { PromoCallout } from "@/components/ui/PromoCallout";
 import { ItemImage } from "@/components/ui/ItemImage";
-import { ITEM_CATEGORIES, normalizeBadgeCode, BADGE_CODE_REGEX } from "@rnbp/shared";
+import { ITEM_CATEGORIES, normalizeBadgeCode, BADGE_CODE_REGEX, INSURERS } from "@rnbp/shared";
 import type { ItemWithFiles } from "@rnbp/shared";
 import { ROUTES } from "@/routes/routes";
 
@@ -25,12 +25,14 @@ type FormData = {
   estimatedValue: string;
   description: string;
   badgeCode: string;
+  isInsured: boolean;
+  insurerId: string;
 };
 
 export function EditItemPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
 
   const [form, setForm] = useState<FormData>({
     name: "",
@@ -43,6 +45,8 @@ export function EditItemPage() {
     estimatedValue: "",
     description: "",
     badgeCode: "",
+    isInsured: false,
+    insurerId: "",
   });
   const [photos, setPhotos] = useState<{ id: string; url: string }[]>([]);
   const [documents, setDocuments] = useState<{ id: string; url: string; fileName: string }[]>([]);
@@ -89,6 +93,8 @@ export function EditItemPage() {
           estimatedValue: item.estimatedValue?.toString() ?? "",
           description: item.description ?? "",
           badgeCode: item.badgeCode ?? "",
+          isInsured: item.isInsured ?? false,
+          insurerId: item.insurerId ?? "",
         });
       })
       .catch((err) => {
@@ -103,7 +109,7 @@ export function EditItemPage() {
       .finally(() => setLoading(false));
   }, [id, t, navigate]);
 
-  function update(field: keyof FormData, value: string) {
+  function update<K extends keyof FormData>(field: K, value: FormData[K]) {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -132,6 +138,11 @@ export function EditItemPage() {
       trackerId: form.trackerId,
       estimatedValue: form.estimatedValue ? Number(form.estimatedValue) : undefined,
       description: form.description,
+      isInsured: form.isInsured,
+      insurerId: form.isInsured ? form.insurerId : "",
+      insurerName: form.isInsured
+        ? (INSURERS.find((i) => i.id === form.insurerId)?.[locale] ?? "")
+        : "",
     };
 
     try {
@@ -469,6 +480,40 @@ export function EditItemPage() {
               onChange={(e) => update("estimatedValue", e.target.value)}
               className="h-12 w-full rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-4 text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
             />
+          </div>
+
+          <div className="rounded-xl border border-[var(--rcb-border)] bg-[var(--rcb-bg)] p-4">
+            <label className="flex cursor-pointer items-center gap-3">
+              <input
+                type="checkbox"
+                checked={form.isInsured}
+                onChange={(e) => update("isInsured", e.target.checked)}
+                className="h-5 w-5 cursor-pointer accent-[var(--rcb-primary)]"
+              />
+              <span className="text-sm font-medium text-[var(--rcb-text-strong)]">
+                {reg?.insuredLabel ?? "This item is covered by an insurance policy"}
+              </span>
+            </label>
+            {form.isInsured && (
+              <div className="mt-3">
+                <label htmlFor="edit-insurer" className="mb-1 block text-sm font-medium text-[var(--rcb-text-strong)]">
+                  {reg?.insurerLabel ?? "Insurer"}
+                </label>
+                <select
+                  id="edit-insurer"
+                  value={form.insurerId}
+                  onChange={(e) => update("insurerId", e.target.value)}
+                  className="h-12 w-full rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-white)] px-4 text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
+                >
+                  <option value="">{reg?.insurerPlaceholder ?? "Select an insurer…"}</option>
+                  {INSURERS.map((insurer) => (
+                    <option key={insurer.id} value={insurer.id}>
+                      {insurer[locale]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           <div>

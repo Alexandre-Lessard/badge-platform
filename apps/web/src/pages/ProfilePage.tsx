@@ -12,6 +12,7 @@ import { ROUTES } from "@/routes/routes";
 type ProfileForm = {
   firstName: string;
   lastName: string;
+  contactEmail: string;
   phone: string;
   address1: string;
   address2: string;
@@ -24,6 +25,7 @@ function getProfileForm(user: User | null): ProfileForm {
   return {
     firstName: user?.firstName ?? "",
     lastName: user?.lastName ?? "",
+    contactEmail: user?.contactEmail ?? "",
     phone: user?.phone ?? "",
     address1: user?.address1 ?? "",
     address2: user?.address2 ?? "",
@@ -134,6 +136,24 @@ export function ProfilePage() {
                 onChange={(e) => update("phone", e.target.value)}
                 className="h-12 w-full rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-4 text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
               />
+            </div>
+
+            <div className="mt-4 max-w-md">
+              <label htmlFor="profile-contact-email" className="mb-1 block text-sm font-medium text-[var(--rcb-text-strong)]">
+                {profile?.contactEmailLabel ?? "Contact email"}{" "}
+                <span className="text-[var(--rcb-text-muted)]">({auth?.optional ?? "optional"})</span>
+              </label>
+              <input
+                id="profile-contact-email"
+                type="email"
+                value={form.contactEmail}
+                onChange={(e) => update("contactEmail", e.target.value)}
+                placeholder={user?.email ?? ""}
+                className="h-12 w-full rounded-lg border border-[var(--rcb-border)] bg-[var(--rcb-bg)] px-4 text-[var(--rcb-text-body)] focus:border-[var(--rcb-primary)] focus:outline-none"
+              />
+              <p className="mt-1 text-xs text-[var(--rcb-text-muted)]">
+                {profile?.contactEmailHelper ?? "Used to reach you if one of your items is found. Defaults to your account email."}
+              </p>
             </div>
           </div>
 

@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router";
 import { useLanguage } from "@/i18n/context";
-import { apiRequest, isNetworkError } from "@/lib/api-client";
+import { apiRequest, apiUpload, isNetworkError } from "@/lib/api-client";
 import { getErrorMessage } from "@/lib/error-utils";
 import { Button } from "@/components/ui/Button";
 import { getButtonClasses } from "@/lib/button-styles";
@@ -9,13 +9,13 @@ import { Modal } from "@/components/ui/Modal";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { ItemImage } from "@/components/ui/ItemImage";
 import { AssignRnbpModal } from "@/components/AssignRnbpModal";
-import type { ItemWithFiles } from "@rnbp/shared";
+import { INSURERS, ITEM_CATEGORIES, type ItemWithFiles } from "@rnbp/shared";
 import { ROUTES } from "@/routes/routes";
 
 export function ItemDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
 
   const [item, setItem] = useState<ItemWithFiles | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,6 +29,8 @@ export function ItemDetailPage() {
   const [archiveCustom, setArchiveCustom] = useState("");
   const [archiving, setArchiving] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const docInputRef = useRef<HTMLInputElement>(null);
 
   const edit = t.editItem;
   const reg = t.registration;
@@ -52,6 +54,28 @@ export function ItemDetailPage() {
       })
       .finally(() => setLoading(false));
   }, [id, t]);
+
+  async function handleUploadDocuments(fileList: FileList | null) {
+    if (!fileList || uploading || !item) return;
+    setUploading(true);
+    setError("");
+    const fd = new FormData();
+    Array.from(fileList).forEach((f) => fd.append("documents", f));
+    try {
+      const res = await apiUpload<{ documents: ItemWithFiles["documents"] }>(
+        `/items/${item.id}/documents`,
+        fd,
+      );
+      setItem((prev) =>
+        prev ? { ...prev, documents: [...prev.documents, ...res.documents] } : prev,
+      );
+    } catch (err) {
+      setError(getErrorMessage(err, t));
+    } finally {
+      setUploading(false);
+      if (docInputRef.current) docInputRef.current.value = "";
+    }
+  }
 
   async function handleRecover() {
     if (recovering) return;
@@ -205,7 +229,9 @@ export function ItemDetailPage() {
           <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
             <div>
               <p className="text-xs font-medium uppercase text-[var(--rcb-text-muted)]">{reg?.categoryLabel ?? "Category"}</p>
-              <p className="mt-1 text-[var(--rcb-text-strong)]">{item.category}</p>
+              <p className="mt-1 text-[var(--rcb-text-strong)]">
+                {t.allCategories.items[ITEM_CATEGORIES.indexOf(item.category as (typeof ITEM_CATEGORIES)[number])] ?? item.category}
+              </p>
             </div>
             {item.year && (
               <div>
@@ -231,6 +257,16 @@ export function ItemDetailPage() {
                 <p className="mt-1 text-[var(--rcb-text-strong)]">{item.estimatedValue.toLocaleString()} $</p>
               </div>
             )}
+            {item.isInsured && (
+              <div>
+                <p className="text-xs font-medium uppercase text-[var(--rcb-text-muted)]">{reg?.insurerLabel ?? "Insurer"}</p>
+                {/* Resolve from the id so the name follows the active language;
+                    `insurerName` is the stored snapshot used as fallback. */}
+                <p className="mt-1 text-[var(--rcb-text-strong)]">
+                  {INSURERS.find((i) => i.id === item.insurerId)?.[locale] ?? item.insurerName ?? "—"}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Description */}
@@ -241,10 +277,28 @@ export function ItemDetailPage() {
             </div>
           )}
 
-          {/* Documents */}
-          {item.documents.length > 0 && (
-            <div className="mt-6">
+          {/* Documents — always visible, with empty state + upload from this page */}
+          <div className="mt-6">
+            <div className="flex items-center justify-between gap-4">
               <p className="text-xs font-medium uppercase text-[var(--rcb-text-muted)]">{reg?.documentsHeading ?? "Documents"}</p>
+              <input
+                ref={docInputRef}
+                type="file"
+                accept="application/pdf,image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => handleUploadDocuments(e.target.files)}
+              />
+              <button
+                type="button"
+                disabled={uploading}
+                onClick={() => docInputRef.current?.click()}
+                className="cursor-pointer text-sm font-medium text-[var(--rcb-primary)] hover:underline disabled:opacity-50"
+              >
+                {uploading ? "…" : (reg?.addDocumentButton ?? "+ Add a document")}
+              </button>
+            </div>
+            {item.documents.length > 0 ? (
               <ul className="mt-2 space-y-2">
                 {item.documents.map((doc) => (
                   <li key={doc.id}>
@@ -259,8 +313,12 @@ export function ItemDetailPage() {
                   </li>
                 ))}
               </ul>
-            </div>
-          )}
+            ) : (
+              <p className="mt-2 text-sm text-[var(--rcb-text-muted)]">
+                {reg?.documentsEmpty ?? "No document yet. Add your purchase invoice or any proof of ownership."}
+              </p>
+            )}
+          </div>
 
           {/* Actions */}
           <div className="mt-10 flex flex-wrap gap-3 border-t border-[var(--rcb-border)] pt-6">

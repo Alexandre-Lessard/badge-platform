@@ -84,6 +84,11 @@ const en: SiteContent = {
     description:
       "Badge makes them easier to identify and recover in case of theft or loss.",
     freeLabel: "Registration is 100% free",
+    countBadge: {
+      count: "32,726",
+      middle: "clients registered in",
+      highlight: "15 days.",
+    },
     imageAlt:
       "Bike, laptop, phone, watch, golf cart and other belongings",
     trustBadges: [
@@ -111,9 +116,9 @@ const en: SiteContent = {
       },
       {
         number: "03",
-        title: "Speed up recovery",
+        title: "Make recovery easier",
         description:
-          "Share a clear file that facilitates ownership verification.",
+          "The registry helps police quickly find the owner thanks to the recorded information.",
       },
     ],
   },
@@ -374,6 +379,11 @@ const en: SiteContent = {
         answer:
           "Real estate, registered vehicles and firearms generally do not need to be registered on the Badge, as these items already have their own official registries. The Badge primarily targets personal property not covered by an existing registry.",
       },
+      {
+        question: "What happens if a thief removes the identification sticker?",
+        answer:
+          "It has no impact on your item's registration. The identification sticker mainly serves to indicate that an item is registered in the registry, using its serial number or unique information. Its purpose is primarily deterrent, to discourage theft. Each sticker also has a unique number that speeds up the identification process: it is much faster to look up a product in our database with a short code of a few characters than with a complex serial number. Even if the sticker is removed, the item remains registered in our database and can still be identified from its serial number.",
+      },
     ],
   },
   footer: {
@@ -388,6 +398,8 @@ const en: SiteContent = {
     cookieSettings: "Cookie Settings",
     copyright:
       "\u00a9 {{year}} Badge. All rights reserved.",
+    legalMention:
+      "Badge is a platform operated and administered by 9567-1525 Québec Inc.",
     promoLine: "Protect your valuables — Free Badge stickers",
   },
   buttons: {
@@ -494,6 +506,8 @@ const en: SiteContent = {
     heading: "My Profile",
     description: "Manage your personal information and civic address.",
     personalInfoHeading: "Personal information",
+    contactEmailLabel: "Contact email",
+    contactEmailHelper: "Used to reach you if one of your items is found. Defaults to your account email.",
     addressHeading: "Civic address",
     addressDescription: "Address fields are optional and can be used to complete your profile.",
     address1Label: "Address line 1",
@@ -549,6 +563,9 @@ const en: SiteContent = {
     trackerIdLabel: "Tracker ID",
     trackerIdExplanation: "e.g. serial number of an AirTag, Tile, or Samsung SmartTag",
     valueLabel: "Estimated value ($)",
+    insuredLabel: "This item is covered by an insurance policy",
+    insurerLabel: "Insurer",
+    insurerPlaceholder: "Select an insurer…",
     yearInvalidError: "Enter a valid year with no decimals.",
     valueIntegerError: "Enter a whole-dollar amount with no decimals.",
     valueMinError: "Minimum value is $250",
@@ -562,6 +579,7 @@ const en: SiteContent = {
     dropzoneText: "Drag your photos here or click to select",
     documentsHeading: "Supporting documents",
     documentsDescription: "Proof of purchase, certificate of authenticity (optional).",
+    documentsEmpty: "No document yet. Add your purchase invoice or any proof of ownership.",
     addDocumentButton: "+ Add a document",
     confirmButton: "Confirm registration",
     submitting: "Saving...",
@@ -937,6 +955,7 @@ const en: SiteContent = {
     nav: {
       dashboard: "Dashboard",
       items: "Items",
+      clients: "Clients",
       orders: "Orders",
       products: "Products",
     },
@@ -972,6 +991,18 @@ const en: SiteContent = {
       uptime: "Uptime",
       activityFeed: "Recent Activity",
       noActivity: "No recent activity.",
+    },
+    clients: {
+      countOne: "client",
+      countMany: "clients",
+      searchPlaceholder: "Name, email, client no.…",
+      searchButton: "Search",
+      empty: "No clients.",
+      colName: "Name",
+      colEmail: "Email",
+      colClientNumber: "Client no.",
+      colRegisteredAt: "Registered on",
+      unverified: "unverified",
     },
     products: {
       title: "Products",

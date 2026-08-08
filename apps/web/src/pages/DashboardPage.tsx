@@ -165,11 +165,12 @@ export function DashboardPage() {
                 className="group flex flex-col overflow-hidden rounded-xl border border-[var(--rcb-border)] bg-[var(--rcb-bg)] transition-shadow hover:shadow-md"
               >
                 {/* Photo */}
-                <div className="relative h-40 w-full bg-[var(--rcb-surface)]">
+                <div className="relative aspect-square w-full bg-[var(--rcb-surface)]">
                   <ItemImage
                     src={item.primaryPhotoUrl}
                     alt={item.name}
-                    className="h-full w-full object-cover"
+                    blurBackdrop
+                    className="h-full w-full"
                     fallbackClassName="flex h-full w-full items-center justify-center bg-[var(--rcb-surface)]"
                   />
                   <span

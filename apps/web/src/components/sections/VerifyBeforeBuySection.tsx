@@ -30,10 +30,10 @@ export function VerifyBeforeBuySection() {
             </div>
 
             <img
-              src="/assets/verify-before-buy.webp"
+              src="/assets/verify-before-buy-v2.webp"
               alt={content.imageAlt}
-              width={340}
-              height={510}
+              width={604}
+              height={819}
               loading="lazy"
               className="h-full w-full object-cover"
             />

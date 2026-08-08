@@ -55,6 +55,11 @@ export type SiteContent = {
     titleLine1: string;
     description: string;
     freeLabel: string;
+    countBadge: {
+      count: string;
+      middle: string;
+      highlight: string;
+    };
     imageAlt: string;
     trustBadges: TrustBadge[];
   };
@@ -105,6 +110,7 @@ export type SiteContent = {
     dataDeletion: string;
     cookieSettings: string;
     copyright: string;
+    legalMention: string;
     promoLine?: string;
   };
   buttons: {
@@ -206,6 +212,8 @@ export type SiteContent = {
     heading: string;
     description: string;
     personalInfoHeading: string;
+    contactEmailLabel: string;
+    contactEmailHelper: string;
     addressHeading: string;
     addressDescription: string;
     address1Label: string;
@@ -255,6 +263,9 @@ export type SiteContent = {
     trackerIdLabel: string;
     trackerIdExplanation: string;
     valueLabel: string;
+    insuredLabel: string;
+    insurerLabel: string;
+    insurerPlaceholder: string;
     yearInvalidError: string;
     valueIntegerError: string;
     valueMinError: string;
@@ -268,6 +279,7 @@ export type SiteContent = {
     dropzoneText: string;
     documentsHeading: string;
     documentsDescription: string;
+    documentsEmpty: string;
     addDocumentButton: string;
     confirmButton: string;
     submitting: string;
@@ -508,6 +520,7 @@ export type SiteContent = {
     nav: {
       dashboard: string;
       items: string;
+      clients: string;
       orders: string;
       products: string;
     };
@@ -543,6 +556,18 @@ export type SiteContent = {
       uptime: string;
       activityFeed: string;
       noActivity: string;
+    };
+    clients: {
+      countOne: string;
+      countMany: string;
+      searchPlaceholder: string;
+      searchButton: string;
+      empty: string;
+      colName: string;
+      colEmail: string;
+      colClientNumber: string;
+      colRegisteredAt: string;
+      unverified: string;
     };
     products: {
       title: string;

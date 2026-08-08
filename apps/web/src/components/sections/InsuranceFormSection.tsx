@@ -141,7 +141,7 @@ export function InsuranceFormSection() {
           </div>
         </div>
 
-        <div className="mx-auto mt-12 max-w-xl">
+        <div className="mx-auto mt-12 max-w-5xl">
           <div className="mb-8">
             <div className="mb-4">
               <p className="text-lg font-semibold text-[var(--rcb-text-strong)]">
@@ -151,13 +151,17 @@ export function InsuranceFormSection() {
                 {ins.featuredHint}
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {FEATURED_INSURERS.map((insurerId) => {
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              {FEATURED_INSURERS.map((insurerId, index) => {
                 const insurer = INSURERS.find((entry) => entry.id === insurerId);
                 if (!insurer) return null;
 
                 const logo = FEATURED_INSURER_LOGOS[insurerId];
                 const isSelected = selectedInsurerId === insurerId;
+                // 10 logos → the 3-column layout leaves a single orphan on the
+                // last row; center it (only in the 3-col range).
+                const isLast = index === FEATURED_INSURERS.length - 1;
+                const orphanCentering = isLast ? "sm:col-start-2 lg:col-start-auto" : "";
 
                 return (
                   <button
@@ -165,7 +169,7 @@ export function InsuranceFormSection() {
                     type="button"
                     onClick={() => handleSelectInsurer(insurerId)}
                     aria-pressed={isSelected}
-                    className={`flex min-h-24 items-center justify-center rounded-2xl border px-4 py-3 text-center transition-all ${
+                    className={`flex min-h-40 items-center justify-center rounded-2xl border px-6 py-6 text-center transition-all ${orphanCentering} ${
                       isSelected
                         ? "border-[var(--rcb-primary)] bg-white shadow-sm ring-2 ring-[var(--rcb-primary)]/15"
                         : "border-[var(--rcb-border)] bg-white hover:border-[var(--rcb-primary)] hover:shadow-sm"
@@ -175,7 +179,7 @@ export function InsuranceFormSection() {
                       <img
                         src={logo}
                         alt={insurer[locale]}
-                        className="h-10 w-full object-contain"
+                        className="h-24 w-full object-contain"
                       />
                     ) : (
                       <span className="text-sm font-semibold text-[var(--rcb-text-strong)]">
@@ -210,7 +214,7 @@ export function InsuranceFormSection() {
 
           <div
             ref={composerRef}
-            className="scroll-mt-28 rounded-3xl border border-[var(--rcb-border)] bg-white p-6 shadow-sm"
+            className="mx-auto max-w-2xl scroll-mt-28 rounded-3xl border border-[var(--rcb-border)] bg-white p-6 shadow-sm"
           >
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-[var(--rcb-text-strong)]">

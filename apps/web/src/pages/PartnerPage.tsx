@@ -136,7 +136,7 @@ export function PartnerPage() {
 
         {/* ── Tabs bar + action button ─────────────────────────── */}
         <div className="mt-10 flex items-end justify-between gap-4">
-          <div role="tablist" className="inline-flex gap-0 border-b border-[var(--rcb-border)]">
+          <div role="tablist" className="flex min-w-0 flex-1 gap-0 overflow-x-auto border-b border-[var(--rcb-border)] sm:flex-initial">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -146,8 +146,7 @@ export function PartnerPage() {
                 aria-selected={activeTab === tab.key}
                 aria-controls={`tabpanel-${tab.key}`}
                 onClick={() => switchTab(tab.key)}
-                style={{ minWidth: 180 }}
-                className={`cursor-pointer border-b-2 px-5 py-3 text-sm font-medium transition-colors sm:text-base ${
+                className={`flex-shrink-0 cursor-pointer whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors sm:min-w-[180px] sm:px-5 sm:text-base ${
                   activeTab === tab.key
                     ? "border-[var(--rcb-primary)] text-[var(--rcb-primary)]"
                     : "border-transparent text-[var(--rcb-gray-dark)] hover:border-[var(--rcb-gray-dark)] hover:text-[var(--rcb-text-strong)]"

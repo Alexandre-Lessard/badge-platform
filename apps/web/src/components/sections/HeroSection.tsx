@@ -53,6 +53,16 @@ export function HeroSection() {
       </div>
 
       <div className="bg-[var(--rcb-bg)]">
+        <div className="section-shell flex justify-center pb-2">
+          <div className="rounded-full bg-[var(--rcb-primary)]/8 px-8 py-4 text-center text-xl font-semibold text-[var(--rcb-text-strong)] sm:text-2xl">
+            <span className="whitespace-nowrap text-[var(--rcb-primary)]">{t.hero.countBadge.count}</span>{" "}
+            {t.hero.countBadge.middle}{" "}
+            <span className="whitespace-nowrap text-[var(--rcb-primary)]">{t.hero.countBadge.highlight}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-[var(--rcb-bg)]">
         <div className="section-shell py-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {t.hero.trustBadges.map((badge, i) => {

@@ -25,6 +25,7 @@ export const ROUTES = {
   reportTheft: "/report-theft",
   admin: "/admin",
   adminItems: "/admin/items",
+  adminClients: "/admin/clients",
   adminOrders: "/admin/orders",
   adminOrderDetail: (id: string) => `/admin/orders/${id}`,
   adminProducts: "/admin/products",

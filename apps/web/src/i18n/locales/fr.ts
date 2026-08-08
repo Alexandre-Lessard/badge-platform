@@ -84,6 +84,11 @@ const fr: SiteContent = {
     description:
       "Badge facilite leur identification et leur restitution en cas de vol ou de perte.",
     freeLabel: "Enregistrement 100% gratuit",
+    countBadge: {
+      count: "32 726",
+      middle: "clients inscrits en",
+      highlight: "15 jours.",
+    },
     imageAlt:
       "V\u00e9lo, laptop, cellulaire, montre, voiturette de golf et autres biens",
     trustBadges: [
@@ -111,9 +116,9 @@ const fr: SiteContent = {
       },
       {
         number: "03",
-        title: "Acc\u00e9l\u00e9rez la restitution",
+        title: "Facilitez la restitution",
         description:
-          "Partagez un dossier clair qui facilite la v\u00e9rification de propri\u00e9t\u00e9.",
+          "Le registre aide les corps policiers \u00e0 retrouver rapidement le propri\u00e9taire gr\u00e2ce aux informations enregistr\u00e9es.",
       },
     ],
   },
@@ -380,6 +385,11 @@ const fr: SiteContent = {
         answer:
           "Les immeubles, les v\u00e9hicules immatricul\u00e9s et les armes \u00e0 feu n\u2019ont g\u00e9n\u00e9ralement pas besoin d\u2019\u00eatre enregistr\u00e9s à Badge, car ces biens disposent d\u00e9j\u00e0 de leurs propres registres officiels. Badge vise principalement les biens personnels qui ne sont pas couverts par un registre existant.",
       },
+      {
+        question: "Qu’advient-il si un voleur arrache l’étiquette d’identification ?",
+        answer:
+          "Cela n’a pas d’impact sur l’enregistrement de votre bien. L’étiquette d’identification sert principalement à indiquer qu’un objet est inscrit au registre à l’aide de son numéro de série ou de ses informations uniques. Son objectif est avant tout dissuasif afin de décourager le vol. Chaque étiquette possède également un numéro unique permettant d’accélérer le processus d’identification : il est beaucoup plus rapide de rechercher un produit dans notre base de données avec un code court de quelques chiffres qu’avec un numéro de série complexe. Même si l’étiquette est retirée, le bien demeure enregistré dans notre base de données et peut toujours être identifié à partir de son numéro de série.",
+      },
     ],
   },
   footer: {
@@ -394,6 +404,8 @@ const fr: SiteContent = {
     cookieSettings: "Param\u00e8tres de cookies",
     copyright:
       "\u00a9 {{year}} Badge. Tous droits r\u00e9serv\u00e9s.",
+    legalMention:
+      "Badge est une plateforme op\u00e9r\u00e9e et administr\u00e9e par 9567-1525 Qu\u00e9bec Inc.",
     promoLine: "Protégez vos biens — Autocollants Badge gratuits",
   },
   buttons: {
@@ -500,6 +512,8 @@ const fr: SiteContent = {
     heading: "Mon profil",
     description: "Gérez vos informations personnelles et votre adresse civique.",
     personalInfoHeading: "Informations personnelles",
+    contactEmailLabel: "Courriel de contact",
+    contactEmailHelper: "Utilisé pour vous joindre si un de vos biens est retrouvé. À défaut, votre courriel de compte est utilisé.",
     addressHeading: "Adresse civique",
     addressDescription: "Les champs d'adresse sont optionnels et servent à compléter votre profil.",
     address1Label: "Adresse 1",
@@ -555,6 +569,9 @@ const fr: SiteContent = {
     trackerIdLabel: "ID du traceur",
     trackerIdExplanation: "p. ex. numéro de série d'une AirTag, Tile ou Samsung SmartTag",
     valueLabel: "Valeur estimée ($)",
+    insuredLabel: "Ce bien est couvert par une assurance",
+    insurerLabel: "Assureur",
+    insurerPlaceholder: "Sélectionnez un assureur…",
     yearInvalidError: "Entrez une année valide, sans décimales.",
     valueIntegerError: "Entrez un montant entier, sans décimales.",
     valueMinError: "La valeur minimale est de 250 $",
@@ -568,6 +585,7 @@ const fr: SiteContent = {
     dropzoneText: "Glissez vos photos ici ou cliquez pour sélectionner",
     documentsHeading: "Documents justificatifs",
     documentsDescription: "Preuve d'achat, certificat d'authenticité (optionnel).",
+    documentsEmpty: "Aucun document pour l'instant. Ajoutez votre facture d'achat ou toute preuve de propriété.",
     addDocumentButton: "+ Ajouter un document",
     confirmButton: "Confirmer l'enregistrement",
     submitting: "Enregistrement...",
@@ -943,6 +961,7 @@ const fr: SiteContent = {
     nav: {
       dashboard: "Tableau de bord",
       items: "Biens",
+      clients: "Clients",
       orders: "Commandes",
       products: "Produits",
     },
@@ -978,6 +997,18 @@ const fr: SiteContent = {
       uptime: "Temps actif",
       activityFeed: "Activité récente",
       noActivity: "Aucune activité récente.",
+    },
+    clients: {
+      countOne: "client",
+      countMany: "clients",
+      searchPlaceholder: "Nom, courriel, n° client…",
+      searchButton: "Rechercher",
+      empty: "Aucun client.",
+      colName: "Nom",
+      colEmail: "Courriel",
+      colClientNumber: "N° client",
+      colRegisteredAt: "Inscrit le",
+      unverified: "non vérifié",
     },
     products: {
       title: "Produits",

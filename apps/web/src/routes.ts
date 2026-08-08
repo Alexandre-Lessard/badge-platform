@@ -39,6 +39,7 @@ export default [
   layout("layouts/admin.tsx", [
     route("admin", "pages/AdminDashboardPage.tsx"),
     route("admin/items", "pages/AdminItemsPage.tsx"),
+    route("admin/clients", "pages/AdminClientsPage.tsx"),
     route("admin/orders", "pages/AdminOrdersPage.tsx"),
     route("admin/orders/:id", "pages/AdminOrderDetailPage.tsx"),
     route("admin/products", "pages/AdminProductsPage.tsx"),

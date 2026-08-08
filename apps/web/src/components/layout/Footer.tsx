@@ -150,6 +150,9 @@ export function Footer() {
               })()}
             </p>
           </div>
+          <p className="mt-6 text-xs text-[var(--rcb-text-muted)]">
+            {t.footer.legalMention}
+          </p>
         </div>
       </div>
     </footer>

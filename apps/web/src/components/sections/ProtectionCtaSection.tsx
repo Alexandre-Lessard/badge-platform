@@ -12,10 +12,10 @@ export function ProtectionCtaSection() {
         <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2.5rem] border border-[var(--rcb-frame)] bg-[var(--rcb-bg)]">
           <div className="grid lg:grid-cols-[340px_1fr]">
             <img
-              src="/assets/promo-protect.webp"
+              src="/assets/promo-protect-v2.webp"
               alt={t.protectionCta.imageAlt}
-              width={405}
-              height={609}
+              width={1536}
+              height={1024}
               loading="lazy"
               className="h-full w-full object-cover"
             />
