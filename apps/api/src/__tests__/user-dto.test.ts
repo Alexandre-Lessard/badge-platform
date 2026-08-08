@@ -6,6 +6,7 @@ describe("toUserDto", () => {
     const dto = toUserDto({
       id: "user-123",
       email: "person@example.com",
+      contactEmail: null,
       firstName: "Alex",
       lastName: "Martin",
       phone: "514-555-1234",
@@ -26,6 +27,7 @@ describe("toUserDto", () => {
     expect(dto).toEqual({
       id: "user-123",
       email: "person@example.com",
+      contactEmail: null,
       firstName: "Alex",
       lastName: "Martin",
       phone: "514-555-1234",

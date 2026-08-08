@@ -40,6 +40,9 @@ export const reportStatusEnum = pgEnum("report_status", [
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: varchar("email", { length: 255 }).notNull().unique(),
+  // Optional public-facing contact email (relay destination when someone finds
+  // one of the user's stolen items). Falls back to `email` if empty.
+  contactEmail: varchar("contact_email", { length: 255 }),
   passwordHash: text("password_hash"),
   firstName: varchar("first_name", { length: 100 }).notNull(),
   lastName: varchar("last_name", { length: 100 }).notNull(),
@@ -109,6 +112,10 @@ export const items = pgTable(
     trackerId: varchar("tracker_id", { length: 255 }),
     estimatedValue: integer("estimated_value"),
     purchaseDate: timestamp("purchase_date", { withTimezone: true }),
+    // Insurance coverage (optional, informational)
+    isInsured: boolean("is_insured").notNull().default(false),
+    insurerId: varchar("insurer_id", { length: 50 }),
+    insurerName: varchar("insurer_name", { length: 100 }),
     status: itemStatusEnum("status").notNull().default("active"),
     // Format: BADGE-XXXXXXXX — manually assigned by admin when processing orders
     // Null = not yet assigned (pending sticker purchase)

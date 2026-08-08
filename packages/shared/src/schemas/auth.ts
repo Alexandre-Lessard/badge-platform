@@ -16,6 +16,7 @@ export const registerSchema = z.object({
 export const updateProfileSchema = z.object({
   firstName: z.string().trim().min(1, "First name required").max(100).optional(),
   lastName: z.string().trim().min(1, "Last name required").max(100).optional(),
+  contactEmail: z.union([z.string().trim().email("Invalid email address").max(255), z.literal("")]).optional(),
   phone: z.string().trim().max(20).optional(),
   address1: z.string().trim().max(255).optional(),
   address2: z.string().trim().max(255).optional(),

@@ -4,6 +4,7 @@ import { users } from "../db/schema.js";
 export const userSelect = {
   id: users.id,
   email: users.email,
+  contactEmail: users.contactEmail,
   firstName: users.firstName,
   lastName: users.lastName,
   phone: users.phone,
@@ -24,6 +25,7 @@ export const userSelect = {
 type UserRow = {
   id: string;
   email: string;
+  contactEmail: string | null;
   firstName: string;
   lastName: string;
   phone: string | null;
@@ -45,6 +47,7 @@ export function toUserDto(user: UserRow): User {
   return {
     id: user.id,
     email: user.email,
+    contactEmail: user.contactEmail,
     firstName: user.firstName,
     lastName: user.lastName,
     phone: user.phone,

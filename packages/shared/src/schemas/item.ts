@@ -29,6 +29,9 @@ export const createItemSchema = z.object({
   estimatedValue: z.number().int().min(250, "Minimum value $250").optional(),
   purchaseDate: z.string().datetime().optional(),
   description: z.string().max(2000).optional(),
+  isInsured: z.boolean().optional(),
+  insurerId: optionalTrimmedString(50),
+  insurerName: optionalTrimmedString(100),
 });
 
 export const updateItemSchema = createItemSchema.partial();

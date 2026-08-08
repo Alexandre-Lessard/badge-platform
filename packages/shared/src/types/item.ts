@@ -14,6 +14,9 @@ export type Item = {
   trackerId: string | null;
   estimatedValue: number | null;
   purchaseDate: string | null;
+  isInsured: boolean;
+  insurerId: string | null;
+  insurerName: string | null;
   status: ItemStatus;
   badgeCode: string | null;
   archivedAt: string | null;
