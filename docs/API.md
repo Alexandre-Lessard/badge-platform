@@ -22,7 +22,7 @@ Auth levels:
 All auth endpoints that return a `user` use the same DTO shape:
 ```
 user: {
-  id, email, firstName, lastName, phone,
+  id, email, contactEmail, firstName, lastName, phone,
   address1, address2, city, province, postalCode, country,
   emailVerified, isAdmin, clientNumber,
   preferredLanguage, termsAcceptedAt, createdAt
@@ -68,13 +68,18 @@ Response: { user }
 Auth: requireAuth
 ```
 Body: {
-  firstName?, lastName?, phone?,
+  firstName?, lastName?, phone?, contactEmail?,
   address1?, address2?, city?, province?, postalCode?, country?,
   preferredLanguage?: "fr"|"en"
 }
 Response: { success: true }
 ```
 Empty strings are normalized to `null`. If address fields are provided without `country`, the backend defaults it to `CA`.
+
+`contactEmail` is the address a finder can be relayed to when one of the user's items is recovered. It is
+validated as an email, trimmed and lowercased, and is **never exposed publicly** — the lookup relay sends
+to it without revealing it. Send `""` to clear it. Omitting the field leaves the stored value untouched.
+When unset, `users.email` is the fallback. Not independently verified.
 
 ### POST /auth/forgot-password
 Auth: None | Rate limit: 3/min
@@ -166,7 +171,8 @@ Response: { items: [{ ..., primaryPhotoUrl }] }
 ### POST /items
 Auth: requireVerifiedEmail
 ```
-Body: { name, category, brand?, model?, year?, serialNumber?, trackerId?, estimatedValue?, description?, purchaseDate? }
+Body: { name, category, brand?, model?, year?, serialNumber?, trackerId?, estimatedValue?, description?, purchaseDate?,
+        isInsured?, insurerId?, insurerName? }
 Response: { item } (201)
 ```
 
@@ -180,9 +186,16 @@ Photos are returned with the primary photo first, then the remaining photos in a
 ### PATCH /items/:id
 Auth: requireVerifiedEmail
 ```
-Body: { name?, category?, brand?, model?, year?, serialNumber?, trackerId?, estimatedValue?, description?, purchaseDate? }
+Body: { name?, category?, brand?, model?, year?, serialNumber?, trackerId?, estimatedValue?, description?, purchaseDate?,
+        isInsured?, insurerId?, insurerName? }
 Response: { item }
 ```
+
+**Insurance fields.** `isInsured` is a boolean (default `false`); `insurerId` is an id from the shared
+`INSURERS` list (`packages/shared/src/constants/insurers.ts`); `insurerName` is a snapshot of the label at
+save time, kept as a fallback if an insurer is ever removed from the list. Clients should render the name
+from `insurerId` so it follows the active language, and fall back to `insurerName` only when the id no
+longer resolves.
 
 ### POST /items/:id/archive
 Auth: requireVerifiedEmail
@@ -348,6 +361,15 @@ Backs the public QR-scan landing page at `/c/:code`. Always returns 200 so the S
 ---
 
 ## Admin
+
+### GET /admin/clients
+Auth: requireAdmin
+```
+Query: ?q=searchterm&page=1&limit=50
+Response: { clients: [{ id, email, firstName, lastName, clientNumber, emailVerified, createdAt }], total, page, limit }
+```
+Registered users, newest first. `q` matches case-insensitively on email, first name, last name or client
+number. `limit` defaults to 50 and is capped at 100. Never returns `passwordHash`.
 
 ### GET /admin/items
 Auth: requireAdmin

@@ -191,6 +191,43 @@ Edit `/opt/rnbp/.env` with production values:
 
 `R2_PUBLIC_URL` must point to an enabled public domain for the bucket. If the managed `r2.dev` domain or custom public domain is disabled, uploads will still be written to R2 but browsers will receive `401` when requesting the files.
 
+### Buckets per environment
+
+One bucket and one R2 token **per environment**, each token scoped to its own bucket only. Without this,
+a local dev upload writes into the production bucket alongside real customer files.
+
+| Environment | Bucket | Config file |
+|---|---|---|
+| production | `rnbp-uploads` | `/opt/rnbp/.env` on the server |
+| development | `badge-uploads-dev` | `apps/api/.env` on your machine |
+| staging | `badge-uploads-staging` | *(not wired up yet)* |
+
+When creating an R2 token via the API rather than the dashboard, the S3 credentials are derived:
+**Access Key ID is the token id**, and **Secret Access Key is the SHA-256 hex digest of the token value**.
+The bucket-scoped resource key is `com.cloudflare.edge.r2.bucket.<account_id>_default_<bucket_name>`.
+
+### Rotating R2 credentials
+
+`deploy.sh` **excludes every `.env` file** from the rsync, so rotating a key is never picked up by a
+deploy — both config files must be edited by hand, in the right order.
+
+1. Create the new R2 token in Cloudflare **without revoking the old one**. Two tokens can be active at
+   once, so there is no window where uploads fail.
+2. Update production — `/opt/rnbp/.env`, the `EnvironmentFile` of the systemd unit:
+   ```bash
+   sudo nano /opt/rnbp/.env          # R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY
+   sudo systemctl restart rnbp-api   # required: env is read once at startup
+   ```
+3. Update development — `apps/api/.env` on your machine, then restart `pnpm dev:api`.
+4. **Only now** revoke the old token in Cloudflare.
+
+Verify before revoking: upload a photo on a test item in production, refresh, and confirm the image
+still renders. A stale key does not produce a clean `503` — `isR2Configured()` only checks that the
+variables are present, so an invalid key surfaces as an S3 error at upload time.
+
+> Skipping step 3 is the common failure: production keeps working, and the broken dev environment is
+> only discovered on the next local upload.
+
 ### Generate JWT Ed25519 keys
 
 ```bash
