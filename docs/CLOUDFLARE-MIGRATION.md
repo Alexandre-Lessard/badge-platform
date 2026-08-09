@@ -102,29 +102,70 @@ hashes intact.
 - R2 uploads on staging (bucket bound, public URL not yet configured)
 - Production cutover (Phase 4) — deliberately gated on Alex's go-ahead
 
+## The RNBP → Badge rename
+
+The rebrand had only reached what users see. The plumbing was renamed alongside
+this migration, since renaming a Pages project forces a redeploy anyway and the
+cutover already needs a maintenance window.
+
+Done: workspace packages `@rnbp/*` → `@badge/*`, browser storage keys (with
+`apps/web/src/lib/storage-migration.ts` copying each old key across at boot, so
+nobody is signed out), `AssignRnbpModal` → `AssignBadgeCodeModal`, DOM ids, the
+GitHub repo (`badge-platform`, old URLs redirect), and the Pages project.
+
+File URLs moved to **custom domains on badgeid.ca** rather than a new opaque
+`pub-*.r2.dev`: `files.badgeid.ca` over `badge-uploads`,
+`files-staging.badgeid.ca` over `badge-uploads-staging`. r2.dev is rate-limited
+and Cloudflare does not recommend it for production traffic — the 401s seen
+while testing were exactly that throttle. The two environments no longer share
+a bucket.
+
+Deliberately **not** renamed: `/opt/rnbp/`, `ops/rnbp-api.service`, the
+`rnbp-prod` runner label. That machine is decommissioned once the argon2 hashes
+finish migrating; renaming it is work on something we are about to delete.
+
 ## Cutover checklist (Phase 4 — needs a decision, not just execution)
 
-1. Set `LEGACY_VERIFY_SECRET` in `/opt/rnbp/.env` and restart `rnbp-api`, so
-   `POST /internal/verify-legacy` stops returning 503. Merging `staging` → `main`
-   is what deploys that endpoint to production in the first place.
-2. Set `LEGACY_VERIFY_URL` (`https://api.badgeid.ca/api/internal/verify-legacy`)
-   and the same secret on the production Worker.
-3. Freeze writes briefly, re-run `pg-export.sh` + `pg-to-d1.py`, load into the
-   production D1. The rehearsal on staging is the same command sequence.
-4. Point `api.badgeid.ca` at the Worker instead of the Tunnel.
-5. Leave the server running until `SELECT COUNT(*) FROM users WHERE password_hash
-   LIKE '$argon2%'` reaches zero. Only then retire the Tunnel, the systemd
-   service, and the endpoint.
+Already prepared and verified, so the window itself is short:
+
+- ✔ `badge-platform` Pages project created and serving the site on its own
+  `pages.dev`; the old project still owns the custom domains
+- ✔ `badge-uploads` bucket created, 17 objects copied, `files.badgeid.ca` live
+- ✔ `badge-db` created and migrated; `badge-api` deployed with production
+  secrets — **including the current server's JWT keypair, so existing sessions
+  survive the cutover** — and pointing at an empty D1 until the data moves
+- ✔ `ops/pg-to-d1.py --rewrite-url` repoints file URLs during the conversion
+
+Remaining, in order:
+
+1. Merge `staging` → `main` to deploy `POST /internal/verify-legacy`, then set
+   `LEGACY_VERIFY_SECRET` in `/opt/rnbp/.env` (value waiting in the operator's
+   scratchpad, already set on the Worker) and restart `rnbp-api`. Confirm the
+   endpoint no longer answers 503.
+2. Fresh backup, freeze writes.
+3. `pg-export.sh` → `pg-to-d1.py --rewrite-url <old-r2>=https://files.badgeid.ca`
+   → load into `badge-db`. Compare row counts table by table.
+4. Point `api.badgeid.ca` (+ `api.rnbp.ca`) at `badge-api`. Test health, a login,
+   a lookup.
+5. Move the Pages custom domains **one at a time, `rnbp.ca` first as the canary**:
+   remove from `rnbp-platform`, add to `badge-platform`, verify. Only then
+   `badgeid.ca` and `www.badgeid.ca`.
+6. Verify end to end: a real argon2 login (the bridge should fire and leave a
+   `pbkdf2$` hash), item creation, photo upload, public lookup, admin, and a
+   live Stripe webhook.
+7. Leave the server running until `SELECT COUNT(*) FROM users WHERE
+   password_hash LIKE '$argon2%'` reaches zero. Only then retire the Tunnel, the
+   systemd service, and the endpoint.
 
 ## Environments
 
-| | Production (current) | Staging (new stack) |
-|---|---|---|
-| API | Fastify on 192.168.50.241 via Tunnel, `api.badgeid.ca` | Worker `badge-api-staging` |
-| DB | PostgreSQL 16, local to the server | D1 `badge-db-staging` |
-| Files | R2 `rnbp-uploads` | R2 `badge-uploads-staging` |
-| Web | Pages `rnbp-platform`, `badgeid.ca` | Pages `rnbp-platform`, branch `staging` |
-| Deploy | `main` → CI → CD (self-hosted runner) | `staging` → CI → CD Staging (GitHub runner) |
+| | Production (serving today) | Production (waiting) | Staging |
+|---|---|---|---|
+| API | Fastify via Tunnel, `api.badgeid.ca` | Worker `badge-api` | Worker `badge-api-staging` |
+| DB | PostgreSQL 16 on the server | D1 `badge-db` (empty) | D1 `badge-db-staging` |
+| Files | R2 `rnbp-uploads` | R2 `badge-uploads` / `files.badgeid.ca` | `badge-uploads-staging` / `files-staging.badgeid.ca` |
+| Web | Pages `rnbp-platform`, `badgeid.ca` | Pages `badge-platform` | `badge-platform`, branch `staging` |
+| Deploy | `main` → CI → CD (self-hosted runner) | — | `staging` → CI → CD Staging (GitHub runner) |
 
 ## Rollback
 
