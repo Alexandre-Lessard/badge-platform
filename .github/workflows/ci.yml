@@ -33,6 +33,9 @@ jobs:
       - name: Type-check web
         run: pnpm --filter @rnbp/web exec tsc --noEmit
 
+      - name: Type-check worker
+        run: pnpm --filter @rnbp/worker exec tsc --noEmit
+
       - name: Build web
         run: pnpm --filter @rnbp/web build
 

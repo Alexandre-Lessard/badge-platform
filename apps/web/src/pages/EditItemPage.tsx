@@ -13,6 +13,7 @@ import { ItemImage } from "@/components/ui/ItemImage";
 import { ITEM_CATEGORIES, normalizeBadgeCode, BADGE_CODE_REGEX, INSURERS } from "@rnbp/shared";
 import type { ItemWithFiles } from "@rnbp/shared";
 import { ROUTES } from "@/routes/routes";
+import { resizeImageForUpload } from "@/lib/image-resize";
 
 type FormData = {
   name: string;
@@ -210,7 +211,9 @@ export function EditItemPage() {
     setUploading(true);
     setError("");
     const fd = new FormData();
-    Array.from(fileList).forEach((f) => fd.append("photos", f));
+    for (const f of Array.from(fileList)) {
+      fd.append("photos", await resizeImageForUpload(f));
+    }
     try {
       const res = await apiUpload<{ photos: typeof photos }>(`/items/${id}/photos`, fd);
       setPhotos((prev) => [...prev, ...res.photos]);
@@ -227,7 +230,9 @@ export function EditItemPage() {
     setUploading(true);
     setError("");
     const fd = new FormData();
-    Array.from(fileList).forEach((f) => fd.append("documents", f));
+    for (const f of Array.from(fileList)) {
+      fd.append("documents", await resizeImageForUpload(f));
+    }
     try {
       const res = await apiUpload<{ documents: typeof documents }>(`/items/${id}/documents`, fd);
       setDocuments((prev) => [...prev, ...res.documents]);

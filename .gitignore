@@ -27,3 +27,6 @@ design/
 notes/
 *.code-workspace
 .asana-creds
+
+# Wrangler local dev secrets
+.dev.vars

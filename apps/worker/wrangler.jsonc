@@ -1,0 +1,50 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "badge-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  // Production bindings are configured when we cut over (Phase 4).
+  "env": {
+    "staging": {
+      "name": "badge-api-staging",
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "FRONTEND_URL": "https://staging.rnbp-platform.pages.dev",
+        "CORS_ORIGINS": "https://staging.rnbp-platform.pages.dev,http://localhost:5173",
+        "FROM_EMAIL": "noreply@badgeid.ca",
+        "FROM_NAME": "Badge (staging)"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "badge-db-staging",
+          "database_id": "ef6af431-b45f-4e2b-a34e-0414a2b8b063"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "UPLOADS",
+          "bucket_name": "badge-uploads-staging"
+        }
+      ],
+      "unsafe": {
+        "bindings": [
+          {
+            "name": "GLOBAL_RATE_LIMITER",
+            "type": "ratelimit",
+            "namespace_id": "1001",
+            "simple": { "limit": 100, "period": 60 }
+          },
+          {
+            "name": "AUTH_RATE_LIMITER",
+            "type": "ratelimit",
+            "namespace_id": "1002",
+            "simple": { "limit": 10, "period": 60 }
+          }
+        ]
+      }
+    }
+  }
+}

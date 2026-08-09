@@ -1,0 +1,33 @@
+{
+  "name": "@rnbp/worker",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --env staging --local",
+    "deploy": "wrangler deploy --env staging",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply badge-db-staging --local",
+    "db:migrate:staging": "wrangler d1 migrations apply badge-db-staging --remote"
+  },
+  "dependencies": {
+    "@rnbp/shared": "workspace:*",
+    "drizzle-orm": "^0.45.1",
+    "file-type": "^21.3.0",
+    "hono": "^4.13.1",
+    "jose": "^6.1.3",
+    "nanoid": "^5.1.6",
+    "stripe": "^20.4.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260809.1",
+    "@types/node": "^22.0.0",
+    "drizzle-kit": "^0.31.9",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
+    "wrangler": "4.86.0"
+  }
+}
