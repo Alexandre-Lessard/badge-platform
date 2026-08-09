@@ -1,0 +1,32 @@
+# Local secrets for `wrangler dev` (copy to .dev.vars, which is gitignored).
+# In staging/production these are set with `wrangler secret put <NAME> --env staging`.
+# Non-secret values live in wrangler.jsonc under env.<name>.vars.
+
+# Ed25519 keypair, base64-encoded PEM. Generate a dev pair with:
+#   node -e "const {generateKeyPairSync}=require('crypto');const{privateKey,publicKey}=generateKeyPairSync('ed25519');console.log('JWT_PRIVATE_KEY='+Buffer.from(privateKey.export({type:'pkcs8',format:'pem'})).toString('base64'));console.log('JWT_PUBLIC_KEY='+Buffer.from(publicKey.export({type:'spki',format:'pem'})).toString('base64'))"
+JWT_PRIVATE_KEY=
+JWT_PUBLIC_KEY=
+
+# Secret mixed into the PBKDF2 input, compensating for the 100k iteration cap.
+# Changing it invalidates every stored password hash.
+PASSWORD_PEPPER=
+
+# Verification of pre-migration argon2 hashes, delegated to the old Fastify
+# server (see apps/api/src/routes/internal.ts). Leave unset once no
+# `$argon2%` hash remains in the database.
+LEGACY_VERIFY_URL=
+LEGACY_VERIFY_SECRET=
+
+# Optional integrations — endpoints degrade gracefully when unset
+BREVO_API_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+R2_PUBLIC_URL=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+FACEBOOK_CLIENT_ID=
+FACEBOOK_CLIENT_SECRET=
+MICROSOFT_CLIENT_ID=
+MICROSOFT_CLIENT_SECRET=
+ADMIN_ORDER_EMAIL=
+ADMIN_CONTACT_EMAIL=
