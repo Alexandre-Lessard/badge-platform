@@ -423,6 +423,9 @@ const fr: SiteContent = {
   auth: {
     loginHeading: "Connexion",
     loginDescription: "Connectez-vous à votre compte Badge",
+    resetRequiredHeading: "Votre mot de passe doit être renouvelé",
+    resetRequiredBody:
+      "Pour des raisons de sécurité, ce compte a besoin d'un nouveau mot de passe. Nous venons de vous envoyer un lien pour en choisir un.",
     registerHeading: "Créer un compte",
     registerDescription: "Inscrivez-vous pour enregistrer vos biens",
     emailLabel: "Courriel",
@@ -1050,6 +1053,7 @@ const fr: SiteContent = {
   apiErrors: {
     // Auth
     INVALID_CREDENTIALS: "Courriel ou mot de passe incorrect",
+    PASSWORD_RESET_REQUIRED: "Ce compte doit être réactivé : choisissez un nouveau mot de passe.",
     SOCIAL_ACCOUNT: "Ce compte utilise une connexion Google ou Microsoft.",
     EMAIL_ALREADY_EXISTS: "Un compte avec cette adresse courriel existe déjà",
     TOKEN_MISSING: "Token manquant",

@@ -11,12 +11,6 @@ JWT_PUBLIC_KEY=
 # Changing it invalidates every stored password hash.
 PASSWORD_PEPPER=
 
-# Verification of pre-migration argon2 hashes, delegated to the old Fastify
-# server (see apps/api/src/routes/internal.ts). Leave unset once no
-# `$argon2%` hash remains in the database.
-LEGACY_VERIFY_URL=
-LEGACY_VERIFY_SECRET=
-
 # Optional integrations — endpoints degrade gracefully when unset
 BREVO_API_KEY=
 STRIPE_SECRET_KEY=

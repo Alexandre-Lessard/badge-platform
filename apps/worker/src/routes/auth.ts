@@ -20,6 +20,7 @@ import {
 import {
   EMAIL_ALREADY_EXISTS,
   INVALID_CREDENTIALS,
+  PASSWORD_RESET_REQUIRED,
   REFRESH_TOKEN_REQUIRED,
   TOKEN_INVALID,
   SESSION_NOT_FOUND,
@@ -169,19 +170,22 @@ authRoutes.post("/auth/login", authRateLimit, async (c) => {
     throw new AppError(401, "SOCIAL_ACCOUNT", "This account uses social login");
   }
 
+  // Pre-Cloudflare accounts still hold an argon2 hash, which Workers cannot
+  // verify. Rather than keep the old server alive to check them, refuse the
+  // login outright — whatever the password — and send the account through
+  // password reset, which writes a PBKDF2 hash. This runs before any
+  // verification so no legacy hash is ever checked again.
+  if (isLegacyHash(user.passwordHash)) {
+    throw new AppError(
+      401,
+      PASSWORD_RESET_REQUIRED,
+      "This account predates a security upgrade and needs a new password",
+    );
+  }
+
   const valid = await verifyPassword(user.passwordHash, body.password);
   if (!valid) {
     throw new AppError(401, INVALID_CREDENTIALS, "Invalid email or password");
-  }
-
-  // Migrate argon2 hashes to PBKDF2 on first successful login, so the legacy
-  // verification server can eventually be retired.
-  if (isLegacyHash(user.passwordHash)) {
-    const upgraded = await hashPassword(body.password);
-    await db
-      .update(users)
-      .set({ passwordHash: upgraded, updatedAt: new Date() })
-      .where(eq(users.id, user.id));
   }
 
   const accessToken = await signAccessToken(user.id);

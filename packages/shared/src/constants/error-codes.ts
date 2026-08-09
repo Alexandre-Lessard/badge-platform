@@ -6,6 +6,13 @@
 // ── Auth ─────────────────────────────────────────────────────────────
 export const INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
 export const SOCIAL_ACCOUNT = "SOCIAL_ACCOUNT";
+/**
+ * The account still holds a pre-Cloudflare argon2 hash, which Workers cannot
+ * verify. Login refuses outright — whatever the password — and the account is
+ * sent through password reset, which writes a PBKDF2 hash. Retire this once
+ * `SELECT COUNT(*) FROM users WHERE password_hash LIKE '$argon2%'` reaches 0.
+ */
+export const PASSWORD_RESET_REQUIRED = "PASSWORD_RESET_REQUIRED";
 export const EMAIL_ALREADY_EXISTS = "EMAIL_ALREADY_EXISTS";
 export const TOKEN_MISSING = "TOKEN_MISSING";
 export const TOKEN_INVALID = "TOKEN_INVALID";

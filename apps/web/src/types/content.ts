@@ -128,6 +128,9 @@ export type SiteContent = {
   auth?: {
     loginHeading: string;
     loginDescription: string;
+    /** Shown when a pre-migration account must set a new password. */
+    resetRequiredHeading: string;
+    resetRequiredBody: string;
     registerHeading: string;
     registerDescription: string;
     emailLabel: string;

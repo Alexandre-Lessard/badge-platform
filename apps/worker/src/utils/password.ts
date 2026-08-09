@@ -5,9 +5,9 @@ import { getConfig } from "../config.js";
 // to compensate for the free-plan PBKDF2 iteration cap.
 //
 // Stored format: pbkdf2$<iterations>$<salt-b64>$<hash-b64>
-// Legacy format: $argon2id$... — verified remotely on the old prod server
-// (LEGACY_VERIFY_URL) until every account has logged in once and been
-// re-hashed to PBKDF2.
+// Legacy format: $argon2id$... — never verified. Accounts that still hold one
+// are refused at login and sent through password reset, which writes a PBKDF2
+// hash. `isLegacyHash` and this note go away once no argon2 hash remains.
 
 const PBKDF2_ITERATIONS = 100_000;
 const SALT_BYTES = 16;
@@ -54,18 +54,17 @@ export function isLegacyHash(storedHash: string): boolean {
 }
 
 /**
- * Verify a password against a stored hash. Handles both formats:
- * - pbkdf2$... → local WebCrypto verification
- * - $argon2... → remote verification on the legacy server (network I/O, which
- *   does not count against the Worker's CPU budget)
+ * Verify a password against a stored PBKDF2 hash.
+ *
+ * A legacy argon2 hash can never match: callers must check `isLegacyHash`
+ * first and route the account to password reset. Returning false here is
+ * defence in depth, so a missed check fails closed rather than granting access.
  */
 export async function verifyPassword(
   storedHash: string,
   password: string,
 ): Promise<boolean> {
-  if (isLegacyHash(storedHash)) {
-    return verifyLegacyPassword(storedHash, password);
-  }
+  if (isLegacyHash(storedHash)) return false;
 
   const config = getConfig();
   const parts = storedHash.split("$");
@@ -83,32 +82,4 @@ export async function verifyPassword(
   let diff = 0;
   for (let i = 0; i < actual.length; i++) diff |= actual[i]! ^ expected[i]!;
   return diff === 0;
-}
-
-async function verifyLegacyPassword(
-  storedHash: string,
-  password: string,
-): Promise<boolean> {
-  const config = getConfig();
-  if (!config.LEGACY_VERIFY_URL || !config.LEGACY_VERIFY_SECRET) {
-    console.error("Legacy argon2 hash encountered but LEGACY_VERIFY_URL is not configured");
-    return false;
-  }
-
-  const res = await fetch(config.LEGACY_VERIFY_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${config.LEGACY_VERIFY_SECRET}`,
-    },
-    body: JSON.stringify({ hash: storedHash, password }),
-  });
-
-  if (!res.ok) {
-    console.error(`Legacy verify endpoint returned ${res.status}`);
-    return false;
-  }
-
-  const data = (await res.json()) as { valid?: boolean };
-  return data.valid === true;
 }

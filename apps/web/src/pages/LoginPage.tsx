@@ -2,8 +2,9 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "@/lib/auth-context";
 import { useLanguage } from "@/i18n/context";
-import { isNetworkError } from "@/lib/api-client";
+import { apiRequest, isNetworkError, type ApiError } from "@/lib/api-client";
 import { getErrorMessage } from "@/lib/error-utils";
+import { PASSWORD_RESET_REQUIRED } from "@badge/shared";
 import { Button } from "@/components/ui/Button";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
@@ -19,12 +20,14 @@ export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [resetSent, setResetSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [backendDown, setBackendDown] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError("");
+    setResetSent(false);
     setLoading(true);
 
     try {
@@ -35,6 +38,25 @@ export function LoginPage() {
         setBackendDown(true);
         return;
       }
+
+      // Accounts predating the Cloudflare migration hold an argon2 hash the
+      // Worker cannot verify. Login refuses them outright; send the reset link
+      // straight away so the person is one click from being back in.
+      if ((err as ApiError)?.code === PASSWORD_RESET_REQUIRED) {
+        try {
+          await apiRequest("/auth/forgot-password", {
+            method: "POST",
+            body: { email: email.trim().toLowerCase() },
+          });
+          setResetSent(true);
+        } catch {
+          // Sending failed — fall back to the plain message, which already
+          // tells them to reset. The forgot-password page still works.
+          setError(getErrorMessage(err, t));
+        }
+        return;
+      }
+
       setError(getErrorMessage(err, t));
     } finally {
       setLoading(false);
@@ -72,6 +94,18 @@ export function LoginPage() {
           {error && (
             <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
+            </div>
+          )}
+
+          {resetSent && (
+            <div className="rounded-lg bg-[var(--rcb-primary)]/8 px-4 py-3 text-sm text-[var(--rcb-text-strong)]">
+              <p className="font-semibold">
+                {t.auth?.resetRequiredHeading ?? "Your password needs to be updated"}
+              </p>
+              <p className="mt-1 leading-relaxed text-[var(--rcb-text-body)]">
+                {t.auth?.resetRequiredBody ??
+                  "For security reasons, this account needs a new password. We just sent you a link to set one."}
+              </p>
             </div>
           )}
 

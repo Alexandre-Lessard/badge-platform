@@ -22,11 +22,6 @@ export const envSchema = z.object({
   // Password hashing (secret) — server-side pepper mixed into the PBKDF2 input
   PASSWORD_PEPPER: z.string().min(1, "PASSWORD_PEPPER is required"),
 
-  // Legacy argon2 verification (old prod server behind the Tunnel).
-  // Optional: when unset, argon2 hashes can no longer be verified.
-  LEGACY_VERIFY_URL: z.string().url().optional(),
-  LEGACY_VERIFY_SECRET: z.string().optional(),
-
   // CORS
   CORS_ORIGINS: z
     .string()

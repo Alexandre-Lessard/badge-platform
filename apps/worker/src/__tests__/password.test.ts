@@ -9,8 +9,6 @@ beforeAll(() => {
     JWT_PRIVATE_KEY: "dGVzdC1wcml2YXRlLWtleQ==",
     JWT_PUBLIC_KEY: "dGVzdC1wdWJsaWMta2V5",
     PASSWORD_PEPPER: "test-pepper",
-    LEGACY_VERIFY_URL: "https://legacy.example.com/api/internal/verify-legacy",
-    LEGACY_VERIFY_SECRET: "test-secret",
     NODE_ENV: "test",
   } as unknown as Bindings);
 });
@@ -45,24 +43,18 @@ describe("legacy argon2 hashes", () => {
     expect(isLegacyHash("pbkdf2$100000$c2FsdA==$aGFzaA==")).toBe(false);
   });
 
-  it("delegates verification to the legacy endpoint", async () => {
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(new Response(JSON.stringify({ valid: true })));
-
-    expect(await verifyPassword(LEGACY_HASH, "correct")).toBe(true);
-
-    const [url, init] = fetchMock.mock.calls[0]!;
-    expect(url).toBe("https://legacy.example.com/api/internal/verify-legacy");
-    expect((init as RequestInit).headers).toMatchObject({
-      Authorization: "Bearer test-secret",
-    });
+  // The login route refuses a legacy hash before it ever reaches verifyPassword
+  // and sends the account to password reset. These two guard the fallback: if
+  // that check is ever removed, verification must fail closed rather than call
+  // out to a server that no longer exists.
+  it("never verifies a legacy hash, whatever the password", async () => {
+    expect(await verifyPassword(LEGACY_HASH, "correct")).toBe(false);
+    expect(await verifyPassword(LEGACY_HASH, "")).toBe(false);
   });
 
-  it("treats a legacy endpoint failure as an invalid password", async () => {
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("nope", { status: 500 }));
-    vi.spyOn(console, "error").mockImplementation(() => {});
-
-    expect(await verifyPassword(LEGACY_HASH, "correct")).toBe(false);
+  it("makes no network call for a legacy hash", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch");
+    await verifyPassword(LEGACY_HASH, "correct");
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

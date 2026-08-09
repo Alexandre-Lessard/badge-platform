@@ -417,6 +417,9 @@ const en: SiteContent = {
   auth: {
     loginHeading: "Login",
     loginDescription: "Sign in to your Badge account",
+    resetRequiredHeading: "Your password needs to be updated",
+    resetRequiredBody:
+      "For security reasons, this account needs a new password. We just sent you a link to set one.",
     registerHeading: "Create an account",
     registerDescription: "Sign up to register your belongings",
     emailLabel: "Email",
@@ -1044,6 +1047,7 @@ const en: SiteContent = {
   apiErrors: {
     // Auth
     INVALID_CREDENTIALS: "Invalid email or password",
+    PASSWORD_RESET_REQUIRED: "This account must be reactivated: please choose a new password.",
     SOCIAL_ACCOUNT: "This account uses Google or Microsoft login.",
     EMAIL_ALREADY_EXISTS: "An account with this email already exists",
     TOKEN_MISSING: "Missing token",
