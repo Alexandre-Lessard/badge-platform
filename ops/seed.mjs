@@ -4,7 +4,6 @@
  *
  *   node ops/seed.mjs --target local
  *   node ops/seed.mjs --target staging
- *   node ops/seed.mjs --target local --no-real-accounts
  *
  * Wipes every user-owned table in the target, then rebuilds it. Products are
  * reseeded too so the shop works. Never touches production: the target is a
@@ -17,17 +16,14 @@
  * the global CLAUDE.md.
  *
  * ── The five real accounts ────────────────────────────────────────────────
- * Alex's own accounts are recreated, **account only — never their content**.
- * Their password hash is read from production at seed time, so it follows a
- * password change instead of going stale. Everything else below is invented.
+ * Alex's own accounts are recreated so the people who use this app have their
+ * usual login present — **account only, never their content**. They sign in
+ * with the same seed password as everyone else.
  *
- * The hash only authenticates if the target's PASSWORD_PEPPER matches
- * production's — the pepper is mixed into the derivation input. When it
- * differs, the accounts exist but you cannot sign in as them. Two ways out:
- *   --seed-passwords    give the five accounts the seed password instead
- *   PASSWORD_PEPPER=…   run against production's pepper
- *
- * Skip production entirely with --no-real-accounts (no Cloudflare token used).
+ * This script never reads production. Copying the real password hash was tried
+ * and removed: the hash mixes in a per-environment PASSWORD_PEPPER, so a
+ * production hash cannot authenticate anywhere else. It bought nothing and
+ * cost a production read.
  */
 
 import { execFileSync } from "node:child_process";
@@ -38,7 +34,6 @@ import { fileURLToPath } from "node:url";
 import { randomUUID, pbkdf2Sync } from "node:crypto";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const PROD_DB_ID = "487a867c-f911-4ec2-b274-c9b6fb399655";
 const SEED_PASSWORD = "Seed1234!";
 
 const TARGETS = {
@@ -59,13 +54,9 @@ const REAL_ACCOUNTS = [
 
 const args = process.argv.slice(2);
 const target = args[args.indexOf("--target") + 1];
-const withReal = !args.includes("--no-real-accounts");
-const seedPasswords = args.includes("--seed-passwords");
 
 if (!TARGETS[target]) {
-  console.error(
-    `Usage: node ops/seed.mjs --target <${Object.keys(TARGETS).join("|")}> [--no-real-accounts] [--seed-passwords]`,
-  );
+  console.error(`Usage: node ops/seed.mjs --target <${Object.keys(TARGETS).join("|")}>`);
   process.exit(1);
 }
 
@@ -110,47 +101,6 @@ function resolvePepper() {
   );
 }
 
-function loadDeployEnv() {
-  const p = join(ROOT, ".deploy.env");
-  if (!existsSync(p)) return {};
-  return Object.fromEntries(
-    readFileSync(p, "utf8")
-      .split("\n")
-      .map((l) => l.match(/^([A-Z_]+)=(.*)$/))
-      .filter(Boolean)
-      .map((m) => [m[1], m[2].trim()]),
-  );
-}
-
-/** Read the five hashes straight from production. Read-only, one statement. */
-async function fetchProductionHashes() {
-  const env = { ...loadDeployEnv(), ...process.env };
-  const token = env.CLOUDFLARE_API_TOKEN;
-  const account = env.CLOUDFLARE_ACCOUNT_ID;
-  if (!token || !account) {
-    throw new Error(
-      "CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID missing (.deploy.env or environment).\n" +
-        "Re-run with --no-real-accounts to seed invented accounts only.",
-    );
-  }
-
-  const emails = REAL_ACCOUNTS.map((a) => `'${a.email}'`).join(",");
-  const res = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${account}/d1/database/${PROD_DB_ID}/query`,
-    {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sql: `SELECT email, password_hash, client_number FROM users WHERE email IN (${emails});`,
-      }),
-    },
-  );
-  const body = await res.json();
-  if (!body.success) throw new Error(`Production read failed: ${JSON.stringify(body.errors)}`);
-
-  return new Map(body.result[0].results.map((r) => [r.email, r]));
-}
-
 function runSql(sql) {
   const { db, env, flag } = TARGETS[target];
   const dir = mkdtempSync(join(tmpdir(), "badge-seed-"));
@@ -165,7 +115,7 @@ function runSql(sql) {
 
 // ── the data ───────────────────────────────────────────────────────────────
 
-function buildSql(prodHashes) {
+function buildSql() {
   const S = [];
   const id = () => randomUUID();
 
@@ -218,22 +168,15 @@ function buildSql(prodHashes) {
   const SEED_HASH = hashPassword(SEED_PASSWORD, resolvePepper());
   const users = [];
 
-  if (prodHashes) {
-    for (const a of REAL_ACCOUNTS) {
-      const row = prodHashes.get(a.email);
-      if (!row) {
-        console.warn(`  ! ${a.email} not found in production — skipped`);
-        continue;
-      }
-      users.push({
-        id: id(),
-        ...a,
-        passwordHash: seedPasswords ? SEED_HASH : row.password_hash,
-        clientNumber: row.client_number,
-        emailVerified: true,
-        real: true,
-      });
-    }
+  for (const [i, a] of REAL_ACCOUNTS.entries()) {
+    users.push({
+      id: id(),
+      ...a,
+      passwordHash: SEED_HASH,
+      clientNumber: String(800000000 + i),
+      emailVerified: true,
+      real: true,
+    });
   }
 
   // Invented accounts.
@@ -514,25 +457,13 @@ function buildSql(prodHashes) {
 
 console.log(`Seeding ${target} (${TARGETS[target].db}, ${TARGETS[target].flag})`);
 
-let prodHashes = null;
-if (withReal) {
-  console.log("Reading the five real accounts' hashes from production (read-only)…");
-  prodHashes = await fetchProductionHashes();
-  console.log(`  got ${prodHashes.size}/${REAL_ACCOUNTS.length}`);
-} else {
-  console.log("Skipping real accounts (--no-real-accounts)");
-}
-
-runSql(buildSql(prodHashes));
+runSql(buildSql());
 
 console.log(`
 Done.
-  Real accounts   : ${
-    withReal
-      ? `${REAL_ACCOUNTS.length} — ${seedPasswords ? "password Seed1234! (--seed-passwords)" : "production hash; needs the same PASSWORD_PEPPER as production to sign in"}`
-      : "none"
-  }
-  Invented accounts: 6, password  Seed1234!
+  Real accounts   : ${REAL_ACCOUNTS.length}, account only (no items, no orders)
+  Invented accounts: 6
+  Password (all)  : Seed1234!
   Items covering  : stolen, active, archived, recovered, insured, no-serial, no-photo
   Orders covering : pending, paid, shipped (+ claimed and unclaimed sticker codes)
 `);
