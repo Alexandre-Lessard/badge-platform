@@ -378,7 +378,7 @@ curl -s https://api.badgeid.ca/api/health | jq
 
 ```bash
 # From the dev machine, at the repo root
-npx wrangler pages project create rnbp-platform
+npx wrangler pages project create badge-platform
 ```
 
 ### First deployment
@@ -386,12 +386,12 @@ npx wrangler pages project create rnbp-platform
 ```bash
 pnpm --filter @rnbp/shared build
 pnpm --filter @rnbp/web build
-npx wrangler pages deploy apps/web/build/client --project-name rnbp-platform
+npx wrangler pages deploy apps/web/build/client --project-name badge-platform
 ```
 
 ### Custom domains
 
-In the Cloudflare Pages dashboard → project `rnbp-platform` → Custom Domains:
+In the Cloudflare Pages dashboard → project `badge-platform` → Custom Domains:
 
 1. `badgeid.ca` (primary)
 2. `www.badgeid.ca` (redirect to `badgeid.ca`)
@@ -420,24 +420,24 @@ The primary domain (`badgeid.ca`) and the legacy domains (`rnbp.ca`, `nrpp.ca`) 
 
 | Type | Name | Content | Proxy |
 |------|------|---------|-------|
-| CNAME | `@` | `rnbp-platform.pages.dev` | Yes |
-| CNAME | `www` | `rnbp-platform.pages.dev` | Yes |
+| CNAME | `@` | `badge-platform.pages.dev` | Yes |
+| CNAME | `www` | `badge-platform.pages.dev` | Yes |
 | CNAME | `api` | `<TUNNEL_ID>.cfargotunnel.com` | Yes |
 
 ### rnbp.ca (legacy)
 
 | Type | Name | Content | Proxy |
 |------|------|---------|-------|
-| CNAME | `@` | `rnbp-platform.pages.dev` | Yes |
-| CNAME | `www` | `rnbp-platform.pages.dev` | Yes |
+| CNAME | `@` | `badge-platform.pages.dev` | Yes |
+| CNAME | `www` | `badge-platform.pages.dev` | Yes |
 | CNAME | `api` | `<TUNNEL_ID>.cfargotunnel.com` | Yes |
 
 ### nrpp.ca
 
 | Type | Name | Content | Proxy |
 |------|------|---------|-------|
-| CNAME | `@` | `rnbp-platform.pages.dev` | Yes |
-| CNAME | `www` | `rnbp-platform.pages.dev` | Yes |
+| CNAME | `@` | `badge-platform.pages.dev` | Yes |
+| CNAME | `www` | `badge-platform.pages.dev` | Yes |
 
 > **Note**: The `@` and `www` CNAME records for Pages are often configured automatically by Cloudflare when adding custom domains.
 

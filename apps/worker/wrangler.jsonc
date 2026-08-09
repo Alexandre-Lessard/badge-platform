@@ -50,6 +50,9 @@
     // pointed here instead of the Tunnel (see docs/CLOUDFLARE-MIGRATION.md).
     "production": {
       "name": "badge-api",
+      // api.rnbp.ca stays on the Tunnel: it is how the Worker reaches the old
+      // server's argon2 bridge, so it must not resolve to the Worker itself.
+      "routes": [{ "pattern": "api.badgeid.ca", "custom_domain": true }],
       "vars": {
         "NODE_ENV": "production",
         "FRONTEND_URL": "https://badgeid.ca",

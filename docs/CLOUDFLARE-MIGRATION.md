@@ -124,7 +124,35 @@ Deliberately **not** renamed: `/opt/rnbp/`, `ops/rnbp-api.service`, the
 `rnbp-prod` runner label. That machine is decommissioned once the argon2 hashes
 finish migrating; renaming it is work on something we are about to delete.
 
-## Cutover checklist (Phase 4 — needs a decision, not just execution)
+## The cutover (done 2026-08-09)
+
+Production runs on Workers + D1. `api.badgeid.ca` is the Worker, `badgeid.ca`
+is the `badge-platform` Pages project, and all 209 rows moved with matching
+counts table by table. A real argon2 account was logged in through production
+to prove the bridge: the login succeeded and the stored hash became `pbkdf2$`.
+
+Two things the rehearsal did not predict:
+
+**Moving a Pages custom domain does not update its DNS.** Detaching the domain
+from the old project and attaching it to the new one leaves the CNAME pointing
+at `<old-project>.pages.dev`, and the domain serves 523 until the record is
+repointed by hand. The `rnbp.ca` canary is what surfaced this — had the primary
+domain gone first, `badgeid.ca` would have been down for the ten minutes it
+took to diagnose. The working recipe is: detach, attach, **patch the CNAME**,
+then wait for verification and certificate issuance (a few minutes).
+
+**The Worker cannot reach the argon2 bridge at `api.badgeid.ca`.** That
+hostname now resolves to the Worker itself, so `LEGACY_VERIFY_URL` was moved to
+`api.rnbp.ca`, which stays on the Tunnel. Keep that record pointed at the
+Tunnel until the last argon2 hash is gone.
+
+`nrpp.ca` and `www.nrpp.ca` are still on the old `rnbp-platform` project: the
+CI/CD token is scoped to the `badgeid.ca` and `rnbp.ca` zones only, so their
+CNAMEs cannot be repointed. They were briefly down before being moved back.
+Finish this by granting the token DNS edit on the `nrpp.ca` zone, or by editing
+those two records by hand — and only then delete the old Pages project.
+
+## Original cutover checklist
 
 Already prepared and verified, so the window itself is short:
 
@@ -159,13 +187,18 @@ Remaining, in order:
 
 ## Environments
 
-| | Production (serving today) | Production (waiting) | Staging |
-|---|---|---|---|
-| API | Fastify via Tunnel, `api.badgeid.ca` | Worker `badge-api` | Worker `badge-api-staging` |
-| DB | PostgreSQL 16 on the server | D1 `badge-db` (empty) | D1 `badge-db-staging` |
-| Files | R2 `rnbp-uploads` | R2 `badge-uploads` / `files.badgeid.ca` | `badge-uploads-staging` / `files-staging.badgeid.ca` |
-| Web | Pages `rnbp-platform`, `badgeid.ca` | Pages `badge-platform` | `badge-platform`, branch `staging` |
-| Deploy | `main` → CI → CD (self-hosted runner) | — | `staging` → CI → CD Staging (GitHub runner) |
+| | Production | Staging |
+|---|---|---|
+| API | Worker `badge-api` on `api.badgeid.ca` | Worker `badge-api-staging` |
+| DB | D1 `badge-db` | D1 `badge-db-staging` |
+| Files | R2 `badge-uploads` / `files.badgeid.ca` | `badge-uploads-staging` / `files-staging.badgeid.ca` |
+| Web | Pages `badge-platform`, `badgeid.ca` | `badge-platform`, branch `staging` |
+| Deploy | `main` → CI → CD | `staging` → CI → CD Staging |
+
+The old server still runs, serving only `POST /internal/verify-legacy` through
+`api.rnbp.ca`. Its Postgres is now a read-only historical copy; nothing writes
+to it. Nightly backups cover both: `ops/backup.sh` for Postgres and
+`ops/backup-d1.sh` for D1, into the same R2 bucket.
 
 ## Rollback
 
