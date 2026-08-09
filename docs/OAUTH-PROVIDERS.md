@@ -1,5 +1,16 @@
 # OAuth Providers — Configuration & Production Checklist
 
+> **⚠ Review before enabling OAuth.** This document records what was registered with Google
+> and Facebook when the app lived at `rnbp.ca` / `nrpp.ca`. The app now serves from
+> `badgeid.ca`, so the redirect URIs, authorized domains, home page and policy links below
+> are almost certainly out of date on the provider side. Verify each one in the provider
+> console before switching the buttons on — a stale redirect URI fails the flow with
+> `redirect_uri_mismatch`. The values here have not been updated because they describe
+> external state that cannot be checked from the repo.
+>
+> The buttons are currently off: they are gated on `VITE_*_CLIENT_ID`, commented out in
+> `apps/web/.env.production`. The Worker already holds the Google and Facebook secrets.
+
 This document captures everything needed to configure and ship the OAuth sign-in providers (Google, Facebook, Microsoft) to public production. It is written so a future maintainer can pick it up cold without re-discovering every console URL and form field.
 
 ## Provider status

@@ -1,121 +1,141 @@
-# Deployment Guide — RNBP / NRPP
+# Deployment Guide — Badge
 
 ## Overview
 
-Backend deployment is automated by GitHub Actions: when CI passes on `main`, a CD workflow runs on a self-hosted runner installed on the prod CT, which syncs the working tree to `/opt/rnbp/repo`, builds, and restarts the `rnbp-api` systemd service. Manual deploys via `pnpm run deploy` (local rsync) still work as a fallback. Frontend deploys are still triggered manually via `pnpm run deploy:web`.
+Deploys are automated. Push to a branch, and once CI passes a CD workflow ships it:
 
-- **Frontend** (React SPA) is deployed to **Cloudflare Pages**.
-- **Backend** (Fastify API) is deployed via rsync to a Proxmox container, exposed through a **Cloudflare Tunnel**. No nginx, no certbot, no public IP.
+| Branch | Workflow | What it deploys |
+|--------|----------|-----------------|
+| `main` | `cd.yml` | Production Worker (`badge-api`) + D1 migrations, then the Pages site |
+| `staging` | `cd-staging.yml` | Staging Worker + D1 migrations + the Pages `staging` branch |
 
 ```
-rnbp.ca / nrpp.ca  -->  Cloudflare Pages  -->  React SPA
-api.rnbp.ca        -->  Cloudflare Tunnel  -->  Fastify (port 3000)  -->  PostgreSQL 16
+badgeid.ca      -->  Cloudflare Pages   -->  React SPA
+api.badgeid.ca  -->  Cloudflare Worker  -->  Hono  -->  D1 + R2
 ```
 
-## Deploy Commands
+Nothing is deployed by hand. `ops/deploy.sh` still exists but targets the old self-hosted
+stack; it is not the production path any more.
 
-All commands are run from the repo root on the dev machine.
+### Order matters
 
-| Command | Description |
-|---------|-------------|
-| `pnpm run deploy` | Deploy everything (frontend + backend) |
-| `pnpm run deploy:web` | Deploy frontend only (Cloudflare Pages) |
-| `pnpm run deploy:api` | Deploy backend only (rsync + restart) |
-| `pnpm run rollback` | Rollback API to the latest snapshot |
-| `pnpm run rollback 2` | Rollback to the 2nd most recent snapshot |
+In production the Worker deploys first and the site waits for it (`needs: deploy-worker`).
+That way a Worker deploy that fails never leaves a frontend live against an API that did
+not update. The staging job runs the same steps in one job, in the same order.
 
-**Important**: Use `pnpm run deploy`, not `pnpm deploy` (which is a native pnpm command).
+### Secrets are checked first
 
-The deploy script creates a snapshot before each backend deploy. If the health check fails after deploy, automatic rollback is offered. To disable: `pnpm run deploy:api -- --no-auto-rollback`.
+Both workflows run `ops/check-secrets.mjs <env>` before anything ships. Most secrets are
+`.optional()` in the Worker's Zod schema — a missing one does not stop the Worker booting,
+it silently disables a feature (no `BREVO_API_KEY`, no verification emails; no
+`STRIPE_WEBHOOK_SECRET`, paid orders never marked paid). The check fails the deploy and
+prints the exact `wrangler secret put` command for each gap.
+
+`apps/worker/secrets.manifest.json` declares what each environment needs. A unit test fails
+if its `required` list drifts from the schema. **When you add a secret, add it to the
+manifest in the same commit.**
+
+## Managing secrets
+
+Secrets live on the Worker, not in the repo, and survive deploys — `wrangler deploy`
+replaces code only.
+
+```bash
+pnpm --filter @badge/worker exec wrangler secret put NAME --env production
+pnpm --filter @badge/worker exec wrangler secret list --env production
+```
+
+Non-secret values (URLs, CORS origins, `NODE_ENV`) are `vars` in
+`apps/worker/wrangler.jsonc` and are versioned.
+
+For local development, copy `apps/worker/.dev.vars.example` to `.dev.vars` (gitignored).
+
+## Rollback
+
+```bash
+pnpm --filter @badge/worker exec wrangler rollback --env production
+```
+
+Or revert the commit and let CD redeploy. D1 migrations do not roll back automatically —
+write a compensating migration, or restore from a backup (see below).
 
 ## Configuration
 
-### Local (dev machine)
+`.deploy.env` at the repo root (gitignored) holds `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` for local wrangler use. CI reads the same values from the GitHub
+secret `CLOUDFLARE_API_TOKEN` and the variable `CLOUDFLARE_ACCOUNT_ID`.
 
-Create `.deploy.env` at the repo root:
+The web build runs on a GitHub runner where `apps/web/.env.production` does not exist — it
+is not tracked in git. Any `VITE_*` the production build needs must be set in the
+`deploy-web` job. This is why enabling OAuth means editing the workflow, not just
+uncommenting the local file.
 
-```bash
-cp .deploy.env.example .deploy.env
-```
+## Backups
 
-Required variables:
+| What | How | Where |
+|------|-----|-------|
+| D1 (`badge-db`) | `Backup D1` workflow, nightly 03:00 ET | R2 `badge-db-backups` |
+| D1 point-in-time | Cloudflare Time Travel, 30 days | built in |
+| Legacy Postgres | `ops/backup.sh` via cron on the old server | R2 `badge-db-backups` |
 
-| Variable | Description |
-|----------|-------------|
-| `DEPLOY_SERVER` | SSH connection string (e.g., `prod@192.168.50.241`) |
-| `DEPLOY_DIR` | Path to the repo on the server (e.g., `/opt/rnbp/repo`) |
-| `CF_PROJECT` | Cloudflare Pages project name (e.g., `rnbp-web`) |
-| `API_HEALTH_URL` | Health check endpoint (e.g., `https://api.rnbp.ca/api/health`) |
-
-SSH access to the production server must be configured (key-based auth).
-
-### Production server
-
-The API environment file lives at `/opt/rnbp/.env` on the server (not inside the repo). It contains database credentials, JWT keys, CORS origins, Brevo API key, Cloudflare R2 credentials, OAuth provider secrets, etc. See `ops/SETUP.md` section 4 for the full list of variables.
-
-## Production Setup
-
-For the complete infrastructure guide (Proxmox containers, PostgreSQL, Node.js, systemd, Cloudflare Tunnel, Cloudflare Pages, DNS, backups, monitoring, troubleshooting), see:
-
-**[ops/SETUP.md](../ops/SETUP.md)**
+The Postgres backup goes away with the old server. Restore a D1 export with
+`wrangler d1 execute badge-db --remote --file <dump.sql>`.
 
 ## Shop Products & Stripe
 
-The `products` table is created by Drizzle migration `0006_low_rattler.sql` with two seeded products (sticker-sheet and door-sticker). However, **the migration does not include Stripe Price IDs** — these must be configured manually after deployment.
+Products live in the `products` table. Stripe Price IDs are **not** seeded by migration and
+must be set per environment, through `/admin/products` or directly:
 
-### Post-deploy setup for new Stripe environment
+```sql
+UPDATE products SET stripe_price_id = 'price_xxx' WHERE slug = 'sticker-sheet';
+```
 
-1. Create products and prices in the Stripe Dashboard (or via Stripe CLI):
-   ```bash
-   # Example: create the door sticker price
-   stripe products create --name="Collant de protection RNBP"
-   stripe prices create --product=prod_XXX --unit-amount=1999 --currency=cad
-   ```
-
-2. Update the products in the RNBP admin (`/admin/products`) with the `stripePriceId` from Stripe.
-
-3. Alternatively, update directly in the database:
-   ```sql
-   UPDATE products SET stripe_price_id = 'price_xxx' WHERE slug = 'sticker-sheet';
-   UPDATE products SET stripe_price_id = 'price_xxx' WHERE slug = 'door-sticker';
-   ```
-
-Without a valid `stripePriceId`, the checkout will reject the product with a "no Stripe price configured" error.
+Without a valid `stripePriceId`, checkout rejects the product with "no Stripe price
+configured".
 
 ### Migrating to a new Stripe account
 
-When swapping to a different Stripe account (e.g., personal to official business account):
-
 1. In the new Stripe Dashboard:
-   - Complete the **Stripe Tax registration** for Canada (required because `automatic_tax: { enabled: true }` is set in `apps/api/src/routes/shop.ts`; checkout will hard-fail without it, even at $0).
+   - Complete **Stripe Tax registration** for Canada — `automatic_tax: { enabled: true }` in
+     `apps/worker/src/routes/shop.ts` makes checkout hard-fail without it, even at $0.
    - Create products and prices, note each `price_xxx`.
-   - Create a webhook endpoint pointing at `https://api.rnbp.ca/api/shop/webhook` with events **`checkout.session.completed`** and **`checkout.session.expired`** only. Copy the new `whsec_xxx`.
-
-2. On the prod server (`/opt/rnbp/.env`):
+   - Create a webhook endpoint at `https://api.badgeid.ca/api/shop/webhook` with
+     **`checkout.session.completed`** and **`checkout.session.expired`** only. Copy the `whsec_xxx`.
+2. Set the new values:
    ```bash
-   sudo cp /opt/rnbp/.env /opt/rnbp/.env.preStripe.$(date +%F)
-   # edit STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET
-   sudo systemctl restart rnbp-api
+   pnpm --filter @badge/worker exec wrangler secret put STRIPE_SECRET_KEY --env production
+   pnpm --filter @badge/worker exec wrangler secret put STRIPE_WEBHOOK_SECRET --env production
    ```
+3. Update each product's `stripePriceId`.
+4. Place a $0 test order end to end and confirm the webhook returns 200 in the Dashboard.
 
-3. Update each product's `stripePriceId` via `/admin/products` (or the SQL above).
-
-4. Place a $0 test order end-to-end and confirm the webhook event hits with HTTP 200 in the Stripe Dashboard.
-
-**Rollback**: keep the `.env.preStripe.*` backup for at least 48 h. Disable (do not delete) the old webhook endpoint on the old account for 7 days so you can re-enable it if needed.
-
-**Webhook secret rotation gotcha**: each Dashboard endpoint has its own `whsec_xxx`. There is no overlap window when rolling a secret. To rotate without downtime, create a second endpoint with the same URL + events, deploy the new secret, then delete the old endpoint.
-
-### Product management
-
-Products created via the admin UI (`/admin/products`) are stored only in the database — they are **not** in the migration seed. The `customMechanic` and `requiresItem` fields are dev-only and cannot be set from the admin interface.
+**Rotation gotcha**: each Dashboard endpoint has its own `whsec_xxx` and there is no overlap
+window. To rotate without downtime, create a second endpoint with the same URL and events,
+set the new secret, then delete the old endpoint.
 
 ## Domains
 
-| Domain | Language | Service |
-|--------|----------|---------|
-| `rnbp.ca` | French (default) | Cloudflare Pages |
-| `nrpp.ca` | English (default) | Cloudflare Pages |
-| `api.rnbp.ca` | -- | Cloudflare Tunnel to Fastify |
+| Domain | Serves |
+|--------|--------|
+| `badgeid.ca`, `www.badgeid.ca` | Pages project `badge-platform` |
+| `rnbp.ca`, `www.rnbp.ca`, `nrpp.ca`, `www.nrpp.ca` | Same site, legacy domains |
+| `api.badgeid.ca` | Worker `badge-api` |
+| `files.badgeid.ca` | R2 bucket `badge-uploads` |
+| `api.rnbp.ca` | **Old server, argon2 bridge only.** Every other path returns 410. Leave it on the Tunnel until the bridge is retired. |
 
-Language detection priority: localStorage > hostname > navigator.language > default.
+Language detection priority: localStorage > navigator.language > default (FR).
+
+## The old stack
+
+`apps/api` (Fastify) and the self-hosted server still exist to serve one endpoint:
+`POST /internal/verify-legacy`, which the Worker calls to verify pre-migration argon2
+password hashes. The `deploy-legacy-bridge` job keeps it current.
+
+Retire all of it — job, server, Tunnel route, `apps/api` — once this returns 0:
+
+```bash
+pnpm --filter @badge/worker exec wrangler d1 execute badge-db --remote --env production \
+  --command "SELECT COUNT(*) FROM users WHERE password_hash LIKE '\$argon2%';"
+```
+
+See [CLOUDFLARE-MIGRATION.md](CLOUDFLARE-MIGRATION.md) for the full story.

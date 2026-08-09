@@ -1,6 +1,6 @@
 # API Reference
 
-Base URL: `https://api.rnbp.ca/api` (production) / `http://localhost:3000/api` (development)
+Base URL: `https://api.badgeid.ca/api` (production) / `http://localhost:8787/api` (development)
 
 ## Authentication
 
@@ -261,13 +261,13 @@ Response: 204 No Content
 ### GET /lookup
 Auth: None | Rate limit: 30/min
 ```
-Query: ?q=RNBP-XXXXXXXX (or serial number)
+Query: ?q=BADGE-XXXXXXXX (or serial number)
 Response: { found: false } | { found: true, status, category, brand, model }
 ```
 Normalizes serial numbers (strips spaces, dashes, underscores).
 The unified lookup currently supports RNBP numbers and serial numbers only.
 
-### GET /lookup/:rnbpNumber
+### GET /lookup/:badgeCode
 Auth: None | Rate limit: 30/min
 ```
 Response: { found: false } | { found: true, status, category, brand, model }
@@ -375,7 +375,7 @@ number. `limit` defaults to 50 and is capped at 100. Never returns `passwordHash
 Auth: requireAdmin
 ```
 Query: ?status=stolen&q=searchterm&page=1&limit=25
-Response: { items: [{ id, name, category, status, rnbpNumber, serialNumber, createdAt, ownerName, ownerEmail }], pagination: { page, limit, total } }
+Response: { items: [{ id, name, category, status, badgeCode, serialNumber, createdAt, ownerName, ownerEmail }], pagination: { page, limit, total } }
 ```
 
 ### PATCH /admin/items/:id/recover
@@ -401,7 +401,7 @@ Each sticker-sheet order line carries the codes registered during shipment prepa
 ### POST /admin/orders/:id/items/:orderItemId/codes
 Auth: requireAdmin
 ```
-Body: { ranges: [{ firstCode: "RNBP-XXXXXXXX", lastCode: "RNBP-XXXXXXXX" }, ...] }
+Body: { ranges: [{ firstCode: "BADGE-XXXXXXXX", lastCode: "BADGE-XXXXXXXX" }, ...] }
 Response: { codes: string[] } (201)
 ```
 Registers sticker codes during shipment preparation. One range = one sheet of 10 sequential codes. Total `ranges.length × 10` must equal `orderItem.quantity × 10`. Returns the expanded list of codes.

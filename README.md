@@ -1,4 +1,4 @@
-# RNBP / NRPP
+# Badge
 
 ![CI](https://github.com/Alexandre-Lessard/badge-platform/actions/workflows/ci.yml/badge.svg)
 ![CD](https://github.com/Alexandre-Lessard/badge-platform/actions/workflows/cd.yml/badge.svg)
@@ -6,122 +6,138 @@
 ![Node](https://img.shields.io/badge/node-20-green)
 ![pnpm](https://img.shields.io/badge/pnpm-10-orange)
 
-**National Registry of Personal Property** — A platform for Canadians to register, protect, and recover their valuable belongings.
+A platform for Canadians to register, protect, and recover their valuable belongings.
 
 ## What is this?
 
-RNBP (Registre National des Biens Personnels) / NRPP (National Registry of Personal Property) is a bilingual Canadian web application that lets users catalog their personal property, manage their account profile, generate unique RNBP tracking numbers, report thefts to aid recovery, and request insurance discounts from participating insurers.
+Badge is a bilingual Canadian web application that lets users catalog their personal
+property, claim Badge codes for their items, report thefts to aid recovery, and request
+insurance discounts from participating insurers. Anyone can look up a Badge code or serial
+number to check whether an item is registered or reported stolen.
 
-The platform serves both French and English speakers through a bi-domain architecture: `rnbp.ca` (French) and `nrpp.ca` (English).
+It runs at `badgeid.ca` in French and English on the same domain. The former `rnbp.ca` and
+`nrpp.ca` domains still resolve and point at the same site.
 
 ## Key Features
 
 - **Item Registration** — Catalog belongings with photos, documents, serial numbers, tracker IDs (AirTag/Tile/SmartTag), and estimated values
-- **RNBP Tracking Numbers** — Unique identifiers (stickers) assigned to registered items for identification and recovery
+- **Badge Codes** — Unique identifiers on sticker sheets, claimed by the customer and attached to an item
 - **Theft Reporting** — Declare stolen items with police report details; items are flagged across the registry
-- **Public Lookup** — Anyone can look up an RNBP number or serial number to check if an item is registered or reported stolen
+- **Public Lookup** — Look up a Badge code or serial number to check an item's status
 - **Insurance Integration** — Send proof of registration to your insurer to request a home insurance discount
-- **Profile Management** — Maintain personal details, civic address, preferred language, and account settings from the protected account area
-- **OAuth Login** — Sign in with Google, Facebook, or Microsoft when the corresponding provider credentials are configured
-- **Stripe Checkout** — Purchase RNBP sticker sheets with tax calculation and shipping
-- **Bilingual UI** — Full French/English support with instant language toggle, hostname-based detection
-- **Bilingual Error Handling** — Centralized error codes mapped to both languages via i18n
+- **Stripe Checkout** — Purchase sticker sheets with tax calculation and shipping
+- **Bilingual UI** — Full French/English support with instant language toggle
+- **OAuth Login** — Google and Facebook, currently switched off pending business verification (see `apps/web/.env.production`)
+
+## Architecture
+
+```
+badgeid.ca                     api.badgeid.ca
+     |                                |
+Cloudflare Pages              Cloudflare Worker
+     |                                |
+  React SPA                      Hono API
+  (Vite 6)                    D1  +  R2
+```
+
+Everything runs on Cloudflare. There is no server to maintain: the API is a Worker, the
+database is D1 (SQLite), files live in R2 and are served from `files.badgeid.ca`.
+
+One exception, temporary: the previous self-hosted server still answers a single endpoint
+that verifies pre-migration argon2 password hashes. It disappears once every account has
+logged in once. See [docs/CLOUDFLARE-MIGRATION.md](docs/CLOUDFLARE-MIGRATION.md).
 
 ## Technical Decisions
 
 | Decision | Choice | Why |
 |----------|--------|-----|
-| API Framework | **Fastify 5** | 2-3x faster than Express, TypeScript-first, built-in schema validation, plugin system |
-| JWT Algorithm | **EdDSA (Ed25519)** | Smaller tokens than RS256, faster signing/verification, modern standard (RFC 8037) |
-| Password Hashing | **Argon2** | Memory-hard (resistant to GPU attacks), OWASP recommended over bcrypt |
-| ORM | **Drizzle** | Type-safe SQL, no code generation step, lighter than Prisma, supports raw SQL escape hatches |
-| File Storage | **Cloudflare R2** | S3-compatible, generous free tier, no egress fees, CDN-served, same ecosystem as Pages/Tunnel |
-| Infrastructure | **Cloudflare Tunnel** | No public IP needed, zero-config TLS, no nginx/certbot, DDoS protection included |
-| Monorepo | **pnpm workspaces** | Shared types/constants between frontend and backend, single lockfile, fast installs |
-| Validation | **Zod** | Same schemas used on both frontend and backend, TypeScript inference |
-| OAuth | **Authorization Code + PKCE** | Industry standard (OAuth 2.1), code exchange server-side, state parameter for CSRF protection. Facebook uses code + secret only (no PKCE support) |
-| Email Verification | **HMAC signed tokens** | Stateless (no DB lookup), timing-safe comparison, expiry built into the token |
-| Error Handling | **Centralized error codes** | Shared constants between backend and frontend, bilingual mapping via i18n |
-
-## Architecture
-
-```
-rnbp.ca / nrpp.ca          api.rnbp.ca
-       |                         |
- Cloudflare Pages         Cloudflare Tunnel
-       |                         |
-   React SPA              Fastify REST API
-   (Vite 6)                      |
-                            PostgreSQL 16
-```
-
-- **Frontend**: React 19 SPA served via Cloudflare Pages. Bilingual via hostname detection (`rnbp.ca` = FR, `nrpp.ca` = EN).
-- **Backend**: Fastify 5 behind Cloudflare Tunnel. No public IP, no nginx. Auto-migrating Drizzle ORM.
-- **Auth**: JWT EdDSA access/refresh tokens with server-side sessions. OAuth via Google, Facebook, and Microsoft. Argon2 password hashing.
+| API Framework | **Hono** | Runs on the Workers fetch runtime, small, TypeScript-first |
+| Compute | **Cloudflare Workers** | No server, no scaling to think about, free at this size |
+| Database | **D1** (SQLite) | Same platform as the Worker, no connection pooling, no egress cost |
+| ORM | **Drizzle** | Type-safe SQL, no codegen step, raw-SQL escape hatch |
+| JWT Algorithm | **EdDSA (Ed25519)** | Smaller tokens than RS256, fast, modern standard (RFC 8037) |
+| Password Hashing | **PBKDF2-SHA256 + pepper** | WebCrypto, the only option on Workers; a server-side pepper offsets the free plan's iteration cap |
+| Image Resizing | **Browser canvas** | sharp is a native addon and cannot run on Workers, so the resize moved client-side |
+| File Storage | **Cloudflare R2** | No egress fees, bound directly to the Worker, served from a custom domain |
+| Monorepo | **pnpm workspaces** | Shared types and constants, single lockfile |
+| Validation | **Zod** | Same schemas on both sides, TypeScript inference |
+| Email Verification | **HMAC signed tokens** | Stateless, timing-safe comparison, expiry inside the token |
+| Error Handling | **Centralized error codes** | Shared constants, bilingual mapping via i18n |
 
 ## Stack
 
 | Layer | Technologies |
 |-------|-------------|
 | Frontend | React 19, Vite 6, Tailwind CSS 4, React Router 7 |
-| Backend | Fastify 5, Drizzle ORM, PostgreSQL 16 |
-| Auth | JWT EdDSA (Ed25519 via jose), Argon2, OAuth (Google, Facebook, Microsoft) |
+| Backend | Hono, Drizzle ORM, Cloudflare D1 |
+| Auth | JWT EdDSA (Ed25519 via jose), PBKDF2 (WebCrypto), OAuth (Google, Facebook) |
 | Validation | Zod (shared frontend/backend) |
 | Payments | Stripe Checkout |
 | Emails | Brevo (transactional) |
 | File Storage | Cloudflare R2 |
-| Infrastructure | Cloudflare Pages + Cloudflare Tunnel |
-| Monorepo | pnpm workspaces, tsup (API), Vite (web) |
-| CI | GitHub Actions (lint + typecheck + tests) |
+| Infrastructure | Cloudflare Pages + Workers + D1 + R2 |
+| Monorepo | pnpm workspaces, Vite (web), wrangler (worker) |
+| CI/CD | GitHub Actions — lint, typecheck, tests, then deploy |
 | Testing | Vitest |
 
-## Testing
+## Environments
 
-The project is under active development. Current automated coverage includes critical backend utilities plus targeted API and frontend tests for primary-photo selection, enriched user DTOs, insurer CTA behavior, FAQ rendering, and registration form validation.
+| | Production | Staging |
+|---|---|---|
+| Site | `badgeid.ca` | `staging.badge-platform.pages.dev` |
+| API | `api.badgeid.ca` | `badge-api-staging.alexandre-lessard92.workers.dev` |
+| Database | D1 `badge-db` | D1 `badge-db-staging` |
+| Files | `files.badgeid.ca` | `files-staging.badgeid.ca` |
+| Deploys from | `main` | `staging` |
 
-Testing framework: **Vitest** across all workspaces. Run with `pnpm test`.
+The two environments share nothing. A push to `staging` deploys staging; merging to `main`
+deploys production. Both refuse to deploy when a required secret is missing.
 
 ## Project Structure
 
 ```
-rnbp-app/
+badge-app/
 ├── apps/
-│   ├── api/              # Fastify REST API
-│   │   └── src/
-│   │       ├── routes/       # API endpoints
-│   │       ├── middleware/    # Auth, error handling, security
-│   │       ├── db/           # Drizzle schema and client
-│   │       ├── utils/        # Tokens, password, email, OAuth
-│   │       ├── constants/    # Time constants
-│   │       └── __tests__/    # Unit tests (Vitest)
+│   ├── worker/           # Production API — Hono on Cloudflare Workers
+│   │   ├── src/
+│   │   │   ├── routes/       # API endpoints
+│   │   │   ├── middleware/   # Auth, rate limiting
+│   │   │   ├── db/           # Drizzle schema (sqlite-core) and client
+│   │   │   ├── utils/        # Tokens, password, email, R2, OAuth
+│   │   │   └── __tests__/    # Unit tests (Vitest)
+│   │   └── migrations/       # D1 migrations
+│   ├── api/              # Legacy Fastify API — serves the argon2 bridge only
 │   └── web/              # React SPA
-│       └── src/
-│           ├── pages/        # Route pages
-│           ├── components/   # UI components
-│           ├── lib/          # Auth context, API client, OAuth
-│           ├── i18n/         # Bilingual translations (FR/EN)
-│           └── __tests__/    # Component tests (Vitest)
+│       └── src/          # pages, components, lib, i18n, __tests__
 ├── packages/
 │   └── shared/           # Shared types, schemas, constants, error codes
-├── ops/                  # Deploy scripts, systemd service, backup, SETUP guide
-├── docs/                 # Development, deployment, architecture guides
-└── .github/              # CI workflow (lint + typecheck + tests)
+├── ops/                  # Deploy and backup scripts, migration tooling, SETUP guide
+├── docs/                 # Architecture, deployment, development, API, migration log
+└── .github/workflows/    # CI, CD, CD Staging, nightly D1 backup
 ```
+
+`apps/api` is on its way out. Until the argon2 migration finishes, treat `apps/worker` as
+the API.
+
+## Testing
+
+Vitest across all workspaces, run with `pnpm test`. Coverage focuses on the parts where a
+mistake is expensive: password hashing and its legacy migration path, token handling, badge
+code sequencing, error mapping, and the deploy-time secrets manifest.
 
 ## Getting Started
 
-See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for prerequisites, setup, and available scripts.
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for prerequisites, setup, and scripts.
 
 ## Documentation
 
 - [Development Guide](docs/DEVELOPMENT.md) — Setup, scripts, testing, environment variables
-- [Deployment Guide](docs/DEPLOYMENT.md) — Deploy process, configuration, domains
-- [Architecture](docs/ARCHITECTURE.md) — Technical decisions, auth flow, OAuth, i18n strategy
-- [Production Setup](ops/SETUP.md) — Full infrastructure guide (Proxmox, Cloudflare, PostgreSQL, systemd)
-- [Detailed API Reference](docs/API.md)
-- [Backend Reference](apps/api/README.md)
-- [Frontend Reference](apps/web/README.md)
+- [Deployment Guide](docs/DEPLOYMENT.md) — How deploys work, environments, rollback
+- [Architecture](docs/ARCHITECTURE.md) — Technical decisions, auth flow, i18n strategy
+- [Cloudflare Migration](docs/CLOUDFLARE-MIGRATION.md) — How the platform got here, and what is left
+- [Production Setup](ops/SETUP.md) — Infrastructure reference
+- [API Reference](docs/API.md)
 
 ## License
 
-Copyright (c) 2025-2026 RNBP Inc. All rights reserved. See [LICENSE](LICENSE).
+Copyright (c) 2025-2026 Badge. All rights reserved. See [LICENSE](LICENSE).

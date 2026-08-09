@@ -1,631 +1,160 @@
-# Production Setup Guide — Badge
+# Infrastructure Setup — Badge
 
-Complete guide to deploy the project from scratch.
+Everything runs on Cloudflare. There is no server to provision, no OS to patch, no TLS to
+renew. This document is the reference for recreating or reasoning about that infrastructure.
+
+For how deploys work day to day, see [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md). For how the
+platform got here, see [docs/CLOUDFLARE-MIGRATION.md](../docs/CLOUDFLARE-MIGRATION.md).
 
 ## Architecture
 
 ```
-[Browser] → badgeid.ca → [Cloudflare Pages] → React SPA (FR/EN, single domain)
-                                  ↓ API calls
-[Browser] → api.badgeid.ca → [Cloudflare Tunnel] → 192.168.50.241:3000 → [Fastify]
-                                                                              ↓
-                                                          192.168.50.239 → [PostgreSQL 16]
+badgeid.ca       -->  Pages project `badge-platform`   -->  React SPA
+api.badgeid.ca   -->  Worker `badge-api`               -->  Hono
+                                                            |-- D1  `badge-db`
+                                                            `-- R2  `badge-uploads`
+files.badgeid.ca -->  R2 `badge-uploads` (public custom domain)
 ```
 
-- **No nginx** — Cloudflare Tunnel connects directly to Fastify (existing nginx on the container does not interfere)
-- **No certbot** — Cloudflare handles TLS at the edge
-- **No public IP** — the tunnel is an outbound connection
-- **Legacy domains** — `rnbp.ca` / `nrpp.ca` (and `api.rnbp.ca`) remain pointed at Cloudflare and still resolve, kept for redirects/back-compat after the Badge rebrand
+Cloudflare account: `3aa12f83f9d4006cfd805489b6d65eb8` (Alexandre.lessard92@gmail.com).
+`wrangler whoami` lists several accounts — always set `CLOUDFLARE_ACCOUNT_ID`.
 
-### Proxmox Infrastructure
+## Resources
 
-| Container | ID | IP | Role |
-|-----------|-----|-----|------|
-| prod (existing) | 241 | `192.168.50.241` | RNBP API + Cloudflare Tunnel |
-| postgresql-prod (Turnkey) | 239 | `192.168.50.239` | Dedicated PostgreSQL 16 |
-
-## Prerequisites
-
-- Proxmox with the 2 containers listed above
-- Primary domain: `badgeid.ca` (NS pointing to Cloudflare); legacy `rnbp.ca` / `nrpp.ca` also on Cloudflare for redirects
-- Cloudflare account (free tier is sufficient)
-
----
-
-## 1. Prod Container (192.168.50.241)
-
-The existing prod container (CT 241) already hosts other services. We add RNBP to it.
-
-```bash
-# Connect to the container
-ssh root@192.168.50.241
-
-# Update
-apt update && apt upgrade -y
-
-# Required tools (if not already installed)
-apt install -y curl git
-```
-
-### Install Node.js 20 LTS (if not already installed)
-
-```bash
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-apt install -y nodejs
-node -v  # v20.x.x
-```
-
-### Install pnpm (if not already installed)
-
-```bash
-npm i -g pnpm
-pnpm -v  # 9.x.x
-```
-
-### Prepare the application directory
-
-We reuse the existing `prod` user on the container.
-
-```bash
-mkdir -p /opt/rnbp
-chown prod:prod /opt/rnbp
-```
-
-## 2. PostgreSQL Container (192.168.50.239)
-
-Create a Turnkey PostgreSQL container (CT 239) on Proxmox.
-
-Once the container is started:
-
-```bash
-ssh root@192.168.50.239
-```
-
-### Configure network access
-
-By default, PostgreSQL only listens on localhost. It needs to be opened to the prod container.
-
-```bash
-# Find the config file (varies depending on the Turnkey version)
-PG_CONF=$(find /etc/postgresql -name postgresql.conf)
-PG_HBA=$(find /etc/postgresql -name pg_hba.conf)
-
-# Listen on all interfaces
-sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" $PG_CONF
-
-# Allow the prod container to connect
-echo "host    rnbp_prod    rnbp    192.168.50.241/32    scram-sha-256" >> $PG_HBA
-
-# Restart PostgreSQL
-systemctl restart postgresql
-```
-
----
-
-### Create the user and database
-
-```bash
-# On the PostgreSQL container (192.168.50.239)
-sudo -u postgres createuser rnbp
-sudo -u postgres createdb rnbp_prod -O rnbp
-sudo -u postgres psql -c "ALTER USER rnbp WITH PASSWORD '<SECURE_PASSWORD>';"
-```
-
-### Test the connection from the prod container
-
-```bash
-# From 192.168.50.241
-apt install -y postgresql-client   # if not installed
-psql -h 192.168.50.239 -U rnbp -d rnbp_prod -c "SELECT 1;"
-```
-
-The connection URL will be:
-```
-postgresql://rnbp:<PASSWORD>@192.168.50.239:5432/rnbp_prod
-```
-
----
-
-## 3. SSH Access
-
-On the **development machine**:
-
-```bash
-# Generate an SSH key (if not already done)
-ssh-keygen -t ed25519 -C "dev@rnbp"
-
-# Copy the public key to the server
-ssh-copy-id prod@192.168.50.241
-
-# Test the connection
-ssh prod@192.168.50.241
-```
-
-This access is required for the `ops/deploy.sh` script to work.
-
----
-
-## 4. Application
-
-### Clone the repo
-
-```bash
-sudo -u prod git clone <REPO_URL> /opt/rnbp/repo
-```
-
-### Configure the environment
-
-```bash
-sudo cp /opt/rnbp/repo/apps/api/.env.example /opt/rnbp/.env
-sudo chown prod:prod /opt/rnbp/.env
-sudo chmod 600 /opt/rnbp/.env
-```
-
-Edit `/opt/rnbp/.env` with production values:
-
-| Variable | Value |
-|----------|-------|
-| `NODE_ENV` | `production` |
-| `PORT` | `3000` |
-| `DATABASE_URL` | `postgresql://rnbp:<PASSWORD>@192.168.50.239:5432/rnbp_prod` |
-| `JWT_PRIVATE_KEY` | *(see below)* |
-| `JWT_PUBLIC_KEY` | *(see below)* |
-| `CORS_ORIGINS` | `https://badgeid.ca,https://www.badgeid.ca,https://rnbp.ca,https://nrpp.ca,https://www.rnbp.ca,https://www.nrpp.ca` |
-| `UPLOAD_DIR` | `/opt/rnbp/uploads` |
-| `FRONTEND_URL` | `https://badgeid.ca` |
-| `FROM_EMAIL` | `noreply@badgeid.ca` |
-| `BREVO_API_KEY` | *(Brevo key if emails are enabled)* |
-| `GOOGLE_CLIENT_ID` | *(Google OAuth client ID)* |
-| `GOOGLE_CLIENT_SECRET` | *(Google OAuth client secret)* |
-| `MICROSOFT_CLIENT_ID` | *(Microsoft OAuth client ID)* |
-| `MICROSOFT_CLIENT_SECRET` | *(Microsoft OAuth client secret)* |
-| `FACEBOOK_CLIENT_ID` | *(Facebook OAuth app ID)* |
-| `FACEBOOK_CLIENT_SECRET` | *(Facebook OAuth app secret)* |
-| `R2_ACCOUNT_ID` | *(Cloudflare account ID)* |
-| `R2_ACCESS_KEY_ID` | *(R2 API token access key)* |
-| `R2_SECRET_ACCESS_KEY` | *(R2 API token secret key)* |
-| `R2_BUCKET_NAME` | `rnbp-uploads` |
-| `R2_PUBLIC_URL` | *(R2 public bucket URL, e.g. `https://pub-xxx.r2.dev`)* |
-| `STRIPE_SECRET_KEY` | *(Stripe secret key)* |
-| `STRIPE_WEBHOOK_SECRET` | *(Stripe webhook signing secret)* |
-
-`R2_PUBLIC_URL` must point to an enabled public domain for the bucket. If the managed `r2.dev` domain or custom public domain is disabled, uploads will still be written to R2 but browsers will receive `401` when requesting the files.
-
-### Buckets per environment
-
-One bucket and one R2 token **per environment**, each token scoped to its own bucket only. Without this,
-a local dev upload writes into the production bucket alongside real customer files.
-
-| Environment | Bucket | Config file |
+| Kind | Production | Staging |
 |---|---|---|
-| production | `rnbp-uploads` | `/opt/rnbp/.env` on the server |
-| development | `badge-uploads-dev` | `apps/api/.env` on your machine |
-| staging | `badge-uploads-staging` | *(not wired up yet)* |
+| Worker | `badge-api` | `badge-api-staging` |
+| D1 | `badge-db` | `badge-db-staging` |
+| R2 uploads | `badge-uploads` → `files.badgeid.ca` | `badge-uploads-staging` → `files-staging.badgeid.ca` |
+| Pages | `badge-platform` (branch `main`) | `badge-platform` (branch `staging`) |
+| R2 backups | `badge-db-backups` (shared, 90-day lifecycle) | — |
 
-When creating an R2 token via the API rather than the dashboard, the S3 credentials are derived:
-**Access Key ID is the token id**, and **Secret Access Key is the SHA-256 hex digest of the token value**.
-The bucket-scoped resource key is `com.cloudflare.edge.r2.bucket.<account_id>_default_<bucket_name>`.
+Bindings and non-secret vars are declared per environment in `apps/worker/wrangler.jsonc`.
+That file is the source of truth; nothing here should contradict it.
 
-### Rotating R2 credentials
+## Domains
 
-`deploy.sh` **excludes every `.env` file** from the rsync, so rotating a key is never picked up by a
-deploy — both config files must be edited by hand, in the right order.
+| Domain | Points at |
+|---|---|
+| `badgeid.ca`, `www.badgeid.ca` | Pages `badge-platform` |
+| `rnbp.ca`, `www.rnbp.ca`, `nrpp.ca`, `www.nrpp.ca` | Pages `badge-platform` (legacy aliases) |
+| `api.badgeid.ca` | Worker `badge-api` (custom domain, declared in `wrangler.jsonc`) |
+| `files.badgeid.ca` | R2 `badge-uploads` |
+| `api.rnbp.ca` | **Old server via Cloudflare Tunnel — argon2 bridge only.** Do not repoint until the bridge is retired. |
 
-1. Create the new R2 token in Cloudflare **without revoking the old one**. Two tokens can be active at
-   once, so there is no window where uploads fail.
-2. Update production — `/opt/rnbp/.env`, the `EnvironmentFile` of the systemd unit:
-   ```bash
-   sudo nano /opt/rnbp/.env          # R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY
-   sudo systemctl restart rnbp-api   # required: env is read once at startup
-   ```
-3. Update development — `apps/api/.env` on your machine, then restart `pnpm dev:api`.
-4. **Only now** revoke the old token in Cloudflare.
+### Moving a domain between Pages projects
 
-Verify before revoking: upload a photo on a test item in production, refresh, and confirm the image
-still renders. A stale key does not produce a clean `503` — `isR2Configured()` only checks that the
-variables are present, so an invalid key surfaces as an S3 error at upload time.
-
-> Skipping step 3 is the common failure: production keeps working, and the broken dev environment is
-> only discovered on the next local upload.
-
-### Generate JWT Ed25519 keys
+Two steps, and the second is the one that bites: **detaching and reattaching a custom domain
+does not update its DNS.** The CNAME keeps pointing at the old project and the domain serves
+523 until you patch it.
 
 ```bash
-openssl genpkey -algorithm Ed25519 -out /tmp/ed25519_private.pem
-openssl pkey -in /tmp/ed25519_private.pem -pubout -out /tmp/ed25519_public.pem
-
-# Copy these values into .env
-echo "JWT_PRIVATE_KEY=$(base64 -w 0 /tmp/ed25519_private.pem)"
-echo "JWT_PUBLIC_KEY=$(base64 -w 0 /tmp/ed25519_public.pem)"
-
-# Delete the temporary files
-rm /tmp/ed25519_private.pem /tmp/ed25519_public.pem
+# 1. detach, 2. attach, 3. repoint the CNAME to <new-project>.pages.dev
 ```
 
-### Initial build
+Move a low-traffic domain first as a canary. Certificate issuance takes a few minutes, during
+which the domain is down.
+
+## Access tokens
+
+The API token `badge-cicd` (no expiry, no IP filter) is stored in the GitHub secret
+`CLOUDFLARE_API_TOKEN` and in `.deploy.env` at the repo root for local use. It covers Workers
+Scripts, D1, R2, Pages, KV, Tail and Account Settings at account level, plus DNS, Workers
+Routes and Zone Read on the `badgeid.ca`, `rnbp.ca` and `nrpp.ca` zones.
+
+It deliberately **cannot manage tokens**. Widening its scope needs a fresh bootstrap token
+with token-management rights — so when creating one, cover every zone the project touches the
+first time. A permission change takes a minute or two to apply; writes in that window fail
+with `10405 Method not allowed for this authentication scheme`, which is misleading. Wait and
+retry.
+
+## Secrets
+
+Secrets live on the Worker, survive deploys, and are never in the repo.
 
 ```bash
-cd /opt/rnbp/repo
-sudo -u prod pnpm install --frozen-lockfile
-sudo -u prod pnpm --filter @rnbp/shared build
-sudo -u prod pnpm --filter @rnbp/api build
+export CLOUDFLARE_ACCOUNT_ID=3aa12f83f9d4006cfd805489b6d65eb8
+pnpm --filter @badge/worker exec wrangler secret put NAME --env production
+pnpm --filter @badge/worker exec wrangler secret list --env production
 ```
 
-### Migrations
+`apps/worker/secrets.manifest.json` declares what each environment needs; CD runs
+`ops/check-secrets.mjs` and refuses to deploy when one is missing. Add new secrets to the
+manifest in the same commit.
 
-Drizzle migrations are applied automatically on backend startup. No manual step required.
-
-To run manually if needed:
-```bash
-cd /opt/rnbp/repo/apps/api
-sudo -u prod node --env-file=/opt/rnbp/.env dist/migrate.js
-```
-
-### Uploads directory
+### Generating JWT keys
 
 ```bash
-sudo mkdir -p /opt/rnbp/uploads
-sudo chown prod:prod /opt/rnbp/uploads
+node -e "const {generateKeyPairSync}=require('crypto');const{privateKey,publicKey}=generateKeyPairSync('ed25519');console.log('JWT_PRIVATE_KEY='+Buffer.from(privateKey.export({type:'pkcs8',format:'pem'})).toString('base64'));console.log('JWT_PUBLIC_KEY='+Buffer.from(publicKey.export({type:'spki',format:'pem'})).toString('base64'))"
 ```
 
----
+Production reuses the keypair from the pre-migration server, so existing sessions stayed
+valid through the cutover. Replacing it signs everyone out.
 
-## 5. systemd
+`PASSWORD_PEPPER` is mixed into every PBKDF2 derivation — changing it invalidates every
+stored password hash. There is no rotation path short of a forced reset for all users.
+
+## R2
+
+One bucket per environment. Sharing a bucket means a staging upload lands next to real
+customer files.
+
+Public access is a **custom domain on the bucket**, not `r2.dev`: r2.dev is rate-limited and
+Cloudflare does not recommend it for production traffic. Note that a deleted file keeps
+serving from CDN cache for up to its `max-age` (4 h).
+
+When creating an R2 token via the API rather than the dashboard, the S3 credentials are
+derived: **Access Key ID is the token id**, **Secret Access Key is the SHA-256 hex digest of
+the token value**. The bucket-scoped resource key is
+`com.cloudflare.edge.r2.bucket.<account_id>_default_<bucket_name>`.
+
+`curl` before 8.2 omits `x-amz-content-sha256` from `--aws-sigv4` requests and R2 rejects
+them; `ops/backup.sh` passes the header explicitly.
+
+## Backups
+
+| What | How | Retention |
+|---|---|---|
+| D1 `badge-db` | `Backup D1` workflow, nightly 03:00 ET → R2 | 90 days (bucket lifecycle) |
+| D1 point-in-time | Cloudflare Time Travel | 30 days |
+| Legacy Postgres | `ops/backup.sh` via cron on the old server → R2 | 14 days local, 90 in R2 |
+
+Restore a D1 export:
 
 ```bash
-sudo cp /opt/rnbp/repo/ops/rnbp-api.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable rnbp-api
-sudo systemctl start rnbp-api
+pnpm --filter @badge/worker exec wrangler d1 execute badge-db --remote --env production --file dump.sql
 ```
 
-### Verify
+## Migrating data from Postgres
+
+`ops/pg-export.sh` dumps each table as JSON (locally or over SSH); `ops/pg-to-d1.py` converts
+it to D1-compatible SQL — timestamps to epoch milliseconds, booleans to 0/1, `text[]` to
+JSON — and can repoint stored file URLs with `--rewrite-url OLD=NEW`.
 
 ```bash
-sudo systemctl status rnbp-api
-curl -s http://localhost:3000/api/health | jq
+./ops/pg-export.sh /tmp/pgdata prod@192.168.50.241
+./ops/pg-to-d1.py /tmp/pgdata --rewrite-url https://pub-OLD.r2.dev=https://files.badgeid.ca > import.sql
+pnpm --filter @badge/worker exec wrangler d1 execute badge-db --remote --env production --file import.sql
 ```
 
-### Useful commands
+## The legacy stack (being retired)
+
+A Proxmox container at `192.168.50.241` runs the old Fastify API (`rnbp-api`, systemd) against
+a local PostgreSQL 16, reachable through a Cloudflare Tunnel. It exists for one endpoint:
+`POST /internal/verify-legacy`, which the Worker calls to verify pre-migration argon2 password
+hashes.
+
+The tunnel config (`/etc/cloudflared/config.yml`) matches only that path on `api.rnbp.ca` and
+returns 410 for everything else, so nothing can write to that Postgres by accident. The
+pre-cutover config is kept as `config.yml.bak-precutover`.
+
+Note that the container's `.git` is frozen (deploys rsync without it) — GitHub `main` is the
+truth, never `git log` on the server.
+
+Retire the container, the Tunnel route, the `deploy-legacy-bridge` CD job and `apps/api` once
+this returns 0:
 
 ```bash
-# Live logs
-sudo journalctl -u rnbp-api -f
-
-# Last 50 log lines
-sudo journalctl -u rnbp-api -n 50
-
-# Restart
-sudo systemctl restart rnbp-api
+pnpm --filter @badge/worker exec wrangler d1 execute badge-db --remote --env production \
+  --command "SELECT COUNT(*) FROM users WHERE password_hash LIKE '\$argon2%';"
 ```
-
----
-
-## 6. Cloudflare Tunnel (backend)
-
-The tunnel replaces nginx + certbot. It creates an encrypted outbound connection between the server and Cloudflare — no ports to open, no certificates to manage.
-
-### Install cloudflared
-
-```bash
-curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-sudo dpkg -i cloudflared.deb
-rm cloudflared.deb
-```
-
-### Authenticate
-
-```bash
-cloudflared tunnel login
-```
-
-This opens a browser to authorize the Cloudflare account.
-
-### Create the tunnel
-
-```bash
-cloudflared tunnel create rnbp-api
-```
-
-Note the tunnel ID (e.g., `a1b2c3d4-...`).
-
-### Configure the tunnel
-
-Create `/opt/rnbp/.cloudflared/config.yml`:
-
-```yaml
-tunnel: <TUNNEL_ID>
-credentials-file: /root/.cloudflared/<TUNNEL_ID>.json
-
-ingress:
-  - hostname: api.badgeid.ca
-    service: http://localhost:3000
-  - hostname: api.rnbp.ca          # legacy, kept for back-compat
-    service: http://localhost:3000
-  - service: http_status:404
-```
-
-> **Note**: Move the credentials JSON file to `/opt/rnbp/.cloudflared/` if the tunnel is installed as a service under the prod user.
-
-### Configure DNS
-
-```bash
-cloudflared tunnel route dns rnbp-api api.badgeid.ca
-```
-
-This automatically creates a CNAME `api.badgeid.ca` → `<TUNNEL_ID>.cfargotunnel.com`.
-
-### Install as a service
-
-```bash
-sudo cloudflared service install
-sudo systemctl enable cloudflared
-sudo systemctl start cloudflared
-```
-
-### Verify
-
-```bash
-sudo systemctl status cloudflared
-curl -s https://api.badgeid.ca/api/health | jq
-```
-
----
-
-## 7. Cloudflare Pages (frontend)
-
-### Create the project
-
-```bash
-# From the dev machine, at the repo root
-npx wrangler pages project create badge-platform
-```
-
-### First deployment
-
-```bash
-pnpm --filter @rnbp/shared build
-pnpm --filter @rnbp/web build
-npx wrangler pages deploy apps/web/build/client --project-name badge-platform
-```
-
-### Custom domains
-
-In the Cloudflare Pages dashboard → project `badge-platform` → Custom Domains:
-
-1. `badgeid.ca` (primary)
-2. `www.badgeid.ca` (redirect to `badgeid.ca`)
-3. `rnbp.ca` / `www.rnbp.ca` (legacy, redirect to `badgeid.ca`)
-4. `nrpp.ca` / `www.nrpp.ca` (legacy, redirect to `badgeid.ca`)
-
-### SPA routing and legacy redirects
-
-`apps/web/public/_redirects` declares the FR legacy → EN redirects (301) and the SPA fallback:
-
-```
-/connexion        /login        301
-# … other FR legacy routes …
-/*                /index.html   200
-```
-
-The `/*` line lets React Router handle every other path on the client. The home page (`/`) is prerendered at build time by React Router framework mode (`ssr: false` + `prerender: ["/"]`); all other routes are served via the prerendered SPA shell.
-
----
-
-## 8. Cloudflare DNS
-
-The primary domain (`badgeid.ca`) and the legacy domains (`rnbp.ca`, `nrpp.ca`) must all have their nameservers pointing to Cloudflare.
-
-### badgeid.ca (primary)
-
-| Type | Name | Content | Proxy |
-|------|------|---------|-------|
-| CNAME | `@` | `badge-platform.pages.dev` | Yes |
-| CNAME | `www` | `badge-platform.pages.dev` | Yes |
-| CNAME | `api` | `<TUNNEL_ID>.cfargotunnel.com` | Yes |
-
-### rnbp.ca (legacy)
-
-| Type | Name | Content | Proxy |
-|------|------|---------|-------|
-| CNAME | `@` | `badge-platform.pages.dev` | Yes |
-| CNAME | `www` | `badge-platform.pages.dev` | Yes |
-| CNAME | `api` | `<TUNNEL_ID>.cfargotunnel.com` | Yes |
-
-### nrpp.ca
-
-| Type | Name | Content | Proxy |
-|------|------|---------|-------|
-| CNAME | `@` | `badge-platform.pages.dev` | Yes |
-| CNAME | `www` | `badge-platform.pages.dev` | Yes |
-
-> **Note**: The `@` and `www` CNAME records for Pages are often configured automatically by Cloudflare when adding custom domains.
-
----
-
-## 9. Backups
-
-### Configure automatic backups
-
-```bash
-sudo mkdir -p /opt/rnbp/backups
-sudo chown prod:prod /opt/rnbp/backups
-```
-
-Add to the `prod` user's crontab:
-
-```bash
-sudo -u prod crontab -e
-```
-
-Add the following line:
-```
-0 3 * * * /opt/rnbp/repo/ops/backup.sh >> /opt/rnbp/backups/backup.log 2>&1
-```
-
-### Test a restore
-
-```bash
-# List backups
-ls -la /opt/rnbp/backups/
-
-# Test a restore into a temporary database
-sudo -u postgres createdb rnbp_restore_test
-pg_restore -d rnbp_restore_test /opt/rnbp/backups/<backup_file>
-# Verify the data, then delete
-sudo -u postgres dropdb rnbp_restore_test
-```
-
-### Remote backup (optional)
-
-To send backups to Cloudflare R2:
-
-```bash
-sudo apt install -y rclone
-rclone config  # Configure an R2 remote
-# Add to backup.sh: rclone copy /opt/rnbp/backups/ r2:rnbp-backups/
-```
-
----
-
-## 10. Deployment and Updates
-
-### Local configuration
-
-On the dev machine, create `.deploy.env` at the repo root:
-
-```bash
-cp .deploy.env.example .deploy.env
-# Edit with the correct values
-```
-
-### Deploy
-
-```bash
-# Everything (frontend + backend)
-pnpm run deploy
-
-# Frontend only
-pnpm run deploy:web
-
-# Backend only
-pnpm run deploy:api
-```
-
-### Migration workflow
-
-1. Modify the schema in `apps/api/src/db/schema.ts`
-2. Generate the SQL: `cd apps/api && pnpm db:generate`
-3. Review the SQL file in `apps/api/drizzle/`
-4. Commit and push
-5. Deploy: `pnpm run deploy:api` — migrations are applied automatically on restart
-
-### Rollback
-
-The deploy script creates a snapshot of `apps/api/dist/` and `apps/api/node_modules/` before each deploy. In case of issues:
-
-**Automatic**: If the health check fails after a deploy, the script offers an automatic rollback (or performs it without prompting in non-interactive mode).
-
-**Manual**:
-```bash
-# Rollback to the latest snapshot
-pnpm run rollback
-
-# Rollback to a specific snapshot (2 = second most recent)
-pnpm run rollback 2
-```
-
-**Snapshots**: Stored in `/opt/rnbp/backups/rollback/` on the prod server. Retention: 3 most recent.
-
-**DB Rollback**: If a migration was applied, dumps are in `/opt/rnbp/backups/rollback/db_*.sql.gz`. To restore:
-```bash
-ssh prod@192.168.50.241
-gunzip -c /opt/rnbp/backups/rollback/db_YYYYMMDD_HHMMSS.sql.gz | psql "$DATABASE_URL"
-```
-
-**Disable auto-rollback**: `pnpm run deploy:api -- --no-auto-rollback`
-
----
-
-## 11. Monitoring
-
-### UptimeRobot
-
-Set up a monitor on [UptimeRobot](https://uptimerobot.com/) (free):
-
-- **URL**: `https://api.badgeid.ca/api/health`
-- **Interval**: 5 minutes
-- **Alert**: email
-
-### Logs
-
-```bash
-# Live API logs
-ssh prod@192.168.50.241 'sudo journalctl -u rnbp-api -f'
-
-# Tunnel logs
-ssh prod@192.168.50.241 'sudo journalctl -u cloudflared -f'
-
-# Logs from the last 24 hours
-ssh prod@192.168.50.241 'sudo journalctl -u rnbp-api --since "24 hours ago"'
-```
-
----
-
-## 12. Troubleshooting
-
-### The API service does not start
-
-```bash
-sudo journalctl -u rnbp-api -n 100
-# Check for config errors (missing .env, unreachable DB, etc.)
-
-# Test manually
-cd /opt/rnbp/repo/apps/api
-sudo -u prod node --env-file=/opt/rnbp/.env dist/index.js
-```
-
-### The Cloudflare tunnel is disconnected
-
-```bash
-sudo systemctl status cloudflared
-sudo journalctl -u cloudflared -n 50
-
-# Restart
-sudo systemctl restart cloudflared
-```
-
-### Migrations fail
-
-Migrations are applied automatically on startup. If the backend does not start because of a migration:
-
-```bash
-# Check DB connection
-psql -h 192.168.50.239 -U rnbp -d rnbp_prod -c "SELECT 1;"
-
-# Check SQL files
-ls -la /opt/rnbp/repo/apps/api/drizzle/
-
-# Run manually (debug)
-cd /opt/rnbp/repo/apps/api
-sudo -u prod node --env-file=/opt/rnbp/.env dist/migrate.js
-```
-
-### Disk space
-
-```bash
-# Uploads size
-du -sh /opt/rnbp/uploads/
-
-# Backups size
-du -sh /opt/rnbp/backups/
-
-# Clean old backups (keep 7 days)
-find /opt/rnbp/backups/ -name "*.sql.gz" -mtime +7 -delete
-```
-
-### The API returns 502 from the internet but works locally
-
-1. Check that the tunnel is connected: `sudo systemctl status cloudflared`
-2. Check that the API is listening: `curl http://localhost:3000/api/health`
-3. Check the tunnel config: `/opt/rnbp/.cloudflared/config.yml`

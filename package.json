@@ -4,9 +4,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "dev": "pnpm --filter @badge/web dev",
-    "dev:api": "pnpm --filter @badge/api dev",
-    "dev:all": "pnpm -r --parallel dev",
-    "dev:full": "docker start postgres 2>/dev/null; pnpm -r --parallel dev & stripe listen --forward-to localhost:3000/api/shop/webhook & sleep 4 && echo '' && echo '✅ All services started — http://localhost:5173' && wait",
+    "dev:api": "pnpm --filter @badge/worker dev",
+    "dev:all": "pnpm --filter @badge/worker dev & pnpm --filter @badge/web dev",
+    "dev:full": "pnpm --filter @badge/worker dev & pnpm --filter @badge/web dev & stripe listen --forward-to localhost:8787/api/shop/webhook & sleep 4 && echo '' && echo 'All services started \u2014 http://localhost:5173' && wait",
     "build": "pnpm -r build",
     "build:web": "pnpm --filter @badge/web build",
     "build:api": "pnpm --filter @badge/api build",
@@ -16,7 +16,7 @@
     "deploy:web": "./ops/deploy.sh web",
     "deploy:api": "./ops/deploy.sh api",
     "rollback": "./ops/rollback.sh",
-    "stripe:dev": "stripe listen --forward-to localhost:3000/api/shop/webhook"
+    "stripe:dev": "stripe listen --forward-to localhost:8787/api/shop/webhook"
   },
   "packageManager": "pnpm@10.30.3",
   "engines": {

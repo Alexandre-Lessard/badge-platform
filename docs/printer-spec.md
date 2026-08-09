@@ -1,12 +1,17 @@
-# Spécification des codes RNBP — pour l'imprimeur
+# Spécification des codes Badge — pour l'imprimeur
 
-Ce document décrit le format des codes RNBP, les règles de génération par feuille, et le contenu à imprimer sur chaque autocollant.
+Ce document décrit le format des codes Badge, les règles de génération par feuille, et le contenu à imprimer sur chaque autocollant.
 
 ## Format du code
 
-- **Structure** : `RNBP-XXXXXXXX` (13 caractères au total)
-- **Préfixe** : `RNBP-` (5 caractères, fixe, en majuscules)
+- **Structure** : `BADGE-XXXXXXXX` (14 caractères au total)
+- **Préfixe** : `BADGE-` (6 caractères, fixe, en majuscules)
 - **Suffixe** : 8 caractères tirés de l'alphabet ci-dessous, en majuscules
+
+> **Source de vérité** : `packages/shared/src/schemas/badge.ts`. Le serveur valide chaque
+> code contre `BADGE_CODE_REGEX` et refuse tout ce qui n'y correspond pas — un autocollant
+> imprimé avec un autre préfixe serait inutilisable. En cas de doute, c'est ce fichier qui
+> tranche, pas ce document.
 
 ## Alphabet autorisé (31 caractères)
 
@@ -24,7 +29,7 @@ Capacité totale de l'espace : 31⁸ ≈ **852 milliards** de codes uniques.
 ## Règles par feuille
 
 - **10 codes par feuille**, séquentiels dans l'alphabet ci-dessus
-- Exemple de feuille valide : `RNBP-A2222222` → `RNBP-A222222B`
+- Exemple de feuille valide : `BADGE-A2222222` → `BADGE-A222222B`
   - Les 10 codes sont : `A2222222`, `A2222223`, `A2222224`, `A2222225`, `A2222226`, `A2222227`, `A2222228`, `A2222229`, `A222222A`, `A222222B`
 - Le passage de `9` à `A` est normal (continuité de l'alphabet) — il faut sauter les caractères exclus (`I` entre `H` et `J`, `L` entre `K` et `M`, `O` entre `N` et `P`).
 
@@ -55,14 +60,14 @@ Chaque autocollant porte **deux représentations** du même code :
 
 ### 1. Le code en clair
 
-Format `RNBP-XXXXXXXX`, en police lisible humainement. Sert si le QR est endommagé ou mal scanné — le client peut saisir le code manuellement sur le site.
+Format `BADGE-XXXXXXXX`, en police lisible humainement. Sert si le QR est endommagé ou mal scanné — le client peut saisir le code manuellement sur le site.
 
 ### 2. Un QR code
 
 Encodant l'URL :
 
 ```
-https://rnbp.ca/c/RNBP-XXXXXXXX
+https://badgeid.ca/c/BADGE-XXXXXXXX
 ```
 
 (le même code qu'imprimé en clair, préfixé du host)
@@ -75,17 +80,17 @@ Paramètres recommandés :
 
 ## Exemple complet
 
-Feuille no 1, codes `RNBP-A2222222` à `RNBP-A222222B` :
+Feuille no 1, codes `BADGE-A2222222` à `BADGE-A222222B` :
 
 | Code (clair) | URL encodée dans le QR |
 |---|---|
-| `RNBP-A2222222` | `https://rnbp.ca/c/RNBP-A2222222` |
-| `RNBP-A2222223` | `https://rnbp.ca/c/RNBP-A2222223` |
-| `RNBP-A2222224` | `https://rnbp.ca/c/RNBP-A2222224` |
-| `RNBP-A2222225` | `https://rnbp.ca/c/RNBP-A2222225` |
-| `RNBP-A2222226` | `https://rnbp.ca/c/RNBP-A2222226` |
-| `RNBP-A2222227` | `https://rnbp.ca/c/RNBP-A2222227` |
-| `RNBP-A2222228` | `https://rnbp.ca/c/RNBP-A2222228` |
-| `RNBP-A2222229` | `https://rnbp.ca/c/RNBP-A2222229` |
-| `RNBP-A222222A` | `https://rnbp.ca/c/RNBP-A222222A` |
-| `RNBP-A222222B` | `https://rnbp.ca/c/RNBP-A222222B` |
+| `BADGE-A2222222` | `https://badgeid.ca/c/BADGE-A2222222` |
+| `BADGE-A2222223` | `https://badgeid.ca/c/BADGE-A2222223` |
+| `BADGE-A2222224` | `https://badgeid.ca/c/BADGE-A2222224` |
+| `BADGE-A2222225` | `https://badgeid.ca/c/BADGE-A2222225` |
+| `BADGE-A2222226` | `https://badgeid.ca/c/BADGE-A2222226` |
+| `BADGE-A2222227` | `https://badgeid.ca/c/BADGE-A2222227` |
+| `BADGE-A2222228` | `https://badgeid.ca/c/BADGE-A2222228` |
+| `BADGE-A2222229` | `https://badgeid.ca/c/BADGE-A2222229` |
+| `BADGE-A222222A` | `https://badgeid.ca/c/BADGE-A222222A` |
+| `BADGE-A222222B` | `https://badgeid.ca/c/BADGE-A222222B` |
