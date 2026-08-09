@@ -12,7 +12,7 @@ import {
   setAccessToken,
   healthCheck,
 } from "./api-client";
-import type { User } from "@rnbp/shared";
+import type { User } from "@badge/shared";
 
 type AuthState = {
   user: User | null;
@@ -49,15 +49,15 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 function getRefreshToken() {
   if (typeof window === "undefined") return null;
-  return sessionStorage.getItem("rnbp_refresh_token");
+  return sessionStorage.getItem("badge_refresh_token");
 }
 
 export function setRefreshToken(token: string | null) {
   if (typeof window === "undefined") return;
   if (token) {
-    sessionStorage.setItem("rnbp_refresh_token", token);
+    sessionStorage.setItem("badge_refresh_token", token);
   } else {
-    sessionStorage.removeItem("rnbp_refresh_token");
+    sessionStorage.removeItem("badge_refresh_token");
   }
 }
 
@@ -270,7 +270,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setAccessToken(null);
     setRefreshToken(null);
-    try { localStorage.removeItem("rnbp_cart_v2"); } catch { /* ignore */ }
+    try { localStorage.removeItem("badge_cart_v2"); } catch { /* ignore */ }
     window.location.href = "/";
   }, []);
 

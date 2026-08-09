@@ -6,7 +6,7 @@ import { useLanguage } from "@/i18n/context";
 import { apiRequest } from "@/lib/api-client";
 import { getErrorMessage } from "@/lib/error-utils";
 import { getButtonClasses } from "@/lib/button-styles";
-import { normalizeBadgeCode, BADGE_CODE_REGEX } from "@rnbp/shared";
+import { normalizeBadgeCode, BADGE_CODE_REGEX } from "@badge/shared";
 import { ROUTES } from "@/routes/routes";
 
 type AssignableItem = {
@@ -21,13 +21,13 @@ type CommonProps = {
   onSuccess: (code: string, itemId: string) => void;
 };
 
-type AssignRnbpModalProps = CommonProps &
+type AssignBadgeCodeModalProps = CommonProps &
   (
     | { mode?: "fixed-item"; itemId: string; itemName?: string; code?: undefined }
     | { mode: "pick-item"; code: string; itemId?: undefined; itemName?: undefined }
   );
 
-export function AssignRnbpModal(props: AssignRnbpModalProps) {
+export function AssignBadgeCodeModal(props: AssignBadgeCodeModalProps) {
   const { open, onClose, onSuccess } = props;
   const mode = props.mode ?? "fixed-item";
   const { t } = useLanguage();
@@ -140,7 +140,7 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
               </span>
             </p>
             <label
-              htmlFor="assign-rnbp-item"
+              htmlFor="assign-badge-item"
               className="block text-sm text-[var(--rcb-text-muted)]"
             >
               {scan?.pickItemLabel ?? "Which item do you want to link it to?"}
@@ -156,7 +156,7 @@ export function AssignRnbpModal(props: AssignRnbpModalProps) {
               </p>
             ) : (
               <select
-                id="assign-rnbp-item"
+                id="assign-badge-item"
                 autoFocus
                 value={pickedItemId}
                 onChange={(e) => setPickedItemId(e.target.value)}

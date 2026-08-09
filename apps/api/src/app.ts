@@ -17,6 +17,7 @@ import { stickerCodesRoutes } from "./routes/sticker-codes.js";
 import { adminRoutes } from "./routes/admin.js";
 import { oauthRoutes } from "./routes/oauth.js";
 import { uploadRoutes } from "./routes/uploads.js";
+import { internalRoutes } from "./routes/internal.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { securityHeaders } from "./middleware/security-headers.js";
 import { incrementRequestCount } from "./utils/request-counter.js";
@@ -80,6 +81,7 @@ export async function buildApp() {
   await app.register(uploadRoutes, { prefix: "/api" });
   await app.register(adminRoutes, { prefix: "/api" });
   await app.register(oauthRoutes, { prefix: "/api" });
+  await app.register(internalRoutes, { prefix: "/api" });
 
   return app;
 }

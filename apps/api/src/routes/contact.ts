@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { contactSchema, MESSAGE_SENT } from "@rnbp/shared";
+import { contactSchema, MESSAGE_SENT } from "@badge/shared";
 import { getDb } from "../db/client.js";
 import { contactMessages } from "../db/schema.js";
 import {

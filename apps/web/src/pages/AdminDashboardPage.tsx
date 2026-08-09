@@ -81,20 +81,25 @@ function generatePreviewData(): { charts: ChartData; categories: { name: string;
 
 const PREVIEW_DATA = generatePreviewData();
 
+// Two backends report metrics during the Cloudflare migration: the Fastify
+// server sends host gauges (CPU, RAM, heap, uptime), the Worker sends what a
+// serverless runtime can actually observe. `platform` says which arrived.
 type LiveMetrics = {
-  cpu: number;
-  cpuCount: number;
-  memTotal: number;
-  memFree: number;
-  heapUsed: number;
-  heapTotal: number;
-  rss: number;
-  external: number;
-  uptime: number;
-  osUptime: number;
-  dbSize: number;
-  dbConnections: number;
-  reqPerMin: number;
+  platform?: "workers";
+  cpu?: number;
+  cpuCount?: number;
+  memTotal?: number;
+  memFree?: number;
+  heapUsed?: number;
+  heapTotal?: number;
+  rss?: number;
+  external?: number;
+  uptime?: number;
+  osUptime?: number;
+  dbSize?: number;
+  dbConnections?: number;
+  dbRows?: number;
+  reqPerMin?: number;
 };
 
 type ActivityEntry = {
@@ -279,9 +284,9 @@ export function AdminDashboardPage() {
   const activeCharts = period === "preview" ? PREVIEW_DATA.charts : charts;
 
   // Sparkline data from SSE history
-  const cpuHistory = liveHistory.map((m) => ({ value: m.cpu }));
+  const cpuHistory = liveHistory.map((m) => ({ value: m.cpu ?? 0 }));
   const ramHistory = liveHistory.map((m) => ({
-    value: m.memTotal ? Math.round(((m.memTotal - m.memFree) / m.memTotal) * 100) : 0,
+    value: m.memTotal ? Math.round(((m.memTotal - (m.memFree ?? 0)) / m.memTotal) * 100) : 0,
   }));
 
   // Items by category for pie chart (top 8 + "Other")
@@ -300,7 +305,7 @@ export function AdminDashboardPage() {
   }, [period, stats]);
 
   const heapPercent = liveData?.heapTotal
-    ? Math.round((liveData.heapUsed / liveData.heapTotal) * 100)
+    ? Math.round(((liveData.heapUsed ?? 0) / liveData.heapTotal) * 100)
     : 0;
 
   const xAxisLabel = period === "week"
@@ -521,22 +526,28 @@ export function AdminDashboardPage() {
           </span>
         </div>
 
-        {!liveData || !liveData.cpu ? (
+        {!liveData ? (
           <div className="flex h-32 items-center justify-center">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent" />
             <span className="ml-3 text-sm text-white/50">Connecting...</span>
+          </div>
+        ) : liveData.platform === "workers" ? (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <MiniMetric label={d.reqPerMin} value={String(liveData.reqPerMin ?? 0)} />
+            <MiniMetric label={d.dbSize} value={`${liveData.dbRows ?? 0}`} />
+            <MiniMetric label="Runtime" value="Workers" />
           </div>
         ) : (
           <div className="space-y-6">
             {/* Row 1: CPU, RAM, Node Heap with sparklines */}
             <div className="grid gap-4 sm:grid-cols-3">
-              <MetricPanel label={d.cpu} value={`${liveData.cpu.toFixed(1)}%`} color="#3b82f6">
+              <MetricPanel label={d.cpu} value={`${(liveData.cpu ?? 0).toFixed(1)}%`} color="#3b82f6">
                 <Sparkline data={cpuHistory} color="#3b82f6" />
               </MetricPanel>
 
               <MetricPanel
                 label={d.ram}
-                value={`${liveData.memTotal ? Math.round(((liveData.memTotal - liveData.memFree) / liveData.memTotal) * 100) : 0}%`}
+                value={`${liveData.memTotal ? Math.round(((liveData.memTotal - (liveData.memFree ?? 0)) / liveData.memTotal) * 100) : 0}%`}
                 color="#8b5cf6"
               >
                 <Sparkline data={ramHistory} color="#8b5cf6" />
@@ -554,7 +565,7 @@ export function AdminDashboardPage() {
                     />
                   </div>
                   <p className="mt-1 text-[10px] text-white/30">
-                    {liveData.heapUsed ? `${(liveData.heapUsed / 1024 / 1024).toFixed(0)}MB / ${(liveData.heapTotal / 1024 / 1024).toFixed(0)}MB` : "—"}
+                    {liveData.heapUsed ? `${(liveData.heapUsed / 1024 / 1024).toFixed(0)}MB / ${((liveData.heapTotal ?? 0) / 1024 / 1024).toFixed(0)}MB` : "—"}
                   </p>
                 </div>
               </MetricPanel>
@@ -565,7 +576,7 @@ export function AdminDashboardPage() {
               <MiniMetric label={d.dbSize} value={liveData.dbSize ? `${(liveData.dbSize / 1024 / 1024).toFixed(1)} MB` : "—"} />
               <MiniMetric label={d.connections} value={String(liveData.dbConnections ?? 0)} />
               <MiniMetric label={d.reqPerMin} value={String(liveData.reqPerMin ?? 0)} />
-              <MiniMetric label={d.uptime} value={formatUptime(liveData.uptime)} />
+              <MiniMetric label={d.uptime} value={formatUptime(liveData.uptime ?? 0)} />
             </div>
           </div>
         )}

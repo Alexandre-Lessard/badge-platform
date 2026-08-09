@@ -1,12 +1,12 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { registerSchema, createItemSchema } from "@rnbp/shared";
+import { registerSchema, createItemSchema } from "@badge/shared";
 import { getDb } from "../db/client.js";
 import { users, items, sessions } from "../db/schema.js";
 import { hashPassword } from "../utils/password.js";
 import { signAccessToken, signRefreshToken, hashToken } from "../utils/tokens.js";
-import { EMAIL_ALREADY_EXISTS } from "@rnbp/shared";
+import { EMAIL_ALREADY_EXISTS } from "@badge/shared";
 import { AppError } from "../utils/errors.js";
 import { generateClientNumber } from "../utils/client-number.js";
 import {

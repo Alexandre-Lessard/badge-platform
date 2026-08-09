@@ -40,4 +40,4 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for detailed setup instructions.
 
 ## Reporting Issues
 
-Use [GitHub Issues](https://github.com/Alexandre-Lessard/rnbp-platform/issues) to report bugs or request features.
+Use [GitHub Issues](https://github.com/Alexandre-Lessard/badge-platform/issues) to report bugs or request features.

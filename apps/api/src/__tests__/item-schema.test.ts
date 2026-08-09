@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createItemSchema, updateItemSchema } from "@rnbp/shared";
+import { createItemSchema, updateItemSchema } from "@badge/shared";
 
 const validBase = { name: "Bike", category: "velo-electrique" as const };
 

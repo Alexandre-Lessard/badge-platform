@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { User } from "@rnbp/shared";
+import type { User } from "@badge/shared";
 import { Link } from "react-router";
 import { useLanguage } from "@/i18n/context";
 import { useAuth } from "@/lib/auth-context";

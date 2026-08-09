@@ -9,7 +9,7 @@ import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { AccountNav } from "@/components/layout/AccountNav";
 import { PromoCallout } from "@/components/ui/PromoCallout";
 import { ItemImage } from "@/components/ui/ItemImage";
-import { AssignRnbpModal } from "@/components/AssignRnbpModal";
+import { AssignBadgeCodeModal } from "@/components/AssignBadgeCodeModal";
 import { ROUTES } from "@/routes/routes";
 
 type Item = {
@@ -275,7 +275,7 @@ export function DashboardPage() {
 
       {/* Assign-badge modal */}
       {assignTarget && (
-        <AssignRnbpModal
+        <AssignBadgeCodeModal
           open={true}
           onClose={() => setAssignTargetId(null)}
           itemId={assignTarget.id}

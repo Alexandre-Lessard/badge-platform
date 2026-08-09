@@ -1,6 +1,6 @@
 import type { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import { ZodError } from "zod";
-import { TOO_MANY_REQUESTS, INTERNAL_ERROR } from "@rnbp/shared";
+import { TOO_MANY_REQUESTS, INTERNAL_ERROR } from "@badge/shared";
 import { AppError } from "../utils/errors.js";
 
 export function errorHandler(

@@ -5,7 +5,7 @@ import {
   INSURERS,
   INSURER_EMAILS,
   type InsurerId,
-} from "@rnbp/shared";
+} from "@badge/shared";
 import avivaLogo from "@/assets/insurers/aviva.png";
 import belairdirectLogo from "@/assets/insurers/belairdirect.png";
 import benevaLogo from "@/assets/insurers/beneva.png";

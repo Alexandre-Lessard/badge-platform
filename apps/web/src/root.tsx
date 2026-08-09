@@ -2,6 +2,9 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ErrorBoundary as AppErrorBoundary } from "@/components/ErrorBoundary";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { LanguageProvider } from "@/i18n/context";
+// Must precede the providers below: it renames the RNBP-era storage keys
+// before AuthProvider and CartProvider read them.
+import "@/lib/storage-migration";
 import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
 import { Navbar } from "@/components/layout/Navbar";

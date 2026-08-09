@@ -1,10 +1,10 @@
 import type { FastifyInstance } from "fastify";
 import { eq } from "drizzle-orm";
-import { createReportSchema } from "@rnbp/shared";
+import { createReportSchema } from "@badge/shared";
 import { getDb } from "../db/client.js";
 import { theftReports, items } from "../db/schema.js";
 import { requireAuth, requireVerifiedEmail } from "../middleware/auth.js";
-import { ITEM_NOT_FOUND, ITEM_ALREADY_STOLEN } from "@rnbp/shared";
+import { ITEM_NOT_FOUND, ITEM_ALREADY_STOLEN } from "@badge/shared";
 import { AppError, forbidden } from "../utils/errors.js";
 
 export async function reportRoutes(app: FastifyInstance) {

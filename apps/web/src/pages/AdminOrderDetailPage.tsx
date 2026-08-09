@@ -9,7 +9,7 @@ import {
   PRODUCT_SLUGS,
   CODES_PER_SHEET,
   normalizeBadgeCode,
-} from "@rnbp/shared";
+} from "@badge/shared";
 
 type StickerCode = {
   code: string;

@@ -106,12 +106,12 @@ log "Deploying commit: $COMMIT ($(git log -1 --format='%s' 2>/dev/null || echo '
 # ── Build ─────────────────────────────────────
 
 log "Building..."
-pnpm --filter @rnbp/shared build
+pnpm --filter @badge/shared build
 if [[ "$TARGET" == "web" || "$TARGET" == "all" ]]; then
-  pnpm --filter @rnbp/web build
+  pnpm --filter @badge/web build
 fi
 if [[ "$TARGET" == "api" || "$TARGET" == "all" ]]; then
-  pnpm --filter @rnbp/api build
+  pnpm --filter @badge/api build
 fi
 ok "Build complete"
 
@@ -213,7 +213,7 @@ SNAPSHOT
   ok "Code synced"
 
   log "Installing dependencies and building on server..."
-  if ! ssh "$DEPLOY_SERVER" "source ~/.nvm/nvm.sh && cd $DEPLOY_DIR && pnpm install --frozen-lockfile && pnpm --filter @rnbp/shared build && pnpm --filter @rnbp/api build"; then
+  if ! ssh "$DEPLOY_SERVER" "source ~/.nvm/nvm.sh && cd $DEPLOY_DIR && pnpm install --frozen-lockfile && pnpm --filter @badge/shared build && pnpm --filter @badge/api build"; then
     error "Server build failed!"
     try_auto_rollback
   fi

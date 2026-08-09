@@ -7,7 +7,7 @@ import {
   resetPasswordSchema,
   updateProfileSchema,
   type UpdateProfileInput,
-} from "@rnbp/shared";
+} from "@badge/shared";
 import { getDb } from "../db/client.js";
 import { users, sessions } from "../db/schema.js";
 import { hashPassword, verifyPassword } from "../utils/password.js";
@@ -34,7 +34,7 @@ import {
   EMAIL_VERIFIED,
   EMAIL_ALREADY_VERIFIED,
   VERIFICATION_SENT,
-} from "@rnbp/shared";
+} from "@badge/shared";
 import { AppError } from "../utils/errors.js";
 import { requireAuth } from "../middleware/auth.js";
 import { generateClientNumber } from "../utils/client-number.js";

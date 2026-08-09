@@ -1,5 +1,5 @@
 {
-  "name": "@rnbp/api",
+  "name": "@badge/api",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -20,7 +20,7 @@
     "@fastify/cors": "^11.2.0",
     "@fastify/multipart": "^9.4.0",
     "@fastify/rate-limit": "^10.3.0",
-    "@rnbp/shared": "workspace:*",
+    "@badge/shared": "workspace:*",
     "argon2": "^0.44.0",
     "drizzle-orm": "^0.45.1",
     "fastify": "^5.7.4",

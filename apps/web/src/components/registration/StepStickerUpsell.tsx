@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLanguage } from "@/i18n/context";
 import { useCart } from "@/lib/cart-context";
 import { Button } from "@/components/ui/Button";
-import { PRODUCT_SLUGS } from "@rnbp/shared";
+import { PRODUCT_SLUGS } from "@badge/shared";
 
 type StepStickerUpsellProps = {
   onNext: () => void;

@@ -14,7 +14,7 @@ import {
   BADGE_CODE_VOIDED,
   ITEM_NOT_FOUND,
   ITEM_ALREADY_STOLEN,
-} from "@rnbp/shared";
+} from "@badge/shared";
 import { AppError, forbidden } from "../utils/errors.js";
 
 const uuidSchema = z.string().uuid("Invalid identifier");

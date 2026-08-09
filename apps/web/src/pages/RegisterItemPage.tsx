@@ -12,6 +12,7 @@ import { StepStickerUpsell } from "@/components/registration/StepStickerUpsell";
 import { StepAccount } from "@/components/registration/StepAccount";
 import { RegistrationConfirmation } from "@/components/registration/RegistrationConfirmation";
 import { useObjectUrls } from "@/lib/useObjectUrls";
+import { resizeImageForUpload } from "@/lib/image-resize";
 import {
   buildCreateItemInput,
   sanitizeItemDraft,
@@ -26,7 +27,7 @@ type AccountData = {
   phone: string;
 };
 
-const STORAGE_KEY = "rnbp_registration_draft";
+const STORAGE_KEY = "badge_registration_draft";
 
 function loadDraft(): { item: ItemFormData; account: AccountData; termsAccepted: boolean } | null {
   try {
@@ -124,12 +125,12 @@ export function RegisterItemPage() {
     let uploadFailed = false;
     if (photos.length > 0) {
       const fd = new FormData();
-      photos.forEach((f) => fd.append("photos", f));
+      for (const f of photos) fd.append("photos", await resizeImageForUpload(f));
       try { await apiUpload(`/items/${itemId}/photos`, fd); } catch { uploadFailed = true; }
     }
     if (documents.length > 0) {
       const fd = new FormData();
-      documents.forEach((f) => fd.append("documents", f));
+      for (const f of documents) fd.append("documents", await resizeImageForUpload(f));
       try { await apiUpload(`/items/${itemId}/documents`, fd); } catch { uploadFailed = true; }
     }
     if (uploadFailed) {
