@@ -10,8 +10,8 @@ import { Modal } from "@/components/ui/Modal";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { PromoCallout } from "@/components/ui/PromoCallout";
 import { ItemImage } from "@/components/ui/ItemImage";
-import { ITEM_CATEGORIES, normalizeBadgeCode, BADGE_CODE_REGEX, INSURERS } from "@rnbp/shared";
-import type { ItemWithFiles } from "@rnbp/shared";
+import { ITEM_CATEGORIES, normalizeBadgeCode, BADGE_CODE_REGEX, INSURERS } from "@badge/shared";
+import type { ItemWithFiles } from "@badge/shared";
 import { ROUTES } from "@/routes/routes";
 import { resizeImageForUpload } from "@/lib/image-resize";
 
@@ -449,11 +449,11 @@ export function EditItemPage() {
           </div>
 
           <div>
-            <label htmlFor="edit-rnbp" className="mb-1 block text-sm font-medium text-[var(--rcb-text-strong)]">
+            <label htmlFor="edit-badge-code" className="mb-1 block text-sm font-medium text-[var(--rcb-text-strong)]">
               {edit?.badgeCodeLabel ?? "Badge code"}
             </label>
             <input
-              id="edit-rnbp"
+              id="edit-badge-code"
               type="text"
               maxLength={13}
               value={form.badgeCode}

@@ -1,5 +1,5 @@
 {
-  "name": "@rnbp/worker",
+  "name": "@badge/worker",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -13,7 +13,7 @@
     "db:migrate:staging": "wrangler d1 migrations apply badge-db-staging --remote"
   },
   "dependencies": {
-    "@rnbp/shared": "workspace:*",
+    "@badge/shared": "workspace:*",
     "drizzle-orm": "^0.45.1",
     "file-type": "^21.3.0",
     "hono": "^4.13.1",

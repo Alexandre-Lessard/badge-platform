@@ -8,7 +8,7 @@ import { orders, orderItems, items, users, products, stickerCodes } from "../db/
 import { getConfig } from "../config.js";
 import { requireVerifiedEmail } from "../middleware/auth.js";
 import { sendEmail, buildOrderNotificationEmail, buildOrderConfirmationEmail } from "../utils/email.js";
-import { ITEMS_NOT_OWNED, PRODUCT_NOT_FOUND, PRODUCT_INACTIVE } from "@rnbp/shared";
+import { ITEMS_NOT_OWNED, PRODUCT_NOT_FOUND, PRODUCT_INACTIVE } from "@badge/shared";
 import { AppError } from "../utils/errors.js";
 
 const checkoutSchema = z.object({

@@ -1,5 +1,5 @@
 import { fileTypeFromBuffer } from "file-type";
-import { FILE_TYPE_UNKNOWN, FILE_TYPE_NOT_ALLOWED, FILE_TOO_LARGE } from "@rnbp/shared";
+import { FILE_TYPE_UNKNOWN, FILE_TYPE_NOT_ALLOWED, FILE_TOO_LARGE } from "@badge/shared";
 import { AppError } from "./errors.js";
 
 const ALLOWED_IMAGE_MIMES = new Set([

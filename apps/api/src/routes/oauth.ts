@@ -9,7 +9,7 @@ import {
   signRefreshToken,
   hashToken,
 } from "../utils/tokens.js";
-import { OAUTH_TOKEN_INVALID, INTERNAL_ERROR } from "@rnbp/shared";
+import { OAUTH_TOKEN_INVALID, INTERNAL_ERROR } from "@badge/shared";
 import { AppError } from "../utils/errors.js";
 import { generateClientNumber } from "../utils/client-number.js";
 import { getConfig } from "../config.js";

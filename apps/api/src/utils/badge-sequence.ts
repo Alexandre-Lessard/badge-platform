@@ -1,4 +1,4 @@
-import { BADGE_ALPHABET, BADGE_CODE_REGEX, normalizeBadgeCode } from "@rnbp/shared";
+import { BADGE_ALPHABET, BADGE_CODE_REGEX, normalizeBadgeCode } from "@badge/shared";
 
 const SUFFIX_LENGTH = 8;
 const ALPHABET_SIZE = BigInt(BADGE_ALPHABET.length);

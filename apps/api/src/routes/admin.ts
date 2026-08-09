@@ -28,7 +28,7 @@ import {
   CODES_NOT_REGISTERED,
   PRODUCT_SLUGS,
   CODES_PER_SHEET,
-} from "@rnbp/shared";
+} from "@badge/shared";
 import { AppError } from "../utils/errors.js";
 import { expandRange } from "../utils/badge-sequence.js";
 

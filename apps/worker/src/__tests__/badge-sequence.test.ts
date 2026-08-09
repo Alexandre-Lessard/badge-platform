@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normalizeBadgeCode, BADGE_ALPHABET } from "@rnbp/shared";
+import { normalizeBadgeCode, BADGE_ALPHABET } from "@badge/shared";
 import { codeToInt, intToCode, expandRange } from "../utils/badge-sequence.js";
 
 describe("normalizeBadgeCode", () => {

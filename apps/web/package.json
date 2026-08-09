@@ -1,5 +1,5 @@
 {
-  "name": "@rnbp/web",
+  "name": "@badge/web",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@react-router/node": "^7.14.0",
-    "@rnbp/shared": "workspace:*",
+    "@badge/shared": "workspace:*",
     "isbot": "^5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

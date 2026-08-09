@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { ZodError } from "zod";
-import { TOO_MANY_REQUESTS, INTERNAL_ERROR } from "@rnbp/shared";
+import { TOO_MANY_REQUESTS, INTERNAL_ERROR } from "@badge/shared";
 import { initConfig, getConfig, type Bindings } from "./config.js";
 import { initDb } from "./db/client.js";
 import { initR2 } from "./utils/r2.js";

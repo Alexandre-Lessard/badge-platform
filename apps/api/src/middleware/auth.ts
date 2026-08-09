@@ -10,7 +10,7 @@ import {
   TOKEN_REVOKED,
   ADMIN_REQUIRED,
   EMAIL_NOT_VERIFIED,
-} from "@rnbp/shared";
+} from "@badge/shared";
 import { AppError } from "../utils/errors.js";
 
 declare module "fastify" {

@@ -1,11 +1,11 @@
 import { Hono } from "hono";
 import { eq, and, isNull, or, sql, inArray, asc } from "drizzle-orm";
 import { z } from "zod";
-import { createItemSchema, updateItemSchema, archiveItemSchema } from "@rnbp/shared";
+import { createItemSchema, updateItemSchema, archiveItemSchema } from "@badge/shared";
 import { getDb } from "../db/client.js";
 import { items, itemPhotos, itemDocuments, theftReports } from "../db/schema.js";
 import { requireVerifiedEmail } from "../middleware/auth.js";
-import { ITEM_NOT_FOUND, ITEM_ALREADY_STOLEN, ITEM_NOT_STOLEN } from "@rnbp/shared";
+import { ITEM_NOT_FOUND, ITEM_ALREADY_STOLEN, ITEM_NOT_STOLEN } from "@badge/shared";
 import { AppError, forbidden } from "../utils/errors.js";
 import { isR2Configured, deleteFromR2, extractR2Key } from "../utils/r2.js";
 import { pickPrimaryPhotoUrl, sortPhotosForDisplay } from "../utils/item-photos.js";

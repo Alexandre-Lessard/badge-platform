@@ -7,8 +7,8 @@ import { getErrorMessage } from "@/lib/error-utils";
 import { Button } from "@/components/ui/Button";
 import { getButtonClasses } from "@/lib/button-styles";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
-import { AssignRnbpModal } from "@/components/AssignRnbpModal";
-import { normalizeBadgeCode } from "@rnbp/shared";
+import { AssignBadgeCodeModal } from "@/components/AssignBadgeCodeModal";
+import { normalizeBadgeCode } from "@badge/shared";
 import { ROUTES } from "@/routes/routes";
 
 type ScanResponse = {
@@ -270,7 +270,7 @@ export function CodeScanPage() {
             {scan?.assignButton ?? "Assign"}
           </Button>
         </div>
-        <AssignRnbpModal
+        <AssignBadgeCodeModal
           mode="pick-item"
           code={code}
           open={assignOpen}

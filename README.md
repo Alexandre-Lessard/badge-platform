@@ -1,7 +1,7 @@
 # RNBP / NRPP
 
-![CI](https://github.com/Alexandre-Lessard/rnbp-platform/actions/workflows/ci.yml/badge.svg)
-![CD](https://github.com/Alexandre-Lessard/rnbp-platform/actions/workflows/cd.yml/badge.svg)
+![CI](https://github.com/Alexandre-Lessard/badge-platform/actions/workflows/ci.yml/badge.svg)
+![CD](https://github.com/Alexandre-Lessard/badge-platform/actions/workflows/cd.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-blue)
 ![Node](https://img.shields.io/badge/node-20-green)
 ![pnpm](https://img.shields.io/badge/pnpm-10-orange)

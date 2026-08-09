@@ -6,7 +6,7 @@ import { getDb } from "../db/client.js";
 import { items, itemPhotos, itemDocuments } from "../db/schema.js";
 import { requireVerifiedEmail } from "../middleware/auth.js";
 import { getConfig } from "../config.js";
-import { ITEM_NOT_FOUND } from "@rnbp/shared";
+import { ITEM_NOT_FOUND } from "@badge/shared";
 import { AppError, forbidden } from "../utils/errors.js";
 import { validateFileType, validateFileSize } from "../utils/file-validation.js";
 import { isR2Configured, uploadToR2, deleteFromR2, extractR2Key } from "../utils/r2.js";

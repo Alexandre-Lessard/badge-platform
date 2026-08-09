@@ -43,8 +43,8 @@ jobs:
           source ~/.nvm/nvm.sh
           cd /opt/rnbp/repo
           pnpm install --frozen-lockfile
-          pnpm --filter @rnbp/shared build
-          pnpm --filter @rnbp/api build
+          pnpm --filter @badge/shared build
+          pnpm --filter @badge/api build
           sudo systemctl restart rnbp-api
 
       - name: Health check

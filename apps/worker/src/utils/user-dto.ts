@@ -1,4 +1,4 @@
-import type { User } from "@rnbp/shared";
+import type { User } from "@badge/shared";
 import { users } from "../db/schema.js";
 
 export const userSelect = {

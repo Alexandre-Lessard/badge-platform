@@ -13,6 +13,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.1018.0
         version: 3.1018.0
+      '@badge/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@fastify/cors':
         specifier: ^11.2.0
         version: 11.2.0
@@ -22,9 +25,6 @@ importers:
       '@fastify/rate-limit':
         specifier: ^10.3.0
         version: 10.3.0
-      '@rnbp/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       argon2:
         specifier: ^0.44.0
         version: 0.44.0
@@ -86,12 +86,12 @@ importers:
 
   apps/web:
     dependencies:
+      '@badge/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@react-router/node':
         specifier: ^7.14.0
         version: 7.14.0(react-router@7.14.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
-      '@rnbp/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       isbot:
         specifier: ^5
         version: 5.1.37
@@ -171,7 +171,7 @@ importers:
 
   apps/worker:
     dependencies:
-      '@rnbp/shared':
+      '@badge/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       drizzle-orm:

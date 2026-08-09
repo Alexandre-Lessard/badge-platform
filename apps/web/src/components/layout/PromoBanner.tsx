@@ -4,7 +4,7 @@ import { useLanguage } from "@/i18n/context";
 import { ROUTES } from "@/routes/routes";
 import { ClientOnly } from "@/components/ClientOnly";
 
-const STORAGE_KEY = "rnbp-promo-dismissed";
+const STORAGE_KEY = "badge-promo-dismissed";
 const DISMISS_DURATION_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 function isDismissed(): boolean {

@@ -6,7 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import { PRODUCT_SLUGS } from "@rnbp/shared";
+import { PRODUCT_SLUGS } from "@badge/shared";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -38,8 +38,8 @@ export function cartKey(item: { productSlug: string; itemId?: string }): string 
 
 // ── Storage ──────────────────────────────────────────────────────────
 
-const STORAGE_KEY = "rnbp_cart_v2";
-const OLD_STORAGE_KEY = "rnbp_cart";
+const STORAGE_KEY = "badge_cart_v2";
+const OLD_STORAGE_KEY = "badge_cart";
 
 function migrateOldCart(): CartItem[] {
   try {

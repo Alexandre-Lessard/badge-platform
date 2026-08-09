@@ -8,7 +8,7 @@ import {
   TOKEN_REVOKED,
   ADMIN_REQUIRED,
   EMAIL_NOT_VERIFIED,
-} from "@rnbp/shared";
+} from "@badge/shared";
 import { verifyToken } from "../utils/tokens.js";
 import { getDb } from "../db/client.js";
 import { users } from "../db/schema.js";

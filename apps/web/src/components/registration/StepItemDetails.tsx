@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { useLanguage } from "@/i18n/context";
 import { ROUTES } from "@/routes/routes";
 import { Button } from "@/components/ui/Button";
-import { ITEM_CATEGORIES } from "@rnbp/shared";
+import { ITEM_CATEGORIES } from "@badge/shared";
 import {
   isKnownItemCategory,
   isValidEstimatedValue,

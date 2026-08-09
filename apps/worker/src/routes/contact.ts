@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { contactSchema, MESSAGE_SENT } from "@rnbp/shared";
+import { contactSchema, MESSAGE_SENT } from "@badge/shared";
 import { getDb } from "../db/client.js";
 import { contactMessages } from "../db/schema.js";
 import { sendEmail, buildContactNotificationEmail } from "../utils/email.js";

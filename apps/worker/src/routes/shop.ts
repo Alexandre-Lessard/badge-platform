@@ -11,7 +11,7 @@ import {
   buildOrderNotificationEmail,
   buildOrderConfirmationEmail,
 } from "../utils/email.js";
-import { ITEMS_NOT_OWNED, PRODUCT_NOT_FOUND, PRODUCT_INACTIVE } from "@rnbp/shared";
+import { ITEMS_NOT_OWNED, PRODUCT_NOT_FOUND, PRODUCT_INACTIVE } from "@badge/shared";
 import { AppError } from "../utils/errors.js";
 import type { AppEnv } from "../context.js";
 

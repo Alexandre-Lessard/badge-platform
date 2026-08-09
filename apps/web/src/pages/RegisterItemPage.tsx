@@ -27,7 +27,7 @@ type AccountData = {
   phone: string;
 };
 
-const STORAGE_KEY = "rnbp_registration_draft";
+const STORAGE_KEY = "badge_registration_draft";
 
 function loadDraft(): { item: ItemFormData; account: AccountData; termsAccepted: boolean } | null {
   try {

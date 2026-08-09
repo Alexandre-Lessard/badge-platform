@@ -8,8 +8,8 @@ import { getButtonClasses } from "@/lib/button-styles";
 import { Modal } from "@/components/ui/Modal";
 import { ServiceUnavailable } from "@/components/auth/ServiceUnavailable";
 import { ItemImage } from "@/components/ui/ItemImage";
-import { AssignRnbpModal } from "@/components/AssignRnbpModal";
-import { INSURERS, ITEM_CATEGORIES, type ItemWithFiles } from "@rnbp/shared";
+import { AssignBadgeCodeModal } from "@/components/AssignBadgeCodeModal";
+import { INSURERS, ITEM_CATEGORIES, type ItemWithFiles } from "@badge/shared";
 import { ROUTES } from "@/routes/routes";
 
 export function ItemDetailPage() {
@@ -355,7 +355,7 @@ export function ItemDetailPage() {
       </Modal>
 
       {/* Assign-badge modal */}
-      <AssignRnbpModal
+      <AssignBadgeCodeModal
         open={assignOpen}
         onClose={() => setAssignOpen(false)}
         itemId={item.id}

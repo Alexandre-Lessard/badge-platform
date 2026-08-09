@@ -39,23 +39,23 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build shared package
-        run: pnpm --filter @rnbp/shared build
+        run: pnpm --filter @badge/shared build
 
       - name: Build web (staging)
         env:
           VITE_API_URL: https://badge-api-staging.alexandre-lessard92.workers.dev/api
-        run: pnpm --filter @rnbp/web build
+        run: pnpm --filter @badge/web build
 
       - name: Deploy web to Cloudflare Pages (staging branch)
-        run: pnpm --filter @rnbp/web exec wrangler pages deploy build/client --project-name rnbp-platform --branch staging
+        run: pnpm --filter @badge/web exec wrangler pages deploy build/client --project-name rnbp-platform --branch staging
 
       - name: Apply D1 migrations (staging)
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
-        run: pnpm --filter @rnbp/worker exec wrangler d1 migrations apply badge-db-staging --remote --env staging
+        run: pnpm --filter @badge/worker exec wrangler d1 migrations apply badge-db-staging --remote --env staging
 
       - name: Deploy API Worker (staging)
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
-        run: pnpm --filter @rnbp/worker exec wrangler deploy --env staging
+        run: pnpm --filter @badge/worker exec wrangler deploy --env staging
 
       - name: Health check staging API
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
