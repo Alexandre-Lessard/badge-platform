@@ -11,12 +11,19 @@ Postgres schema in three ways:
 
 Tables are emitted in foreign-key order so the file loads in one pass.
 
+Stored file URLs can be repointed at the same time with --rewrite-url, which
+is how the move from the rnbp-uploads bucket to badge-uploads is applied to
+item_photos.url and item_documents.url.
+
 Usage:
     ./ops/pg-export.sh /tmp/pgdata          # dumps <table>.json files
     ./ops/pg-to-d1.py /tmp/pgdata > /tmp/d1-import.sql
-    wrangler d1 execute badge-db-staging --remote --file /tmp/d1-import.sql
+    ./ops/pg-to-d1.py /tmp/pgdata \\
+        --rewrite-url https://pub-OLD.r2.dev=https://files.badgeid.ca > /tmp/d1-import.sql
+    wrangler d1 execute badge-db --remote --file /tmp/d1-import.sql
 """
 
+import argparse
 import json
 import sys
 from datetime import datetime
@@ -87,17 +94,21 @@ def sql_literal(value):
     return "'" + str(value).replace("'", "''") + "'"
 
 
-def convert(column, value):
+def convert(column, value, url_rewrites):
     if column in TIMESTAMP_COLUMNS:
         return to_epoch_ms(value)
     if column in BOOLEAN_COLUMNS:
         return 1 if value else 0
     if column in JSON_ARRAY_COLUMNS:
         return json.dumps(value or [])
+    if column == "url" and isinstance(value, str):
+        for old, new in url_rewrites:
+            if value.startswith(old):
+                return new + value[len(old):]
     return value
 
 
-def main(source_dir: Path) -> int:
+def main(source_dir: Path, url_rewrites) -> int:
     print("PRAGMA defer_foreign_keys = true;")
 
     total = 0
@@ -117,7 +128,9 @@ def main(source_dir: Path) -> int:
 
         print(f"\n-- {table} ({len(rows)} rows)")
         for row in rows:
-            values = ", ".join(sql_literal(convert(c, row.get(c))) for c in columns)
+            values = ", ".join(
+                sql_literal(convert(c, row.get(c), url_rewrites)) for c in columns
+            )
             print(f'INSERT INTO "{table}" ({column_list}) VALUES ({values});')
 
         print(f"-- {table}: {len(rows)} rows", file=sys.stderr)
@@ -128,7 +141,24 @@ def main(source_dir: Path) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(__doc__, file=sys.stderr)
-        sys.exit(2)
-    sys.exit(main(Path(sys.argv[1])))
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("source_dir", type=Path, help="directory of <table>.json exports")
+    parser.add_argument(
+        "--rewrite-url",
+        action="append",
+        default=[],
+        metavar="OLD=NEW",
+        help="repoint stored file URLs, e.g. https://pub-old.r2.dev=https://files.badgeid.ca",
+    )
+    args = parser.parse_args()
+
+    rewrites = []
+    for pair in args.rewrite_url:
+        if "=" not in pair:
+            parser.error(f"--rewrite-url expects OLD=NEW, got {pair!r}")
+        old, new = pair.split("=", 1)
+        rewrites.append((old.rstrip("/"), new.rstrip("/")))
+
+    sys.exit(main(args.source_dir, rewrites))
