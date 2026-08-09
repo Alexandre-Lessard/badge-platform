@@ -265,7 +265,7 @@ Query: ?q=BADGE-XXXXXXXX (or serial number)
 Response: { found: false } | { found: true, status, category, brand, model }
 ```
 Normalizes serial numbers (strips spaces, dashes, underscores).
-The unified lookup currently supports RNBP numbers and serial numbers only.
+The unified lookup currently supports Badge codes and serial numbers only.
 
 ### GET /lookup/:badgeCode
 Auth: None | Rate limit: 30/min
@@ -335,7 +335,7 @@ Auth: requireVerifiedEmail | Rate limit: 5/min
 Body: { itemId: uuid }
 Response: { success: true, code, itemId, alreadyClaimed?: true }
 ```
-Assigns one of the caller's purchased RNBP codes to one of their items. The `:code` param is normalized (whitespace stripped, uppercased) before validation. Errors: `INVALID_RNBP_FORMAT` (400), `RNBP_CODE_UNKNOWN` (404), `RNBP_CODE_VOIDED` (410), `RNBP_CODE_NOT_YOURS` (403), `RNBP_CODE_ALREADY_USED` (409), `ITEM_NOT_FOUND` (404), `ITEM_ALREADY_STOLEN` (400). If the target item already holds another code, that previous code is released atomically.
+Assigns one of the caller's purchased Badge codes to one of their items. The `:code` param is normalized (whitespace stripped, uppercased) before validation. Errors: `INVALID_BADGE_FORMAT` (400), `BADGE_CODE_UNKNOWN` (404), `BADGE_CODE_VOIDED` (410), `BADGE_CODE_NOT_YOURS` (403), `BADGE_CODE_ALREADY_USED` (409), `ITEM_NOT_FOUND` (404), `ITEM_ALREADY_STOLEN` (400). If the target item already holds another code, that previous code is released atomically.
 
 ### GET /sticker-codes/:code/scan
 Auth: optional (`tryAuth`) | Rate limit: 30/min
