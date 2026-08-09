@@ -97,6 +97,10 @@ hashes intact.
 
 ## Not done yet
 
+- The old server still answers the argon2 bridge; it goes when the last
+  `$argon2` hash does
+- Delete the empty `rnbp-platform` Pages project and the `rnbp-uploads` bucket
+  after a few days of stability
 - Stripe checkout + webhook on staging (needs test keys wired into the staging Worker)
 - OAuth on staging (needs staging redirect URIs registered with each provider)
 - R2 uploads on staging (bucket bound, public URL not yet configured)
@@ -199,9 +203,20 @@ Remaining, in order:
 | Deploy | `main` → CI → CD | `staging` → CI → CD Staging |
 
 The old server still runs, serving only `POST /internal/verify-legacy` through
-`api.rnbp.ca`. Its Postgres is now a read-only historical copy; nothing writes
-to it. Nightly backups cover both: `ops/backup.sh` for Postgres and
-`ops/backup-d1.sh` for D1, into the same R2 bucket.
+`api.rnbp.ca`. That host used to expose the **entire** API, so anything still
+calling it wrote to a Postgres nobody reads — a silent divergence from D1. The
+tunnel now matches `^/api/internal/verify-legacy$` and answers 410 to every
+other path (previous config kept as `/etc/cloudflared/config.yml.bak-precutover`).
+
+Nightly backups cover both databases into the same R2 bucket: `ops/backup.sh`
+(cron on the server) for Postgres, the `Backup D1` workflow for D1.
+
+Verified in production after cutover: a photo upload through the Worker lands in
+`badge-uploads` and serves from `files.badgeid.ca`; deleting it removes the
+object from the bucket, though the CDN keeps serving the old copy for up to the
+4-hour `max-age`. Stripe webhook signature verification accepts a correctly
+signed event and rejects unsigned and forged ones, which is what proves
+`constructEventAsync` works on the Workers runtime.
 
 ## Rollback
 
