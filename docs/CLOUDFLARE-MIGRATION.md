@@ -95,6 +95,22 @@ hashes intact.
 - The only console error on staging (React #418, a hydration mismatch) is present
   on production too — pre-existing, not introduced here
 
+## Enabling OAuth later
+
+The Google and Facebook buttons are deliberately off in production — see the
+commented `VITE_GOOGLE_CLIENT_ID` / `VITE_FACEBOOK_CLIENT_ID` in
+`apps/web/.env.production`, pending business verification with both providers.
+The buttons are gated on those vars at build time, so the component renders
+nothing without them. The Worker side is ready: both client ids and secrets are
+already set as production secrets.
+
+One thing changed with the cutover: the web build now runs on a GitHub runner,
+and **`.env.production` is not tracked in git**, so it never reaches that
+machine — which is why `VITE_API_URL` is passed explicitly in the `deploy-web`
+job. Uncommenting the local file will therefore no longer be enough. Add the two
+client ids to that job (they are public client-side identifiers, so a GitHub
+variable is sufficient; they are not secrets).
+
 ## Not done yet
 
 - The old server still answers the argon2 bridge; it goes when the last
