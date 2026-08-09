@@ -25,19 +25,16 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build shared package
-        run: pnpm --filter @badge/shared build
+        run: pnpm --filter @rnbp/shared build
 
       - name: Type-check API
-        run: pnpm --filter @badge/api exec tsc --noEmit
+        run: pnpm --filter @rnbp/api exec tsc --noEmit
 
       - name: Type-check web
-        run: pnpm --filter @badge/web exec tsc --noEmit
-
-      - name: Type-check worker
-        run: pnpm --filter @badge/worker exec tsc --noEmit
+        run: pnpm --filter @rnbp/web exec tsc --noEmit
 
       - name: Build web
-        run: pnpm --filter @badge/web build
+        run: pnpm --filter @rnbp/web build
 
       - name: Run tests
         run: pnpm test
