@@ -5,14 +5,13 @@
   "compatibility_date": "2026-05-01",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
-  // Production bindings are configured when we cut over (Phase 4).
   "env": {
     "staging": {
       "name": "badge-api-staging",
       "vars": {
-        "ENVIRONMENT": "staging",
-        "FRONTEND_URL": "https://staging.rnbp-platform.pages.dev",
-        "CORS_ORIGINS": "https://staging.rnbp-platform.pages.dev,http://localhost:5173",
+        "NODE_ENV": "staging",
+        "FRONTEND_URL": "https://staging.badge-platform.pages.dev",
+        "CORS_ORIGINS": "https://staging.badge-platform.pages.dev,http://localhost:5173",
         "FROM_EMAIL": "noreply@badgeid.ca",
         "FROM_NAME": "Badge (staging)"
       },
@@ -41,6 +40,48 @@
             "name": "AUTH_RATE_LIMITER",
             "type": "ratelimit",
             "namespace_id": "1002",
+            "simple": { "limit": 10, "period": 60 }
+          }
+        ]
+      }
+    },
+
+    // Production. Deployed but not serving traffic until api.badgeid.ca is
+    // pointed here instead of the Tunnel (see docs/CLOUDFLARE-MIGRATION.md).
+    "production": {
+      "name": "badge-api",
+      "vars": {
+        "NODE_ENV": "production",
+        "FRONTEND_URL": "https://badgeid.ca",
+        "CORS_ORIGINS": "https://badgeid.ca,https://www.badgeid.ca,https://rnbp.ca,https://www.rnbp.ca,https://nrpp.ca,https://www.nrpp.ca",
+        "FROM_EMAIL": "noreply@badgeid.ca",
+        "FROM_NAME": "Badge"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "badge-db",
+          "database_id": "487a867c-f911-4ec2-b274-c9b6fb399655"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "UPLOADS",
+          "bucket_name": "badge-uploads"
+        }
+      ],
+      "unsafe": {
+        "bindings": [
+          {
+            "name": "GLOBAL_RATE_LIMITER",
+            "type": "ratelimit",
+            "namespace_id": "2001",
+            "simple": { "limit": 100, "period": 60 }
+          },
+          {
+            "name": "AUTH_RATE_LIMITER",
+            "type": "ratelimit",
+            "namespace_id": "2002",
             "simple": { "limit": 10, "period": 60 }
           }
         ]

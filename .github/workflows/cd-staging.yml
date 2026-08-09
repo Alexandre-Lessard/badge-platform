@@ -47,7 +47,7 @@ jobs:
         run: pnpm --filter @badge/web build
 
       - name: Deploy web to Cloudflare Pages (staging branch)
-        run: pnpm --filter @badge/web exec wrangler pages deploy build/client --project-name rnbp-platform --branch staging
+        run: pnpm --filter @badge/web exec wrangler pages deploy build/client --project-name badge-platform --branch staging
 
       - name: Apply D1 migrations (staging)
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
