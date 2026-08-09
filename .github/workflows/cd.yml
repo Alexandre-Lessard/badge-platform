@@ -41,6 +41,11 @@ jobs:
       - name: Build shared package
         run: pnpm --filter @badge/shared build
 
+      # Before anything is applied: a missing secret would not stop the Worker
+      # booting, it would quietly disable a feature. Fail here instead.
+      - name: Check production secrets
+        run: node ops/check-secrets.mjs production
+
       - name: Apply D1 migrations
         run: pnpm --filter @badge/worker exec wrangler d1 migrations apply badge-db --remote --env production
 

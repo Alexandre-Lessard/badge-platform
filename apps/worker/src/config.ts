@@ -8,7 +8,7 @@ export type Bindings = {
   AUTH_RATE_LIMITER: RateLimit;
 } & Record<string, unknown>;
 
-const envSchema = z.object({
+export const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "staging", "production", "test"])
     .default("staging"),

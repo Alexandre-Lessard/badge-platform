@@ -49,6 +49,10 @@ jobs:
       - name: Deploy web to Cloudflare Pages (staging branch)
         run: pnpm --filter @badge/web exec wrangler pages deploy build/client --project-name badge-platform --branch staging
 
+      - name: Check staging secrets
+        if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
+        run: node ops/check-secrets.mjs staging
+
       - name: Apply D1 migrations (staging)
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
         run: pnpm --filter @badge/worker exec wrangler d1 migrations apply badge-db-staging --remote --env staging
