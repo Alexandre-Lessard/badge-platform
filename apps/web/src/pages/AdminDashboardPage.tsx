@@ -305,7 +305,7 @@ export function AdminDashboardPage() {
   }, [period, stats]);
 
   const heapPercent = liveData?.heapTotal
-    ? Math.round((liveData.heapUsed / liveData.heapTotal) * 100)
+    ? Math.round(((liveData.heapUsed ?? 0) / liveData.heapTotal) * 100)
     : 0;
 
   const xAxisLabel = period === "week"
@@ -547,7 +547,7 @@ export function AdminDashboardPage() {
 
               <MetricPanel
                 label={d.ram}
-                value={`${liveData.memTotal ? Math.round(((liveData.memTotal - liveData.memFree) / liveData.memTotal) * 100) : 0}%`}
+                value={`${liveData.memTotal ? Math.round(((liveData.memTotal - (liveData.memFree ?? 0)) / liveData.memTotal) * 100) : 0}%`}
                 color="#8b5cf6"
               >
                 <Sparkline data={ramHistory} color="#8b5cf6" />
@@ -565,7 +565,7 @@ export function AdminDashboardPage() {
                     />
                   </div>
                   <p className="mt-1 text-[10px] text-white/30">
-                    {liveData.heapUsed ? `${(liveData.heapUsed / 1024 / 1024).toFixed(0)}MB / ${(liveData.heapTotal / 1024 / 1024).toFixed(0)}MB` : "—"}
+                    {liveData.heapUsed ? `${(liveData.heapUsed / 1024 / 1024).toFixed(0)}MB / ${((liveData.heapTotal ?? 0) / 1024 / 1024).toFixed(0)}MB` : "—"}
                   </p>
                 </div>
               </MetricPanel>
