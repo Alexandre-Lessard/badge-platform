@@ -44,20 +44,18 @@ jobs:
       - name: Build web (staging)
         env:
           VITE_API_URL: https://badge-api-staging.alexandre-lessard92.workers.dev/api
-        run: pnpm --filter @rnbp/web exec vite build --mode staging
+        run: pnpm --filter @rnbp/web build
 
       - name: Deploy web to Cloudflare Pages (staging branch)
-        run: npx wrangler pages deploy apps/web/dist --project-name rnbp-platform --branch staging
+        run: pnpm --filter @rnbp/web exec wrangler pages deploy build/client --project-name rnbp-platform --branch staging --cwd apps/web
 
       - name: Apply D1 migrations (staging)
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
-        working-directory: apps/worker
-        run: npx wrangler d1 migrations apply badge-db-staging --remote
+        run: pnpm --filter @rnbp/worker exec wrangler d1 migrations apply badge-db-staging --remote --env staging
 
       - name: Deploy API Worker (staging)
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
-        working-directory: apps/worker
-        run: npx wrangler deploy --env staging
+        run: pnpm --filter @rnbp/worker exec wrangler deploy --env staging
 
       - name: Health check staging API
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
