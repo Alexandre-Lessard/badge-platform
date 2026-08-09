@@ -3,7 +3,7 @@ import { copyFileSync, existsSync, readFileSync, statSync, writeFileSync } from 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const TMP_EN = join(tmpdir(), "rnbp-index.en.html");
+const TMP_EN = join(tmpdir(), "badge-index.en.html");
 
 console.log("→ Building EN prerender…");
 execSync("react-router build", {
