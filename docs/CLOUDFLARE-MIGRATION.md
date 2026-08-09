@@ -95,6 +95,21 @@ hashes intact.
 - The only console error on staging (React #418, a hydration mismatch) is present
   on production too — pre-existing, not introduced here
 
+## Secrets are checked before every deploy
+
+`ops/check-secrets.mjs` runs first in both CD workflows and refuses the deploy
+when the target environment is missing something it needs, printing the exact
+`wrangler secret put` command for each gap. It exists because most secrets are
+`.optional()` in the Worker's schema: a missing one does not stop the Worker
+booting, it silently disables a feature — no `BREVO_API_KEY` and nobody gets a
+verification email, no `STRIPE_WEBHOOK_SECRET` and paid orders are never marked
+paid. Both would deploy green otherwise.
+
+`apps/worker/secrets.manifest.json` declares what each environment needs, and a
+unit test fails if its `required` list drifts from the keys the Zod schema
+refuses to default. When you add a secret, add it to the manifest in the same
+commit.
+
 ## Enabling OAuth later
 
 The Google and Facebook buttons are deliberately off in production — see the
