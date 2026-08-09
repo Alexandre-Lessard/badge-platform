@@ -261,3 +261,7 @@ Backups: nightly `pg_dump` at 03:00 with 14-day local rotation and an offsite
 copy to R2 `badge-db-backups` (90-day lifecycle) — see `ops/backup.sh`. None of
 this existed before this migration; the only prior safety net was the pre-deploy
 snapshot taken when a deploy happened to carry a migration.
+
+> `ops/pg-export.sh` and `ops/pg-to-d1.py` were deleted on 2026-08-09, once the migration
+> they served was complete. Recover them from git history if a similar conversion is ever
+> needed again.

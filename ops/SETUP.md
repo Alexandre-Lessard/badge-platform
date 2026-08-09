@@ -158,3 +158,7 @@ this returns 0:
 pnpm --filter @badge/worker exec wrangler d1 execute badge-db --remote --env production \
   --command "SELECT COUNT(*) FROM users WHERE password_hash LIKE '\$argon2%';"
 ```
+
+> `ops/pg-export.sh` and `ops/pg-to-d1.py` were deleted on 2026-08-09, once the migration
+> they served was complete. Recover them from git history if a similar conversion is ever
+> needed again.

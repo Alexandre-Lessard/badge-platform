@@ -18,7 +18,7 @@ import { useCountUp } from "@/lib/use-count-up";
 import { useSSE } from "@/lib/use-sse";
 import { Tabs } from "@/components/ui/Tabs";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8787/api";
 
 // ------- Types -------
 

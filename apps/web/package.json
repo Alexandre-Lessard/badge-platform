@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview --outDir build/client",
-    "deploy": "pnpm build && wrangler pages deploy build/client --project-name ${CF_PAGES_PROJECT:-rcdb-landing} --branch ${CF_PAGES_BRANCH:-main}"
+    "deploy": "pnpm build && wrangler pages deploy build/client --project-name ${CF_PAGES_PROJECT:-badge-platform} --branch ${CF_PAGES_BRANCH:-main}"
   },
   "dependencies": {
     "@react-router/node": "^7.14.0",

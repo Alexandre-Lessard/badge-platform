@@ -9,7 +9,7 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
-    "db:migrate:local": "wrangler d1 migrations apply badge-db-staging --local",
+    "db:migrate:local": "wrangler d1 migrations apply badge-db-staging --env staging --local",
     "db:migrate:staging": "wrangler d1 migrations apply badge-db-staging --remote"
   },
   "dependencies": {

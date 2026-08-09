@@ -12,8 +12,8 @@ The home page (`/`) is prerendered at build time so crawlers and OAuth verifiers
 
 ```bash
 # Optional: configure the API URL
-# Default: http://localhost:3000/api
-echo "VITE_API_URL=http://localhost:3000/api" > .env
+# Default: http://localhost:8787/api
+echo "VITE_API_URL=http://localhost:8787/api" > .env
 
 # Start in dev mode
 pnpm dev
@@ -36,7 +36,7 @@ Available at `http://localhost:5173`.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `VITE_API_URL` | `http://localhost:3000/api` | Backend API URL |
+| `VITE_API_URL` | `http://localhost:8787/api` | Backend API URL |
 
 ## Routes
 
