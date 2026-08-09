@@ -3,7 +3,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "dev:setup": "pnpm --filter @badge/shared build && pnpm --filter @badge/worker run db:migrate:local",
+    "dev:setup": "pnpm --filter @badge/shared build && pnpm --filter @badge/worker run db:migrate:local && pnpm run seed",
+    "seed": "node ops/seed.mjs --target local",
+    "seed:staging": "node ops/seed.mjs --target staging",
     "dev": "pnpm --filter @badge/worker dev & pnpm --filter @badge/web dev & wait",
     "dev:worker": "pnpm --filter @badge/worker dev",
     "dev:web": "pnpm --filter @badge/web dev",
