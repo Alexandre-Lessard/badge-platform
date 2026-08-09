@@ -146,11 +146,14 @@ hostname now resolves to the Worker itself, so `LEGACY_VERIFY_URL` was moved to
 `api.rnbp.ca`, which stays on the Tunnel. Keep that record pointed at the
 Tunnel until the last argon2 hash is gone.
 
-`nrpp.ca` and `www.nrpp.ca` are still on the old `rnbp-platform` project: the
-CI/CD token is scoped to the `badgeid.ca` and `rnbp.ca` zones only, so their
-CNAMEs cannot be repointed. They were briefly down before being moved back.
-Finish this by granting the token DNS edit on the `nrpp.ca` zone, or by editing
-those two records by hand — and only then delete the old Pages project.
+All six domains are on `badge-platform`; `rnbp-platform` now owns none and can
+be deleted after a few days of stability. `nrpp.ca` took two attempts: the
+`badge-cicd` token had been scoped to the `badgeid.ca` and `rnbp.ca` zones
+only. Adding the third zone to its policy works, but **a token permission
+change takes a minute or two to take effect** — the first writes afterwards
+came back `10405 Method not allowed for this authentication scheme`, which
+reads like a scheme problem and is really just propagation. Wait and retry
+before concluding anything from that error.
 
 ## Original cutover checklist
 
