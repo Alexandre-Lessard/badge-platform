@@ -88,17 +88,33 @@ hashes intact.
 - Public lookup by serial number, including the normalisation (spaces, dashes,
   underscores stripped) that used to rely on Postgres string functions
 - Products, insurers, admin authorisation (401/403 where expected)
-- Deployed staging Worker against remote D1 with the real production data
+- CORS: the staging origin is allowed, an unknown origin gets no
+  `Access-Control-Allow-Origin`
+- End-to-end in a browser on the deployed staging site: the SPA on Pages queries
+  the Worker, which reads D1, and a lookup returns real migrated production data
+- The only console error on staging (React #418, a hydration mismatch) is present
+  on production too — pre-existing, not introduced here
 
 ## Not done yet
 
-- Frontend admin dashboard still expects host CPU/memory fields; it renders its
-  empty state instead of crashing, but the panel should be reshaped around the
-  metrics that exist now
 - Stripe checkout + webhook on staging (needs test keys wired into the staging Worker)
 - OAuth on staging (needs staging redirect URIs registered with each provider)
 - R2 uploads on staging (bucket bound, public URL not yet configured)
 - Production cutover (Phase 4) — deliberately gated on Alex's go-ahead
+
+## Cutover checklist (Phase 4 — needs a decision, not just execution)
+
+1. Set `LEGACY_VERIFY_SECRET` in `/opt/rnbp/.env` and restart `rnbp-api`, so
+   `POST /internal/verify-legacy` stops returning 503. Merging `staging` → `main`
+   is what deploys that endpoint to production in the first place.
+2. Set `LEGACY_VERIFY_URL` (`https://api.badgeid.ca/api/internal/verify-legacy`)
+   and the same secret on the production Worker.
+3. Freeze writes briefly, re-run `pg-export.sh` + `pg-to-d1.py`, load into the
+   production D1. The rehearsal on staging is the same command sequence.
+4. Point `api.badgeid.ca` at the Worker instead of the Tunnel.
+5. Leave the server running until `SELECT COUNT(*) FROM users WHERE password_hash
+   LIKE '$argon2%'` reaches zero. Only then retire the Tunnel, the systemd
+   service, and the endpoint.
 
 ## Environments
 
