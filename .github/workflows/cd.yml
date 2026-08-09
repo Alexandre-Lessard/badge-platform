@@ -66,7 +66,11 @@ jobs:
           exit 1
 
   # Web: the SPA on Cloudflare Pages.
+  #
+  # Waits for the API. Without this the two jobs race, and a Worker deploy that
+  # fails its secret check would still let a frontend ship that expects it.
   deploy-web:
+    needs: deploy-worker
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_repository.full_name == github.repository &&

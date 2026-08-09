@@ -41,6 +41,13 @@ jobs:
       - name: Build shared package
         run: pnpm --filter @badge/shared build
 
+      # First, before anything ships: a missing secret does not stop the Worker
+      # booting, it quietly disables a feature. Checking after the web deploy
+      # would leave a frontend live against an API that never got updated.
+      - name: Check staging secrets
+        if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
+        run: node ops/check-secrets.mjs staging
+
       - name: Build web (staging)
         env:
           VITE_API_URL: https://badge-api-staging.alexandre-lessard92.workers.dev/api
@@ -48,10 +55,6 @@ jobs:
 
       - name: Deploy web to Cloudflare Pages (staging branch)
         run: pnpm --filter @badge/web exec wrangler pages deploy build/client --project-name badge-platform --branch staging
-
-      - name: Check staging secrets
-        if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
-        run: node ops/check-secrets.mjs staging
 
       - name: Apply D1 migrations (staging)
         if: ${{ hashFiles('apps/worker/wrangler.jsonc') != '' }}
