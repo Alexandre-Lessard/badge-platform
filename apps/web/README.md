@@ -1,4 +1,4 @@
-# @rnbp/web — Frontend
+# @badge/web — Frontend
 
 React web application for the National Registry of Personal Property.
 
@@ -50,7 +50,7 @@ Routes are declared in [`src/routes.ts`](src/routes.ts) using the React Router f
 | `/login` | `pages/LoginPage.tsx` | Login |
 | `/register` | `pages/RegisterAccountPage.tsx` | Account creation |
 | `/register-item` | `pages/RegisterItemPage.tsx` | Item registration (multi-step form) |
-| `/lookup` | `pages/LookupPage.tsx` | Public lookup by RNBP number or serial number |
+| `/lookup` | `pages/LookupPage.tsx` | Public lookup by Badge code or serial number |
 | `/lookup/photo` | `pages/LookupPhotoPage.tsx` | Photo-based lookup placeholder |
 | `/registry` | `pages/PartnerPage.tsx` | Browse the registry (citizen / police / insurance) |
 | `/privacy` | `pages/PrivacyPolicyPage.tsx` | Privacy policy |
@@ -153,7 +153,7 @@ export function MyPage() {
   const { t } = useLanguage();
   return (
     <section>
-      <title>{`${t.pages.my.title} | RNBP`}</title>
+      <title>{`${t.pages.my.title} | Badge`}</title>
       <meta name="description" content={t.pages.my.description} />
       ...
     </section>
@@ -161,7 +161,9 @@ export function MyPage() {
 }
 ```
 
-For the SPA-fallback HTML served on non-prerendered routes, the Cloudflare Pages Function ([`functions/[[path]].ts`](functions/[[path]].ts)) injects the per-route `<title>`, `<meta name="description">`, Open Graph, Twitter, canonical, hreflang and JSON-LD tags at request time, based on the requested path and the active domain (`rnbp.ca` / `nrpp.ca`). The title and description are routed through `{{TITLE}}` / `{{DESCRIPTION}}` placeholders injected at build time by [`scripts/build-multilocale.mjs`](scripts/build-multilocale.mjs), since React 19 hoists the home page's title into the prerendered HTML that serves as the SPA fallback.
+For the SPA-fallback HTML served on non-prerendered routes, the Cloudflare Pages Function ([`functions/[[path]].ts`](functions/[[path]].ts)) injects the per-route `<title>`, `<meta name="description">`, Open Graph, Twitter, canonical, hreflang and JSON-LD tags at request time, based on the requested path. The title and description are routed through `{{TITLE}}` / `{{DESCRIPTION}}` placeholders injected at build time by [`scripts/build-multilocale.mjs`](scripts/build-multilocale.mjs), since React 19 hoists the home page's title into the prerendered HTML that serves as the SPA fallback.
+
+In the browser, [`src/root.tsx`](src/root.tsx) renders canonical and hreflang with the real URL from [`src/lib/canonical.ts`](src/lib/canonical.ts) — the same rule the Function imports — and renders the other placeholder tags (robots, Open Graph, Twitter) only during the prerender. React 19 never reconciles `<meta>` / `<link>` with the served HTML, so rendering a placeholder in the browser adds a second tag carrying the raw `{{...}}` value, which Google then crawls as a link.
 
 ## i18n system
 
@@ -178,20 +180,14 @@ The application is bilingual (FR / EN). Translations cover all static content, i
 
 Priority order:
 1. **localStorage** — Explicit user choice
-2. **Hostname** — `rnbp.ca` → FR, `nrpp.ca` → EN
-3. **Browser** — `navigator.language`
-4. **Default** — FR (used during build-time prerendering)
+2. **Browser** — `navigator.language`
+3. **Default** — FR (used during build-time prerendering)
 
 The language toggle is instant (no reload, no domain change).
 
-## Dual-domain strategy
+## Single domain
 
-| Domain | Default language | Usage |
-|--------|-----------------|-------|
-| `rnbp.ca` | French | Quebec market |
-| `nrpp.ca` | English | English-speaking Canadian market |
-
-Both domains serve the same application. The logo follows the active language (not the domain). The Cloudflare Pages Function emits per-domain `hreflang` and canonical tags so each domain is indexed in the correct language.
+`badgeid.ca` serves both languages. The logo follows the active language. Every page declares its own URL as canonical and as the `hreflang` target for FR, EN and `x-default`. The former domains still resolve and only serve as aliases.
 
 ## Design system
 

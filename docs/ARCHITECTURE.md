@@ -43,7 +43,10 @@ search engines, not as separate language sites.
 The home page (`/`) is prerendered to static HTML at build time so crawlers and OAuth
 verifiers see fully rendered content. Other routes use the prerendered SPA shell and hydrate
 on the client. A Cloudflare Pages Function (`apps/web/functions/[[path]].ts`) injects
-per-route Open Graph, canonical, hreflang and JSON-LD tags at request time.
+per-route Open Graph, canonical, hreflang and JSON-LD tags at request time. In the browser,
+`root.tsx` renders canonical and hreflang itself from `apps/web/src/lib/canonical.ts`, the rule
+the Function also uses, and leaves every other placeholder tag to the prerender only — React 19
+would otherwise add a second copy of each tag carrying the raw `{{...}}` placeholder.
 
 ### One temporary exception
 

@@ -1,3 +1,5 @@
+import { BRAND_ORIGIN, canonicalUrl, normalizePath } from "../src/lib/canonical";
+
 interface PageMeta {
   title: string;
   description: string;
@@ -328,7 +330,8 @@ const PREFIX_PATHS = ["/admin/orders", "/c"];
 // Single-domain (badgeid.ca): locale detection moved client-side
 // (localStorage > navigator.language). Server-side prerender defaults to FR;
 // EN variant is generated via BUILD_LOCALE=en at build time.
-const BRAND_ORIGIN = "https://badgeid.ca";
+// BRAND_ORIGIN and the canonical rule live in src/lib/canonical.ts, shared with
+// root.tsx so the browser renders the same canonical the server injected.
 
 function detectLocale(): "fr" | "en" {
   return "fr";
@@ -358,12 +361,11 @@ function generateSitemapXml(): Response {
   // epoch — which shipped a sitemap full of <lastmod>1970-01-01</lastmod>.
   const LASTMOD = new Date().toISOString().slice(0, 10);
   const locale = detectLocale();
-  const domain = getDomain();
 
   // Same form as the canonical tag — no trailing slash — so the sitemap and
   // the pages agree on which URL is the real one.
   const urls = PUBLIC_PATHS.map((path) => {
-    const loc = `${domain}${path === "/" ? "/" : path}`;
+    const loc = canonicalUrl(path);
     const frHref = loc;
     const enHref = loc;
     return `  <url>
@@ -493,16 +495,11 @@ function injectMeta(
   const ogLocaleAlt = locale === "fr" ? "en_CA" : "fr_CA";
   const siteName = "Badge";
   const ogImageFile = locale === "fr" ? "og-image-fr.png" : "og-image-en.png";
-  // Canonical URLs carry no trailing slash: every internal link comes from
-  // ROUTES ("/faq", "/shop"), so the slashed form is a URL nothing links to.
-  // Declaring it as canonical is what made Google pick its own instead —
-  // the "Duplicate, Google chose a different canonical" report. The root
-  // stays "/" because it has no other form.
-  const canonicalUrl = `${domain}${path === "/" ? "/" : path}`;
-  const ogUrl = canonicalUrl;
+  const canonical = canonicalUrl(path);
+  const ogUrl = canonical;
   const ogImage = `${domain}/assets/${ogImageFile}`;
-  const hreflangFr = canonicalUrl;
-  const hreflangEn = canonicalUrl;
+  const hreflangFr = canonical;
+  const hreflangEn = canonical;
   const robots = meta.robots ?? "index, follow";
   const lang = locale === "fr" ? "fr-CA" : "en-CA";
   const jsonLd = buildJsonLd(locale, path, domain);
@@ -524,7 +521,7 @@ function injectMeta(
     .replace("{{SITE_NAME}}", siteName)
     .replace("{{OG_URL}}", ogUrl)
     .replace(/\{\{OG_IMAGE\}\}/g, ogImage)
-    .replace("{{CANONICAL}}", canonicalUrl)
+    .replace("{{CANONICAL}}", canonical)
     .replace(/\{\{HREFLANG_FR\}\}/g, hreflangFr)
     .replace("{{HREFLANG_EN}}", hreflangEn)
     .replace("<!-- JSON-LD {{JSON_LD}} -->", jsonLd);
@@ -574,7 +571,7 @@ export const onRequest: PagesFunction = async (context) => {
   }
 
   // Normalize path: remove trailing slash except for root
-  const path = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
+  const path = normalizePath(pathname);
   const html = await response.text();
   const modifiedHtml = injectMeta(html, locale, path);
 
