@@ -877,7 +877,7 @@ const en: SiteContent = {
       },
       {
         title: "5. Account Retention and Deletion",
-        body: "Your data is retained as long as your account is active. You may request the complete deletion of your account and data at any time by contacting us at tech@badgeid.ca. We process requests within a maximum of 30 days. Deletion covers your account, your registered items, your photos, and your documents. Some data may persist for up to 14 days in our automated backups before being permanently erased. Financial data related to your orders is retained in anonymized form to comply with our accounting and tax obligations. Theft reports are retained for traceability purposes even after account deletion, in accordance with applicable legal obligations.",
+        body: "Your data is retained as long as your account is active. You may request the complete deletion of your account and data at any time by contacting us at tech@badgeid.ca. We process requests within a maximum of 30 days. Deletion covers your account, your registered items, your photos, and your documents. Some data may persist for up to 90 days in our automated backups before being permanently erased. Financial data related to your orders is retained in anonymized form to comply with our accounting and tax obligations. Theft reports are retained for traceability purposes even after account deletion, in accordance with applicable legal obligations.",
       },
       {
         title: "6. Public Verification",
@@ -950,7 +950,7 @@ const en: SiteContent = {
         "Once confirmed, your account and data are deleted within a maximum of 30 days.",
       ],
       timelineHeading: "Timelines and scope of deletion",
-      timeline: "Deletion covers your account, your registered items, your photos, and your documents. Some data may persist for up to 14 days in our automated backups before being permanently erased. Financial data related to your orders (sticker purchases) is retained in anonymized form to comply with our Canadian accounting and tax obligations. Past theft reports are retained for traceability purposes, in accordance with applicable legal obligations.",
+      timeline: "Deletion covers your account, your registered items, your photos, and your documents. Some data may persist for up to 90 days in our automated backups before being permanently erased. Financial data related to your orders (sticker purchases) is retained in anonymized form to comply with our Canadian accounting and tax obligations. Past theft reports are retained for traceability purposes, in accordance with applicable legal obligations.",
       contactHeading: "Have a question?",
       contactBody: "If you have a question about the procedure or have not received a confirmation within 48 hours, contact us at tech@badgeid.ca.",
     },

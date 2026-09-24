@@ -883,7 +883,7 @@ const fr: SiteContent = {
       },
       {
         title: "5. Conservation et suppression de votre compte",
-        body: "Vos données sont conservées aussi longtemps que votre compte est actif. Vous pouvez demander la suppression complète de votre compte et de vos données à tout moment en nous contactant à tech@badgeid.ca. Nous traitons les demandes dans un délai maximum de 30 jours. La suppression couvre votre compte, vos biens enregistrés, vos photos et vos documents. Certaines données peuvent persister jusqu'à 14 jours dans nos sauvegardes automatiques avant d'être définitivement effacées. Les données financières liées à vos commandes sont conservées de manière anonymisée pour respecter nos obligations comptables et fiscales. Les déclarations de vol sont conservées à des fins de traçabilité même après la suppression du compte, conformément aux obligations légales applicables.",
+        body: "Vos données sont conservées aussi longtemps que votre compte est actif. Vous pouvez demander la suppression complète de votre compte et de vos données à tout moment en nous contactant à tech@badgeid.ca. Nous traitons les demandes dans un délai maximum de 30 jours. La suppression couvre votre compte, vos biens enregistrés, vos photos et vos documents. Certaines données peuvent persister jusqu'à 90 jours dans nos sauvegardes automatiques avant d'être définitivement effacées. Les données financières liées à vos commandes sont conservées de manière anonymisée pour respecter nos obligations comptables et fiscales. Les déclarations de vol sont conservées à des fins de traçabilité même après la suppression du compte, conformément aux obligations légales applicables.",
       },
       {
         title: "6. Vérification publique",
@@ -956,7 +956,7 @@ const fr: SiteContent = {
         "Une fois confirmée, votre compte et vos données sont supprimés dans un délai maximum de 30 jours.",
       ],
       timelineHeading: "Délais et portée de la suppression",
-      timeline: "La suppression couvre votre compte, vos biens enregistrés, vos photos et vos documents. Certaines données peuvent persister jusqu'à 14 jours dans nos sauvegardes automatiques avant d'être définitivement effacées. Les données financières liées à vos commandes (achats d'étiquettes) sont conservées de manière anonymisée pour respecter nos obligations comptables et fiscales canadiennes. Les déclarations de vol antérieures sont conservées à des fins de traçabilité, conformément aux obligations légales applicables.",
+      timeline: "La suppression couvre votre compte, vos biens enregistrés, vos photos et vos documents. Certaines données peuvent persister jusqu'à 90 jours dans nos sauvegardes automatiques avant d'être définitivement effacées. Les données financières liées à vos commandes (achats d'étiquettes) sont conservées de manière anonymisée pour respecter nos obligations comptables et fiscales canadiennes. Les déclarations de vol antérieures sont conservées à des fins de traçabilité, conformément aux obligations légales applicables.",
       contactHeading: "Une question ?",
       contactBody: "Si vous avez une question sur la procédure ou si vous n'avez pas reçu de confirmation dans les 48 heures, contactez-nous à tech@badgeid.ca.",
     },
