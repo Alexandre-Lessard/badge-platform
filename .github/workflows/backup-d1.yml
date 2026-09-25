@@ -57,3 +57,62 @@ jobs:
             exit 1
           fi
           echo "Uploaded $FILE ($(du -h "$FILE" | cut -f1))"
+
+      # Dry run of the 90-day retention the privacy policy promises: lists the
+      # d1_ dumps and writes to the run summary which ones a lifecycle rule
+      # would delete. Deletes nothing and never fails the job, so it sends no
+      # email. Once the real R2 rule on d1_ is on, it shows what it removed.
+      - name: Report d1_ dumps past the 90-day retention (dry run)
+        if: always()
+        continue-on-error: true
+        env:
+          R2_BACKUP_ACCESS_KEY: ${{ secrets.R2_BACKUP_ACCESS_KEY }}
+          R2_BACKUP_SECRET_KEY: ${{ secrets.R2_BACKUP_SECRET_KEY }}
+          R2_BACKUP_ENDPOINT: ${{ secrets.R2_BACKUP_ENDPOINT }}
+          R2_BACKUP_BUCKET: badge-db-backups
+          RETENTION_DAYS: "90"
+        run: |
+          python3 - <<'PY'
+          import datetime, os, subprocess, urllib.parse, xml.etree.ElementTree as ET
+
+          ns = {"s3": "http://s3.amazonaws.com/doc/2006-03-01/"}
+          empty_sha = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          base = f"{os.environ['R2_BACKUP_ENDPOINT']}/{os.environ['R2_BACKUP_BUCKET']}"
+          days = int(os.environ["RETENTION_DAYS"])
+          now = datetime.datetime.now(datetime.timezone.utc)
+
+          objects, token = [], None
+          while True:
+              query = {"list-type": "2", "prefix": "d1_"}
+              if token:
+                  query["continuation-token"] = token
+              body = subprocess.run(
+                  ["curl", "-sf", "--aws-sigv4", "aws:amz:auto:s3",
+                   "--user", f"{os.environ['R2_BACKUP_ACCESS_KEY']}:{os.environ['R2_BACKUP_SECRET_KEY']}",
+                   "-H", f"x-amz-content-sha256: {empty_sha}",
+                   f"{base}?{urllib.parse.urlencode(query)}"],
+                  capture_output=True, text=True, check=True).stdout
+              root = ET.fromstring(body)
+              for item in root.findall("s3:Contents", ns):
+                  modified = datetime.datetime.fromisoformat(
+                      item.find("s3:LastModified", ns).text.replace("Z", "+00:00"))
+                  objects.append((item.find("s3:Key", ns).text, modified))
+              if root.findtext("s3:IsTruncated", namespaces=ns) != "true":
+                  break
+              token = root.findtext("s3:NextContinuationToken", namespaces=ns)
+
+          expired = [(k, m) for k, m in objects if (now - m).days >= days]
+          lines = [f"### d1_ retention dry run ({days} days)", "",
+                   f"- d1_ dumps in the bucket: {len(objects)}",
+                   f"- would be deleted today: {len(expired)}"]
+          if objects:
+              oldest_key, oldest = min(objects, key=lambda o: o[1])
+              first_due = (oldest + datetime.timedelta(days=days)).date()
+              lines.append(f"- oldest: `{oldest_key}` ({(now - oldest).days} days), due on {first_due}")
+          lines += [f"  - `{k}` ({(now - m).days} days)" for k, m in expired]
+
+          report = "\n".join(lines)
+          print(report)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write(report + "\n")
+          PY
